@@ -106,6 +106,17 @@
     .f-dur{font-size:12px;color:var(--txt3)}
     .f-line{width:100%;height:1px;background:var(--brd);position:relative}
     .f-line::after{content:'✈';position:absolute;right:-4px;top:-8px;font-size:14px;color:var(--gold)}
+    .f-date{font-size:12px;color:var(--txt3);margin-bottom:10px;font-weight:500}
+    .f-segments{margin-bottom:14px;background:var(--bg);border-radius:10px;padding:12px 16px}
+    .f-seg{display:flex;align-items:center;gap:14px;padding:6px 0}
+    .f-seg + .f-seg{border-top:1px solid var(--brd);margin-top:6px;padding-top:10px}
+    .f-seg-times{display:flex;align-items:center;gap:8px;min-width:120px}
+    .f-seg-time{font-size:14px;font-weight:600}
+    .f-seg-arrow{font-size:11px;color:var(--txt4)}
+    .f-seg-detail{flex:1;font-size:12px;color:var(--txt3)}
+    .f-seg-route{font-weight:500;color:var(--txt2)}
+    .f-seg-info{font-size:11px;color:var(--txt4);margin-top:2px}
+    .f-stop-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(234,179,8,.1);color:#EAB308;margin-left:8px}
     .f-prices{display:flex;gap:8px;flex-wrap:wrap}
     .f-price-btn{flex:1;min-width:120px;padding:10px 12px;border-radius:8px;border:1px solid var(--brd);background:var(--card2);cursor:pointer;transition:.2s;text-align:center}
     .f-price-btn:hover{border-color:var(--gold);background:rgba(184,148,95,.08)}
@@ -439,18 +450,31 @@ function renderFlights(flights, dir) {
       {key:'business', label:'Business', avail:f.availability.business, price:f.prices.business},
       {key:'first', label:'First Class', avail:f.availability.first, price:f.prices.first}
     ];
+    const stopsText = f.direct ? 'Direct' : (f.stops === 1 ? '1 Stop' : (f.stops || 1) + ' Stops');
+    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('nl-NL', {weekday:'short', day:'numeric', month:'long', year:'numeric'}) : '';
+    // Build segments HTML
+    let segHtml = '';
+    if (f.segments && f.segments.length > 0) {
+      segHtml = `<div class="f-segments">${f.segments.map(s => `<div class="f-seg">
+        <div class="f-seg-times"><span class="f-seg-time">${s.depTime || '--:--'}</span><span class="f-seg-arrow">→</span><span class="f-seg-time">${s.arrTime || '--:--'}</span></div>
+        <div class="f-seg-detail"><div class="f-seg-route">${s.origin} → ${s.destination} <span style="color:var(--txt4);font-weight:400">${s.flightNo}</span></div>
+        <div class="f-seg-info">${s.duration ? s.duration : ''}${s.aircraft ? ' · ' + s.aircraft : ''}</div></div>
+      </div>`).join('')}</div>`;
+    }
     return `<div class="f-card">
+      ${dateStr ? `<div class="f-date">${dateStr}</div>` : ''}
       <div class="f-top">
         <div class="f-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
         <div class="f-airline"><div class="f-airline-name">${al}</div><div class="f-flight-no">${f.flightNo}</div></div>
-        <span class="f-badge ${f.direct?'direct':'stop'}">${f.direct?'Direct':'1 Stop'}</span>
+        <span class="f-badge ${f.direct?'direct':'stop'}">${stopsText}</span>
         <span class="f-seats">${f.remainingSeats} ${f.remainingSeats===1?'stoel':'stoelen'} over</span>
       </div>
       <div class="f-mid">
-        <div class="f-time"><div class="f-time-val">${f.depTime}</div><div class="f-time-code">${f.origin}</div></div>
-        <div class="f-route-line"><div class="f-dur">${f.duration}</div><div class="f-line"></div></div>
-        <div class="f-time"><div class="f-time-val">${f.arrTime}</div><div class="f-time-code">${f.destination}</div></div>
+        <div class="f-time"><div class="f-time-val">${f.depTime || '--:--'}</div><div class="f-time-code">${f.origin}</div></div>
+        <div class="f-route-line"><div class="f-dur">${f.duration || ''}</div><div class="f-line"></div></div>
+        <div class="f-time"><div class="f-time-val">${f.arrTime || '--:--'}</div><div class="f-time-code">${f.destination}</div></div>
       </div>
+      ${segHtml}
       <div class="f-prices">
         ${cabins.map(c => c.avail && c.price
           ? `<div class="f-price-btn" onclick="pickFlight('${dir}','${f.id}','${c.key}',${c.price})"><div class="f-price-cabin">${c.label}</div><div class="f-price-val">€${c.price.toLocaleString()}</div></div>`
