@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Élysian Flights — Premium Travel Concierge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --gold:#B8945F;--gold-l:#D4B07A;--gold-d:#9A7A4A;
+      --bg:#09090B;--card:#111113;--card2:#18181B;--card-h:#1C1C1F;
+      --brd:#27272A;--brd-l:#3F3F46;
+      --txt:#FAFAFA;--txt2:#A1A1AA;--txt3:#71717A;--txt4:#52525B;
+      --grn:#22C55E;--grn-bg:rgba(34,197,94,.1);
+      --red:#EF4444;--wa:#25D366;
+      --r:12px;
+    }
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
+    .serif{font-family:'DM Serif Display',serif}
+    .hidden{display:none!important}
+    /* HEADER */
+    header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--brd)}
+    .h-in{max-width:1200px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:20px;font-weight:600;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
+    .logo-icon{width:32px;height:32px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+    .logo b{color:var(--gold)}
+    nav a{color:var(--txt3);text-decoration:none;font-size:13px;font-weight:500;margin-left:32px;transition:.2s}
+    nav a:hover{color:var(--txt)}
+    /* HERO */
+    .hero{padding:140px 32px 100px;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(184,148,95,.08) 0%,transparent 60%)}
+    .hero-tag{display:inline-block;padding:6px 16px;border:1px solid var(--brd);border-radius:20px;font-size:12px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+    .hero h1{font-size:clamp(32px,5vw,56px);font-weight:300;letter-spacing:-0.5px;margin-bottom:12px;line-height:1.15}
+    .hero h1 em{font-style:normal;color:var(--gold);font-weight:400}
+    .hero p{font-size:17px;color:var(--txt3);max-width:480px;margin:0 auto}
+    /* SEARCH */
+    .search-w{max-width:1000px;margin:-48px auto 0;padding:0 20px;position:relative;z-index:10}
+    .search-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:28px 32px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+    .trip-tog{display:flex;gap:6px;margin-bottom:20px}
+    .trip-tog button{background:transparent;border:1px solid var(--brd);color:var(--txt3);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;transition:.2s}
+    .trip-tog button.on{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+    .s-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
+    .fld label{display:block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
+    .fld input{width:100%;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:12px 14px;color:var(--txt);font-family:inherit;font-size:14px;outline:none;transition:.2s}
+    .fld input:focus{border-color:var(--gold)}
+    .fld input::placeholder{color:var(--txt4)}
+    .btn-s{background:var(--gold);color:var(--bg);border:none;border-radius:8px;padding:12px 28px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
+    .btn-s:hover{background:var(--gold-l);transform:translateY(-1px)}
+    .btn-s:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    /* RESULTS */
+    .res-w{max-width:1000px;margin:40px auto;padding:0 20px}
+    .res-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .res-h h2{font-size:24px;font-weight:400}
+    .res-h h2 em{font-style:normal;color:var(--gold)}
+    .res-cnt{color:var(--txt3);font-size:13px}
+    /* STEPS */
+    .steps{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+    .stp{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--txt4)}
+    .stp.on{color:var(--gold)}.stp.done{color:var(--grn)}
+    .stp-n{width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px}
+    .stp.on .stp-n{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+    .stp.done .stp-n{background:var(--grn);color:var(--bg);border-color:var(--grn)}
+    .stp-l{width:28px;height:1px;background:var(--brd)}
+    /* FLIGHT CARD */
+    .fc{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:20px 24px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;cursor:pointer;transition:.15s}
+    .fc:hover{border-color:var(--brd-l);background:var(--card-h)}
+    .fc.sel{border-color:var(--gold);background:rgba(184,148,95,.04)}
+    .fc-air{display:flex;align-items:center;gap:12px;min-width:140px}
+    .fc-logo{width:36px;height:36px;border-radius:8px;background:var(--card2);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .fc-logo img{width:28px;height:28px;object-fit:contain}
+    .fc-air-info{display:flex;flex-direction:column}
+    .fc-al-name{font-size:14px;font-weight:500;color:var(--txt)}
+    .fc-fno{font-size:11px;color:var(--txt3)}
+    .fc-route{display:flex;align-items:center;gap:16px;justify-content:center}
+    .fc-time{text-align:center}
+    .fc-t{font-size:22px;font-weight:600;letter-spacing:-.5px}
+    .fc-ap{font-size:11px;color:var(--txt3);font-weight:500;margin-top:2px}
+    .fc-mid{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:100px}
+    .fc-dur{font-size:11px;color:var(--txt3)}
+    .fc-line{width:80px;height:1px;background:var(--brd);position:relative}
+    .fc-line::before{content:'';position:absolute;right:-3px;top:-3px;width:7px;height:7px;border-top:1px solid var(--txt4);border-right:1px solid var(--txt4);transform:rotate(45deg)}
+    .fc-tag{font-size:10px;font-weight:600;letter-spacing:.5px;padding:2px 8px;border-radius:4px}
+    .fc-tag.dir{background:var(--grn-bg);color:var(--grn)}
+    .fc-tag.stp{background:rgba(184,148,95,.1);color:var(--gold)}
+    .fc-prices{display:flex;gap:6px;align-items:center}
+    .cp{padding:8px 14px;border-radius:8px;border:1px solid var(--brd);background:transparent;cursor:pointer;transition:.15s;text-align:center;min-width:90px;font-family:inherit}
+    .cp:hover{border-color:var(--brd-l);background:var(--card2)}
+    .cp.on{background:var(--gold);border-color:var(--gold)}
+    .cp.on .cp-l,.cp.on .cp-p{color:var(--bg)}
+    .cp-l{display:block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txt4);margin-bottom:2px}
+    .cp-p{display:block;font-size:15px;font-weight:600;color:var(--txt)}
+    .cp.na{opacity:.3;cursor:default}
+    .cp.oaa .cp-p{font-size:10px;color:var(--txt4)}
+    .fc-seats{font-size:10px;color:var(--txt4);margin-top:2px}
+    .fc-seats span{color:var(--grn)}
+    /* SUMMARY */
+    .sum-w{max-width:1000px;margin:40px auto;padding:0 20px}
+    .sum-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:36px}
+    .sum-card h2{font-size:28px;font-weight:400;margin-bottom:28px}
+    .sum-flights{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+    .sum-fl{padding:20px;border:1px solid var(--brd);border-radius:var(--r);background:var(--card2)}
+    .sum-fl h4{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+    .sum-route{font-size:22px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+    .sum-route img{width:24px;height:24px;border-radius:4px}
+    .sum-det{font-size:13px;color:var(--txt2);line-height:1.7}
+    .sum-total{border-top:1px solid var(--brd);padding-top:24px;display:flex;justify-content:space-between;align-items:center}
+    .sum-tl{font-size:12px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+    .sum-tp{font-size:42px;font-weight:300;color:var(--gold);letter-spacing:-1px}
+    .btn-wa{display:inline-flex;align-items:center;gap:10px;background:var(--wa);color:#fff;border:none;border-radius:var(--r);padding:16px 40px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;margin-top:28px}
+    .btn-wa:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-wa svg{width:20px;height:20px}
+    .btn-back{background:transparent;border:1px solid var(--brd);color:var(--txt3);padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:.2s;margin-top:28px;margin-right:12px}
+    .btn-back:hover{border-color:var(--txt3)}
+    footer{border-top:1px solid var(--brd);padding:40px 32px;text-align:center;margin-top:80px}
+    footer p{color:var(--txt4);font-size:12px}
+    .loading{text-align:center;padding:60px 0}
+    .spin{width:32px;height:32px;border:2px solid var(--brd);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 12px}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .no-res{text-align:center;padding:60px 0;color:var(--txt3)}
+    .no-res h3{font-size:20px;color:var(--txt);margin-bottom:6px}
+    @media(max-width:768px){
+      .s-row{grid-template-columns:1fr 1fr}
+      .fc{grid-template-columns:1fr;gap:12px}
+      .fc-route{flex-wrap:wrap}
+      .fc-prices{flex-wrap:wrap;justify-content:center}
+      .sum-flights{grid-template-columns:1fr}
+      .h-in{padding:14px 16px}
+      .search-card{padding:20px}
+      nav{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="h-in">
+    <div class="logo">
+      <div class="logo-icon">✈</div>
+      <span><b>Élysian</b> Flights</span>
+    </div>
+    <nav>
+      <a href="#search">Zoeken</a>
+      <a href="#" id="contactLink">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-tag">Premium Travel Concierge</div>
+  <h1>Vlieg <em>Business & First Class</em><br>voor de beste prijs</h1>
+  <p>Wij boeken de beste premium vluchten wereldwijd tegen scherpe tarieven. Selecteer uw vlucht, wij regelen de rest.</p>
+</section>
+
+<section class="search-w" id="search">
+  <div class="search-card">
+    <div class="trip-tog">
+      <button class="on" onclick="setTrip('rt',this)">Retour</button>
+      <button onclick="setTrip('ow',this)">Enkele reis</button>
+    </div>
+    <div class="s-row">
+      <div class="fld"><label>Van</label><input id="iOrig" placeholder="AMS" maxlength="3" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="fld"><label>Naar</label><input id="iDest" placeholder="DXB" maxlength="3" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="fld"><label>Heen</label><input type="date" id="iDep"></div>
+      <div class="fld" id="retW"><label>Terug</label><input type="date" id="iRet"></div>
+      <button class="btn-s" id="btnS" onclick="doSearch()">Zoeken</button>
+    </div>
+  </div>
+</section>
+
+<section class="res-w hidden" id="resW">
+  <div class="steps" id="stepsW"></div>
+  <div class="res-h">
+    <h2 id="resTitle"></h2>
+    <span class="res-cnt" id="resCnt"></span>
+  </div>
+  <div id="flist"></div>
+</section>
+
+<section class="sum-w hidden" id="sumW">
+  <div class="steps" id="stepsS"></div>
+  <div class="sum-card">
+    <h2>Uw selectie</h2>
+    <div class="sum-flights" id="sumFlights"></div>
+    <div class="sum-total">
+      <div><div class="sum-tl">Totaalprijs per persoon</div><div class="sum-tp" id="sumTotal"></div></div>
+      <div style="text-align:right;font-size:12px;color:var(--txt4)"><div>Inclusief taxes & fees</div><div>Definitieve prijs na bevestiging</div></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-back" onclick="goBack()">← Terug</button>
+      <a class="btn-wa" id="waBtn" href="#" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Boek via WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer><p>© 2026 Élysian Flights — Premium Travel Concierge</p></footer>
+
+<script>
+const AIRLINE_NAMES={EK:'Emirates',QR:'Qatar Airways',TK:'Turkish Airlines',SQ:'Singapore Airlines',TG:'Thai Airways',BA:'British Airways',AF:'Air France',KL:'KLM',NH:'ANA',JL:'Japan Airlines',VS:'Virgin Atlantic',DL:'Delta',CX:'Cathay Pacific',LH:'Lufthansa',QF:'Qantas',WB:'RwandAir',EY:'Etihad Airways'};
+const LOGO_URL=c=>`https://pics.avs.io/60/60/${c}.png`;
+const WA='31639027470';
+const SYM='€';
+
+let trip='rt',step='search',outF=[],retF=[],selOut=null,selOutCab=null,selRet=null,selRetCab=null;
+
+document.getElementById('contactLink').onclick=e=>{e.preventDefault();window.open(`https://wa.me/${WA}`,'_blank')};
+const today=new Date().toISOString().split('T')[0];
+document.getElementById('iDep').min=today;
+document.getElementById('iRet').min=today;
+
+function setTrip(t,btn){
+  trip=t;
+  document.querySelectorAll('.trip-tog button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('retW').classList.toggle('hidden',t==='ow');
+}
+
+async function doSearch(){
+  const o=document.getElementById('iOrig').value.trim();
+  const d=document.getElementById('iDest').value.trim();
+  if(!o||!d){alert('Vul vertrek en bestemming in');return}
+  const dep=document.getElementById('iDep').value;
+  const ret=document.getElementById('iRet').value;
+  const btn=document.getElementById('btnS');
+  btn.disabled=true;btn.textContent='Zoeken...';
+  try{
+    const p=new URLSearchParams({origin:o,destination:d});
+    if(dep)p.set('date',dep);
+    const r=await fetch(`/api/search?${p}`);
+    const data=await r.json();
+    outF=data.flights||[];
+    if(trip==='rt'){
+      const p2=new URLSearchParams({origin:d,destination:o});
+      if(ret)p2.set('date',ret);
+      const r2=await fetch(`/api/search?${p2}`);
+      const d2=await r2.json();
+      retF=d2.flights||[];
+    }
+    selOut=selRet=null;step='out';
+    showFlights('out');
+  }catch(e){
+    document.getElementById('resW').classList.remove('hidden');
+    document.getElementById('flist').innerHTML=`<div class="no-res"><h3>Er ging iets mis</h3><p>${e.message}</p></div>`;
+  }finally{btn.disabled=false;btn.textContent='Zoeken'}
+}
+
+function showFlights(phase){
+  step=phase;
+  document.getElementById('resW').classList.remove('hidden');
+  document.getElementById('sumW').classList.add('hidden');
+  const flights=phase==='out'?outF:retF;
+  const o=document.getElementById('iOrig').value;
+  const d=document.getElementById('iDest').value;
+  const from=phase==='out'?o:d;
+  const to=phase==='out'?d:o;
+  document.getElementById('stepsW').innerHTML=mkSteps(phase==='out'?0:1);
+  document.getElementById('resTitle').innerHTML=`<em>${from}</em> \u2192 <em>${to}</em>`;
+  document.getElementById('resCnt').textContent=`${flights.length} vluchten beschikbaar`;
+  if(!flights.length){
+    document.getElementById('flist').innerHTML='<div class="no-res"><h3>Geen vluchten gevonden</h3><p>Probeer andere data of bestemmingen</p></div>';
+    return;
+  }
+  document.getElementById('flist').innerHTML=flights.map((f,i)=>{
+    const al=f.airline||'EK';
+    const alName=AIRLINE_NAMES[al]||al;
+    const isSel=phase==='out'?selOut?.id===f.id:selRet?.id===f.id;
+    const selCab=phase==='out'?selOutCab:selRetCab;
+    const dt=new Date(f.date).toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short'});
+    const isDirect=f.directBiz||f.directFirst;
+    let cabins='';
+    if(f.first){
+      const on=isSel&&selCab==='first';
+      cabins+=`<button class="cp${on?' on':''}${f.priceFirst?'':' oaa'}" onclick="event.stopPropagation();pick('${phase}',${i},'first')"><span class="cp-l">First</span><span class="cp-p">${f.priceFirst?SYM+' '+f.priceFirst.toLocaleString():'Op aanvraag'}</span></button>`;
+    }
+    if(f.business){
+      const on=isSel&&selCab==='business';
+      cabins+=`<button class="cp${on?' on':''}${f.priceBiz?'':' oaa'}" onclick="event.stopPropagation();pick('${phase}',${i},'business')"><span class="cp-l">Business</span><span class="cp-p">${f.priceBiz?SYM+' '+f.priceBiz.toLocaleString():'Op aanvraag'}</span></button>`;
+    }
+    if(f.premEco){
+      const on=isSel&&selCab==='premEco';
+      cabins+=`<button class="cp${on?' on':''}${f.pricePremEco?'':' oaa'}" onclick="event.stopPropagation();pick('${phase}',${i},'premEco')"><span class="cp-l">Prem. Eco</span><span class="cp-p">${f.pricePremEco?SYM+' '+f.pricePremEco.toLocaleString():'Op aanvraag'}</span></button>`;
+    }
+    return `<div class="fc${isSel?' sel':''}" onclick="pick('${phase}',${i},null)">
+      <div class="fc-air">
+        <div class="fc-logo"><img src="${LOGO_URL(al)}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${al}'"></div>
+        <div class="fc-air-info">
+          <span class="fc-al-name">${alName}</span>
+          <span class="fc-fno">${f.flightNo||al+' \u00b7\u00b7\u00b7'} \u00b7 ${dt}</span>
+        </div>
+      </div>
+      <div class="fc-route">
+        <div class="fc-time"><div class="fc-t">${f.depTime||'--:--'}</div><div class="fc-ap">${f.origin}</div></div>
+        <div class="fc-mid"><div class="fc-dur">${f.duration||'--'}</div><div class="fc-line"></div><span class="fc-tag ${isDirect?'dir':'stp'}">${isDirect?'Direct':'1+ stop'}</span></div>
+        <div class="fc-time"><div class="fc-t">${f.arrTime||'--:--'}</div><div class="fc-ap">${f.destination}</div></div>
+      </div>
+      <div class="fc-prices">${cabins}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('resW').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function pick(phase,idx,cabin){
+  const flights=phase==='out'?outF:retF;
+  const f=flights[idx];
+  if(!cabin){
+    if(f.priceBiz)cabin='business';
+    else if(f.priceFirst)cabin='first';
+    else if(f.pricePremEco)cabin='premEco';
+    else cabin='business';
+  }
+  if(phase==='out'){selOut=f;selOutCab=cabin}
+  else{selRet=f;selRetCab=cabin}
+  showFlights(phase);
+  setTimeout(()=>{
+    if(phase==='out'&&trip==='rt'&&retF.length)showFlights('ret');
+    else showSummary();
+  },350);
+}
+
+function showSummary(){
+  step='sum';
+  document.getElementById('resW').classList.add('hidden');
+  document.getElementById('sumW').classList.remove('hidden');
+  document.getElementById('stepsS').innerHTML=mkSteps(trip==='rt'?2:1);
+  let html='',total=0,msg='\u2708\ufe0f *Boekingsaanvraag \u00c9lysian Flights*\n\n';
+  if(selOut){
+    const p=getPrice(selOut,selOutCab);total+=p;
+    const cab=cabLabel(selOutCab);
+    const al=AIRLINE_NAMES[selOut.airline]||selOut.airline;
+    html+=sumFlight('Heenvlucht',selOut,selOutCab,cab,al,p);
+    msg+=`*Heenvlucht*\n${selOut.origin} \u2192 ${selOut.destination}\nDatum: ${selOut.date}  ${selOut.depTime||''} \u2192 ${selOut.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selOut.flightNo||''})\n\n`;
+  }
+  if(selRet){
+    const p=getPrice(selRet,selRetCab);total+=p;
+    const cab=cabLabel(selRetCab);
+    const al=AIRLINE_NAMES[selRet.airline]||selRet.airline;
+    html+=sumFlight('Terugvlucht',selRet,selRetCab,cab,al,p);
+    msg+=`*Terugvlucht*\n${selRet.origin} \u2192 ${selRet.destination}\nDatum: ${selRet.date}  ${selRet.depTime||''} \u2192 ${selRet.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selRet.flightNo||''})\n\n`;
+  }
+  document.getElementById('sumFlights').innerHTML=html;
+  if(!selRet)document.getElementById('sumFlights').style.gridTemplateColumns='1fr';
+  document.getElementById('sumTotal').textContent=total>0?`${SYM} ${total.toLocaleString()}`:'Op aanvraag';
+  msg+=`\ud83d\udcb0 *Totaal: ${total>0?SYM+' '+total.toLocaleString():'Op aanvraag'}*\n\nGraag wil ik deze vlucht(en) boeken.`;
+  document.getElementById('waBtn').href=`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
+  document.getElementById('sumW').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function sumFlight(label,f,cab,cabName,al,price){
+  return `<div class="sum-fl">
+    <h4>${label}</h4>
+    <div class="sum-route"><img src="${LOGO_URL(f.airline)}" alt="" onerror="this.style.display='none'">${f.origin} \u2192 ${f.destination}</div>
+    <div class="sum-det">
+      ${f.date} \u00b7 ${f.depTime||'--:--'} \u2192 ${f.arrTime||'--:--'} (${f.duration||'--'})<br>
+      ${al} \u00b7 ${f.flightNo||''} \u00b7 ${cabName}<br>
+      <b style="color:var(--gold)">${price>0?SYM+' '+price.toLocaleString():'Op aanvraag'}</b>
+    </div>
+  </div>`;
+}
+
+function goBack(){
+  if(step==='sum'){
+    if(trip==='rt')showFlights('ret');
+    else showFlights('out');
+  }
+}
+
+function getPrice(f,cab){
+  if(cab==='first')return f.priceFirst||0;
+  if(cab==='business')return f.priceBiz||0;
+  return f.pricePremEco||0;
+}
+function cabLabel(c){return c==='first'?'First Class':c==='business'?'Business Class':'Premium Economy'}
+
+function mkSteps(active){
+  const labels=trip==='rt'?['Heenvlucht','Terugvlucht','Bevestigen']:['Selectie','Bevestigen'];
+  return labels.map((l,i)=>{
+    const cls=i<active?'done':i===active?'on':'';
+    return `${i>0?'<div class="stp-l"></div>':''}
+    <div class="stp ${cls}"><div class="stp-n">${i<active?'\u2713':i+1}</div><span>${l}</span></div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
