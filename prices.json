@@ -1,0 +1,17 @@
+{
+  "routePrices": {
+    "AMS-DXB": { "business": 2499, "first": 4999, "premiumEconomy": 1299 },
+    "DXB-AMS": { "business": 2499, "first": 4999, "premiumEconomy": 1299 },
+    "AMS-BKK": { "business": 1899, "first": 3799, "premiumEconomy": 999 },
+    "BKK-AMS": { "business": 1899, "first": 3799, "premiumEconomy": 999 },
+    "AMS-SIN": { "business": 2199, "first": 4499, "premiumEconomy": 1199 },
+    "SIN-AMS": { "business": 2199, "first": 4499, "premiumEconomy": 1199 },
+    "AMS-JFK": { "business": 1699, "first": 3499, "premiumEconomy": 899 },
+    "JFK-AMS": { "business": 1699, "first": 3499, "premiumEconomy": 899 },
+    "AMS-NRT": { "business": 2299, "first": 4699, "premiumEconomy": 1249 },
+    "NRT-AMS": { "business": 2299, "first": 4699, "premiumEconomy": 1249 },
+    "AMS-DOH": { "business": 2199, "first": 4299, "premiumEconomy": 1149 },
+    "DOH-AMS": { "business": 2199, "first": 4299, "premiumEconomy": 1149 }
+  },
+  "flightPrices": {}
+}
