@@ -20,6 +20,7 @@
     body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
     .serif{font-family:'DM Serif Display',serif}
     .hidden{display:none!important}
+
     /* HEADER */
     header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--brd)}
     .h-in{max-width:1200px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
@@ -28,6 +29,7 @@
     .logo b{color:var(--gold)}
     nav a{color:var(--txt3);text-decoration:none;font-size:13px;font-weight:500;margin-left:32px;transition:.2s}
     nav a:hover{color:var(--txt)}
+
     /* HERO */
     .hero{padding:140px 32px 100px;text-align:center;position:relative;overflow:hidden}
     .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(184,148,95,.08) 0%,transparent 60%)}
@@ -35,6 +37,7 @@
     .hero h1{font-size:clamp(32px,5vw,56px);font-weight:300;letter-spacing:-0.5px;margin-bottom:12px;line-height:1.15}
     .hero h1 em{font-style:normal;color:var(--gold);font-weight:400}
     .hero p{font-size:17px;color:var(--txt3);max-width:480px;margin:0 auto}
+
     /* SEARCH */
     .search-w{max-width:1000px;margin:-48px auto 0;padding:0 20px;position:relative;z-index:10}
     .search-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:28px 32px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
@@ -49,12 +52,14 @@
     .btn-s{background:var(--gold);color:var(--bg);border:none;border-radius:8px;padding:12px 28px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
     .btn-s:hover{background:var(--gold-l);transform:translateY(-1px)}
     .btn-s:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
     /* RESULTS */
     .res-w{max-width:1000px;margin:40px auto;padding:0 20px}
     .res-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
     .res-h h2{font-size:24px;font-weight:400}
     .res-h h2 em{font-style:normal;color:var(--gold)}
     .res-cnt{color:var(--txt3);font-size:13px}
+
     /* STEPS */
     .steps{display:flex;align-items:center;gap:8px;margin-bottom:28px}
     .stp{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--txt4)}
@@ -63,16 +68,19 @@
     .stp.on .stp-n{background:var(--gold);color:var(--bg);border-color:var(--gold)}
     .stp.done .stp-n{background:var(--grn);color:var(--bg);border-color:var(--grn)}
     .stp-l{width:28px;height:1px;background:var(--brd)}
+
     /* FLIGHT CARD */
     .fc{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:20px 24px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;cursor:pointer;transition:.15s}
     .fc:hover{border-color:var(--brd-l);background:var(--card-h)}
     .fc.sel{border-color:var(--gold);background:rgba(184,148,95,.04)}
+
     .fc-air{display:flex;align-items:center;gap:12px;min-width:140px}
     .fc-logo{width:36px;height:36px;border-radius:8px;background:var(--card2);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;overflow:hidden}
     .fc-logo img{width:28px;height:28px;object-fit:contain}
     .fc-air-info{display:flex;flex-direction:column}
     .fc-al-name{font-size:14px;font-weight:500;color:var(--txt)}
     .fc-fno{font-size:11px;color:var(--txt3)}
+
     .fc-route{display:flex;align-items:center;gap:16px;justify-content:center}
     .fc-time{text-align:center}
     .fc-t{font-size:22px;font-weight:600;letter-spacing:-.5px}
@@ -84,6 +92,7 @@
     .fc-tag{font-size:10px;font-weight:600;letter-spacing:.5px;padding:2px 8px;border-radius:4px}
     .fc-tag.dir{background:var(--grn-bg);color:var(--grn)}
     .fc-tag.stp{background:rgba(184,148,95,.1);color:var(--gold)}
+
     .fc-prices{display:flex;gap:6px;align-items:center}
     .cp{padding:8px 14px;border-radius:8px;border:1px solid var(--brd);background:transparent;cursor:pointer;transition:.15s;text-align:center;min-width:90px;font-family:inherit}
     .cp:hover{border-color:var(--brd-l);background:var(--card2)}
@@ -93,8 +102,11 @@
     .cp-p{display:block;font-size:15px;font-weight:600;color:var(--txt)}
     .cp.na{opacity:.3;cursor:default}
     .cp.oaa .cp-p{font-size:10px;color:var(--txt4)}
+
+    /* SEATS BADGE */
     .fc-seats{font-size:10px;color:var(--txt4);margin-top:2px}
     .fc-seats span{color:var(--grn)}
+
     /* SUMMARY */
     .sum-w{max-width:1000px;margin:40px auto;padding:0 20px}
     .sum-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:36px}
@@ -105,21 +117,26 @@
     .sum-route{font-size:22px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:10px}
     .sum-route img{width:24px;height:24px;border-radius:4px}
     .sum-det{font-size:13px;color:var(--txt2);line-height:1.7}
+
     .sum-total{border-top:1px solid var(--brd);padding-top:24px;display:flex;justify-content:space-between;align-items:center}
     .sum-tl{font-size:12px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
     .sum-tp{font-size:42px;font-weight:300;color:var(--gold);letter-spacing:-1px}
+
     .btn-wa{display:inline-flex;align-items:center;gap:10px;background:var(--wa);color:#fff;border:none;border-radius:var(--r);padding:16px 40px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;margin-top:28px}
     .btn-wa:hover{opacity:.9;transform:translateY(-1px)}
     .btn-wa svg{width:20px;height:20px}
     .btn-back{background:transparent;border:1px solid var(--brd);color:var(--txt3);padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:.2s;margin-top:28px;margin-right:12px}
     .btn-back:hover{border-color:var(--txt3)}
+
     footer{border-top:1px solid var(--brd);padding:40px 32px;text-align:center;margin-top:80px}
     footer p{color:var(--txt4);font-size:12px}
+
     .loading{text-align:center;padding:60px 0}
     .spin{width:32px;height:32px;border:2px solid var(--brd);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 12px}
     @keyframes sp{to{transform:rotate(360deg)}}
     .no-res{text-align:center;padding:60px 0;color:var(--txt3)}
     .no-res h3{font-size:20px;color:var(--txt);margin-bottom:6px}
+
     @media(max-width:768px){
       .s-row{grid-template-columns:1fr 1fr}
       .fc{grid-template-columns:1fr;gap:12px}
@@ -160,13 +177,34 @@
       <button onclick="setTrip('ow',this)">Enkele reis</button>
     </div>
     <div class="s-row">
-      <div class="fld"><label>Van</label><input id="iOrig" placeholder="AMS" maxlength="3" oninput="this.value=this.value.toUpperCase()"></div>
-      <div class="fld"><label>Naar</label><input id="iDest" placeholder="DXB" maxlength="3" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="fld"><label>Van</label><input id="iOrig" list="airports" value="AMS" maxlength="3" oninput="this.value=this.value.toUpperCase()" onfocus="this.select()"></div>
+      <div class="fld"><label>Naar</label><input id="iDest" list="airports" value="DXB" maxlength="3" oninput="this.value=this.value.toUpperCase()" onfocus="this.select()"></div>
       <div class="fld"><label>Heen</label><input type="date" id="iDep"></div>
       <div class="fld" id="retW"><label>Terug</label><input type="date" id="iRet"></div>
       <button class="btn-s" id="btnS" onclick="doSearch()">Zoeken</button>
     </div>
   </div>
+  <datalist id="airports">
+    <option value="AMS" label="Amsterdam Schiphol">
+    <option value="DXB" label="Dubai International">
+    <option value="BKK" label="Bangkok Suvarnabhumi">
+    <option value="SIN" label="Singapore Changi">
+    <option value="JFK" label="New York JFK">
+    <option value="NRT" label="Tokyo Narita">
+    <option value="DOH" label="Doha Hamad">
+    <option value="LHR" label="London Heathrow">
+    <option value="CDG" label="Parijs CDG">
+    <option value="IST" label="Istanbul">
+    <option value="HND" label="Tokyo Haneda">
+    <option value="MLE" label="Malé Maldiven">
+    <option value="CPT" label="Kaapstad">
+    <option value="SYD" label="Sydney">
+    <option value="MIA" label="Miami">
+    <option value="LAX" label="Los Angeles">
+    <option value="HKG" label="Hong Kong">
+    <option value="FCO" label="Rome Fiumicino">
+    <option value="BCN" label="Barcelona">
+  </datalist>
 </section>
 
 <section class="res-w hidden" id="resW">
@@ -227,12 +265,14 @@ async function doSearch(){
   const ret=document.getElementById('iRet').value;
   const btn=document.getElementById('btnS');
   btn.disabled=true;btn.textContent='Zoeken...';
+
   try{
     const p=new URLSearchParams({origin:o,destination:d});
     if(dep)p.set('date',dep);
     const r=await fetch(`/api/search?${p}`);
     const data=await r.json();
     outF=data.flights||[];
+
     if(trip==='rt'){
       const p2=new URLSearchParams({origin:d,destination:o});
       if(ret)p2.set('date',ret);
@@ -240,6 +280,7 @@ async function doSearch(){
       const d2=await r2.json();
       retF=d2.flights||[];
     }
+
     selOut=selRet=null;step='out';
     showFlights('out');
   }catch(e){
@@ -257,13 +298,16 @@ function showFlights(phase){
   const d=document.getElementById('iDest').value;
   const from=phase==='out'?o:d;
   const to=phase==='out'?d:o;
+
   document.getElementById('stepsW').innerHTML=mkSteps(phase==='out'?0:1);
-  document.getElementById('resTitle').innerHTML=`<em>${from}</em> \u2192 <em>${to}</em>`;
+  document.getElementById('resTitle').innerHTML=`<em>${from}</em> → <em>${to}</em>`;
   document.getElementById('resCnt').textContent=`${flights.length} vluchten beschikbaar`;
+
   if(!flights.length){
     document.getElementById('flist').innerHTML='<div class="no-res"><h3>Geen vluchten gevonden</h3><p>Probeer andere data of bestemmingen</p></div>';
     return;
   }
+
   document.getElementById('flist').innerHTML=flights.map((f,i)=>{
     const al=f.airline||'EK';
     const alName=AIRLINE_NAMES[al]||al;
@@ -271,6 +315,7 @@ function showFlights(phase){
     const selCab=phase==='out'?selOutCab:selRetCab;
     const dt=new Date(f.date).toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short'});
     const isDirect=f.directBiz||f.directFirst;
+
     let cabins='';
     if(f.first){
       const on=isSel&&selCab==='first';
@@ -284,22 +329,34 @@ function showFlights(phase){
       const on=isSel&&selCab==='premEco';
       cabins+=`<button class="cp${on?' on':''}${f.pricePremEco?'':' oaa'}" onclick="event.stopPropagation();pick('${phase}',${i},'premEco')"><span class="cp-l">Prem. Eco</span><span class="cp-p">${f.pricePremEco?SYM+' '+f.pricePremEco.toLocaleString():'Op aanvraag'}</span></button>`;
     }
+
     return `<div class="fc${isSel?' sel':''}" onclick="pick('${phase}',${i},null)">
       <div class="fc-air">
         <div class="fc-logo"><img src="${LOGO_URL(al)}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${al}'"></div>
         <div class="fc-air-info">
           <span class="fc-al-name">${alName}</span>
-          <span class="fc-fno">${f.flightNo||al+' \u00b7\u00b7\u00b7'} \u00b7 ${dt}</span>
+          <span class="fc-fno">${f.flightNo||al+' ···'} · ${dt}</span>
         </div>
       </div>
       <div class="fc-route">
-        <div class="fc-time"><div class="fc-t">${f.depTime||'--:--'}</div><div class="fc-ap">${f.origin}</div></div>
-        <div class="fc-mid"><div class="fc-dur">${f.duration||'--'}</div><div class="fc-line"></div><span class="fc-tag ${isDirect?'dir':'stp'}">${isDirect?'Direct':'1+ stop'}</span></div>
-        <div class="fc-time"><div class="fc-t">${f.arrTime||'--:--'}</div><div class="fc-ap">${f.destination}</div></div>
+        <div class="fc-time">
+          <div class="fc-t">${f.depTime||'--:--'}</div>
+          <div class="fc-ap">${f.origin}</div>
+        </div>
+        <div class="fc-mid">
+          <div class="fc-dur">${f.duration||'--'}</div>
+          <div class="fc-line"></div>
+          <span class="fc-tag ${isDirect?'dir':'stp'}">${isDirect?'Direct':'1+ stop'}</span>
+        </div>
+        <div class="fc-time">
+          <div class="fc-t">${f.arrTime||'--:--'}</div>
+          <div class="fc-ap">${f.destination}</div>
+        </div>
       </div>
       <div class="fc-prices">${cabins}</div>
     </div>`;
   }).join('');
+
   document.getElementById('resW').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -314,7 +371,7 @@ function pick(phase,idx,cabin){
   }
   if(phase==='out'){selOut=f;selOutCab=cabin}
   else{selRet=f;selRetCab=cabin}
-  showFlights(phase);
+  showFlights(phase); // re-render selection
   setTimeout(()=>{
     if(phase==='out'&&trip==='rt'&&retF.length)showFlights('ret');
     else showSummary();
@@ -326,25 +383,28 @@ function showSummary(){
   document.getElementById('resW').classList.add('hidden');
   document.getElementById('sumW').classList.remove('hidden');
   document.getElementById('stepsS').innerHTML=mkSteps(trip==='rt'?2:1);
-  let html='',total=0,msg='\u2708\ufe0f *Boekingsaanvraag \u00c9lysian Flights*\n\n';
+
+  let html='',total=0,msg='✈️ *Boekingsaanvraag Élysian Flights*\n\n';
+
   if(selOut){
     const p=getPrice(selOut,selOutCab);total+=p;
     const cab=cabLabel(selOutCab);
     const al=AIRLINE_NAMES[selOut.airline]||selOut.airline;
     html+=sumFlight('Heenvlucht',selOut,selOutCab,cab,al,p);
-    msg+=`*Heenvlucht*\n${selOut.origin} \u2192 ${selOut.destination}\nDatum: ${selOut.date}  ${selOut.depTime||''} \u2192 ${selOut.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selOut.flightNo||''})\n\n`;
+    msg+=`*Heenvlucht*\n${selOut.origin} → ${selOut.destination}\nDatum: ${selOut.date}  ${selOut.depTime||''} → ${selOut.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selOut.flightNo||''})\n\n`;
   }
   if(selRet){
     const p=getPrice(selRet,selRetCab);total+=p;
     const cab=cabLabel(selRetCab);
     const al=AIRLINE_NAMES[selRet.airline]||selRet.airline;
     html+=sumFlight('Terugvlucht',selRet,selRetCab,cab,al,p);
-    msg+=`*Terugvlucht*\n${selRet.origin} \u2192 ${selRet.destination}\nDatum: ${selRet.date}  ${selRet.depTime||''} \u2192 ${selRet.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selRet.flightNo||''})\n\n`;
+    msg+=`*Terugvlucht*\n${selRet.origin} → ${selRet.destination}\nDatum: ${selRet.date}  ${selRet.depTime||''} → ${selRet.arrTime||''}\nKlasse: ${cab}\nAirline: ${al} (${selRet.flightNo||''})\n\n`;
   }
+
   document.getElementById('sumFlights').innerHTML=html;
   if(!selRet)document.getElementById('sumFlights').style.gridTemplateColumns='1fr';
   document.getElementById('sumTotal').textContent=total>0?`${SYM} ${total.toLocaleString()}`:'Op aanvraag';
-  msg+=`\ud83d\udcb0 *Totaal: ${total>0?SYM+' '+total.toLocaleString():'Op aanvraag'}*\n\nGraag wil ik deze vlucht(en) boeken.`;
+  msg+=`💰 *Totaal: ${total>0?SYM+' '+total.toLocaleString():'Op aanvraag'}*\n\nGraag wil ik deze vlucht(en) boeken.`;
   document.getElementById('waBtn').href=`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
   document.getElementById('sumW').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -352,10 +412,10 @@ function showSummary(){
 function sumFlight(label,f,cab,cabName,al,price){
   return `<div class="sum-fl">
     <h4>${label}</h4>
-    <div class="sum-route"><img src="${LOGO_URL(f.airline)}" alt="" onerror="this.style.display='none'">${f.origin} \u2192 ${f.destination}</div>
+    <div class="sum-route"><img src="${LOGO_URL(f.airline)}" alt="" onerror="this.style.display='none'">${f.origin} → ${f.destination}</div>
     <div class="sum-det">
-      ${f.date} \u00b7 ${f.depTime||'--:--'} \u2192 ${f.arrTime||'--:--'} (${f.duration||'--'})<br>
-      ${al} \u00b7 ${f.flightNo||''} \u00b7 ${cabName}<br>
+      ${f.date} · ${f.depTime||'--:--'} → ${f.arrTime||'--:--'} (${f.duration||'--'})<br>
+      ${al} · ${f.flightNo||''} · ${cabName}<br>
       <b style="color:var(--gold)">${price>0?SYM+' '+price.toLocaleString():'Op aanvraag'}</b>
     </div>
   </div>`;
@@ -380,9 +440,10 @@ function mkSteps(active){
   return labels.map((l,i)=>{
     const cls=i<active?'done':i===active?'on':'';
     return `${i>0?'<div class="stp-l"></div>':''}
-    <div class="stp ${cls}"><div class="stp-n">${i<active?'\u2713':i+1}</div><span>${l}</span></div>`;
+    <div class="stp ${cls}"><div class="stp-n">${i<active?'✓':i+1}</div><span>${l}</span></div>`;
   }).join('');
 }
 </script>
 </body>
 </html>
+
