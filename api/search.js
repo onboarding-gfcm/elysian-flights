@@ -19,130 +19,124 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'origin and destination required' });
   }
 
-  const API_KEY = process.env.SEATS_AERO_API_KEY || '';
-  let rawData = null;
-
-  // Try seats.aero API
-  if (API_KEY) {
-    try {
-      const apiUrl = `https://seats.aero/partnerapi/search?origin=${origin}&destination=${destination}&date=${date || ''}&cabin=business,first,premium`;
-      const resp = await fetch(apiUrl, {
-        headers: { 'Partner-Authorization': API_KEY, 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(8000)
-      });
-      if (resp.ok) {
-        rawData = await resp.json();
-      }
-    } catch (e) {
-      console.log('seats.aero error, using demo data:', e.message);
-    }
-  }
+  const API_KEY = process.env.SEATS_AERO_API_KEY || 'pro_2xaxtKyA0PHA0FMViRkybESjNR6';
 
   const prices = loadPrices();
   const routeKey = `${origin}-${destination}`;
   const routePrice = prices.routePrices[routeKey] || null;
 
-  // If API returned data, map it
-  if (rawData && rawData.data && rawData.data.length > 0) {
-    const flights = rawData.data.slice(0, 12).map((f, i) => {
-      const flightPrice = prices.flightPrices[f.id] || {};
+  try {
+    // Query seats.aero Cached Search — Qantas program only
+    const apiUrl = `https://seats.aero/partnerapi/search?origin=${origin}&destination=${destination}&date=${date || ''}&source=qantas`;
+    const resp = await fetch(apiUrl, {
+      headers: { 'Partner-Authorization': API_KEY, 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(10000)
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text().catch(() => '');
+      console.log('seats.aero returned', resp.status, errText);
+      return res.json({ flights: [], source: 'api', error: `API returned ${resp.status}` });
+    }
+
+    const rawData = await resp.json();
+    const allResults = rawData.data || rawData.results || rawData || [];
+    const resultsArray = Array.isArray(allResults) ? allResults : [];
+
+    // Filter for Emirates (EK) flights only
+    const ekFlights = resultsArray.filter(f => {
+      const airlines = f.Airlines || f.Airline || f.airline || f.Source || '';
+      return airlines.includes('EK') || airlines.toLowerCase().includes('emirates');
+    });
+
+    // Map to our frontend format
+    const flights = ekFlights.slice(0, 15).map((f, i) => {
+      const flightPrice = prices.flightPrices[f.ID || f.id] || {};
+
+      // Parse cabin availability from seats.aero fields
+      const hasJ = f.JAvailable === true || f.JAvailable === 'true' || f.BusinessAvailable === true || !!f.JMileageCost;
+      const hasF = f.FAvailable === true || f.FAvailable === 'true' || f.FirstAvailable === true || !!f.FMileageCost;
+      const hasW = f.WAvailable === true || f.WAvailable === 'true' || f.PremiumEconomyAvailable === true || !!f.WMileageCost;
+
+      // Build flight number from airlines string
+      const airlinesStr = f.Airlines || f.Airline || 'EK';
+      const flightNo = f.FlightNumber || airlinesStr.split(',')[0].trim() + (100 + Math.floor(Math.random() * 900));
+
+      // Parse times
+      const depTime = f.DepartureTime || f.depTime || formatTime(f.DepartureDateTime);
+      const arrTime = f.ArrivalTime || f.arrTime || formatTime(f.ArrivalDateTime);
+      const duration = f.Duration || f.duration || computeDuration(f.DepartureDateTime, f.ArrivalDateTime) || '';
+
       return {
-        id: f.id || `${routeKey}-${i}`,
-        date: f.Date || date,
-        origin: f.Route?.OriginAirport || origin,
-        destination: f.Route?.DestinationAirport || destination,
-        depTime: f.DepartureTime || randomTime(),
-        arrTime: f.ArrivalTime || randomTime(),
-        duration: f.Duration || randomDuration(),
-        flightNo: f.FlightNumber || `${randomAirline(destination)}${100 + Math.floor(Math.random() * 900)}`,
-        airline: f.Airline || f.Source || randomAirline(destination),
+        id: f.ID || f.id || `${routeKey}-${i}`,
+        date: f.Date || f.date || date,
+        origin: f.OriginAirport || f.Route?.OriginAirport || origin,
+        destination: f.DestinationAirport || f.Route?.DestinationAirport || destination,
+        depTime: depTime || '',
+        arrTime: arrTime || '',
+        duration: duration,
+        flightNo: flightNo,
+        airline: 'EK',
         availability: {
-          business: f.BusinessAvailable !== false,
-          first: f.FirstAvailable !== false,
-          premiumEconomy: f.PremiumEconomyAvailable !== false
+          business: hasJ,
+          first: hasF,
+          premiumEconomy: hasW
         },
         prices: {
-          business: flightPrice.business || (routePrice ? routePrice.business : null),
-          first: flightPrice.first || (routePrice ? routePrice.first : null),
-          premiumEconomy: flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)
+          business: hasJ ? (flightPrice.business || (routePrice ? routePrice.business : null)) : null,
+          first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null,
+          premiumEconomy: hasW ? (flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)) : null
         },
-        direct: f.Stops === 0 || Math.random() > 0.3,
-        remainingSeats: f.RemainingSeats || Math.floor(Math.random() * 6) + 1
+        direct: f.Stops === 0 || f.DirectFlight === true || (f.Stops == null && !f.ConnectionAirports),
+        remainingSeats: f.RemainingSeats || f.SeatsRemaining || Math.floor(Math.random() * 4) + 1,
+        // Keep raw mileage costs for reference (hidden from frontend)
+        _mileage: {
+          business: f.JMileageCost || null,
+          first: f.FMileageCost || null,
+          premiumEconomy: f.WMileageCost || null
+        }
       };
     });
-    return res.json({ flights, source: 'api' });
-  }
 
-  // Demo fallback
-  const demoFlights = generateDemoFlights(origin, destination, date, routePrice);
-  return res.json({ flights: demoFlights, source: 'demo' });
-};
+    // Sort by departure time
+    flights.sort((a, b) => (a.depTime || '').localeCompare(b.depTime || ''));
 
-function randomAirline(dest) {
-  const map = {
-    DXB: ['EK','QR','TK','LH'], BKK: ['TG','SQ','CX','EK'], SIN: ['SQ','TG','CX','EK'],
-    JFK: ['KL','DL','UA','BA'], NRT: ['NH','JL','KL','SQ'], DOH: ['QR','EK','TK','LH'],
-    LHR: ['BA','KL','VS','LH'], CDG: ['AF','KL','LH'], IST: ['TK','PC'],
-    HND: ['NH','JL'], MLE: ['EK','SQ','UL'], CPT: ['KL','SA','EK'],
-    SYD: ['QF','SQ','EK','CX'], MIA: ['KL','AA','DL'], LAX: ['KL','DL','UA','SQ'],
-    HKG: ['CX','SQ','EK','KL'], FCO: ['AZ','KL','LH'], BCN: ['VY','KL','LH']
-  };
-  const airlines = map[dest] || ['KL','LH','EK','QR'];
-  return airlines[Math.floor(Math.random() * airlines.length)];
-}
+    return res.json({
+      flights,
+      source: 'api',
+      program: 'qantas',
+      airline: 'emirates',
+      totalResults: resultsArray.length,
+      emiratesResults: ekFlights.length
+    });
 
-function randomTime() {
-  const h = Math.floor(Math.random() * 24);
-  const m = Math.floor(Math.random() * 4) * 15;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-}
-
-function randomDuration() {
-  const h = 5 + Math.floor(Math.random() * 10);
-  const m = Math.floor(Math.random() * 4) * 15;
-  return `${h}u ${m > 0 ? m + 'm' : ''}`.trim();
-}
-
-function generateDemoFlights(origin, destination, date, routePrice) {
-  const flights = [];
-  const usedAirlines = new Set();
-  for (let i = 0; i < 8; i++) {
-    let al;
-    do { al = randomAirline(destination); } while (usedAirlines.has(al) && usedAirlines.size < 4);
-    usedAirlines.add(al);
-
-    const depH = 6 + Math.floor(Math.random() * 16);
-    const depM = Math.floor(Math.random() * 4) * 15;
-    const durH = 5 + Math.floor(Math.random() * 10);
-    const durM = Math.floor(Math.random() * 4) * 15;
-    const arrH = (depH + durH + (depM + durM >= 60 ? 1 : 0)) % 24;
-    const arrM = (depM + durM) % 60;
-
-    const direct = Math.random() > 0.35;
-    flights.push({
-      id: `${origin}-${destination}-${i}`,
-      date: date || '2026-04-15',
-      origin, destination,
-      depTime: `${String(depH).padStart(2,'0')}:${String(depM).padStart(2,'0')}`,
-      arrTime: `${String(arrH).padStart(2,'0')}:${String(arrM).padStart(2,'0')}`,
-      duration: `${durH}u${durM > 0 ? ' ' + durM + 'm' : ''}`,
-      flightNo: `${al}${100 + Math.floor(Math.random() * 900)}`,
-      airline: al,
-      availability: {
-        business: Math.random() > 0.15,
-        first: Math.random() > 0.35,
-        premiumEconomy: Math.random() > 0.1
-      },
-      prices: {
-        business: routePrice ? routePrice.business : (1500 + Math.floor(Math.random() * 1500)),
-        first: routePrice ? routePrice.first : (3000 + Math.floor(Math.random() * 3000)),
-        premiumEconomy: routePrice ? routePrice.premiumEconomy : (800 + Math.floor(Math.random() * 600))
-      },
-      direct,
-      remainingSeats: Math.floor(Math.random() * 6) + 1
+  } catch (e) {
+    console.error('seats.aero API error:', e.message);
+    return res.json({
+      flights: [],
+      source: 'error',
+      error: e.message
     });
   }
-  // Sort by departure time
-  flights.sort((a, b) => a.depTime.localeCompare(b.depTime));
-  return flights;
+};
+
+function formatTime(dateTimeStr) {
+  if (!dateTimeStr) return null;
+  try {
+    const d = new Date(dateTimeStr);
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  } catch { return null; }
+}
+
+function computeDuration(depStr, arrStr) {
+  if (!depStr || !arrStr) return null;
+  try {
+    const dep = new Date(depStr);
+    const arr = new Date(arrStr);
+    const mins = Math.round((arr - dep) / 60000);
+    if (mins <= 0) return null;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return `${h}u${m > 0 ? ' ' + m + 'm' : ''}`;
+  } catch { return null; }
 }
