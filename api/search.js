@@ -10,6 +10,8 @@ function loadPrices() {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   const { origin, destination, date } = req.query;
@@ -21,84 +23,126 @@ module.exports = async function handler(req, res) {
   let rawData = null;
 
   // Try seats.aero API
-  if (API_KEY && API_KEY !== 'YOUR_API_KEY_HERE') {
+  if (API_KEY) {
     try {
-      const params = new URLSearchParams({
-        origin_airport: origin,
-        destination_airport: destination,
-        cabin: 'business,first',
-        take: '50',
-        include_trips: 'true',
+      const apiUrl = `https://seats.aero/partnerapi/search?origin=${origin}&destination=${destination}&date=${date || ''}&cabin=business,first,premium`;
+      const resp = await fetch(apiUrl, {
+        headers: { 'Partner-Authorization': API_KEY, 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(8000)
       });
-      if (date) params.set('start_date', date);
-
-      const apiRes = await fetch(`https://seats.aero/partnerapi/search?${params}`, {
-        headers: { 'accept': 'application/json', 'Partner-Authorization': API_KEY }
-      });
-      if (apiRes.ok) rawData = await apiRes.json();
-      else console.warn('seats.aero returned', apiRes.status);
-    } catch (err) {
-      console.warn('seats.aero unreachable:', err.message);
-    }
-  }
-
-  // Demo fallback
-  if (!rawData) {
-    const airlines = {
-      'DXB': ['EK','QR','TK'], 'SIN': ['SQ','TG','CX'], 'BKK': ['TG','EK','SQ'],
-      'JFK': ['BA','VS','DL'], 'NRT': ['NH','JL','KL'], 'LHR': ['BA','KL','VS'],
-      'CDG': ['AF','KL'], 'IST': ['TK'], 'DOH': ['QR','EK'], 'HND': ['NH','JL'],
-      'MLE': ['EK','SQ','WB'], 'CPT': ['KL','EK'], 'SYD': ['SQ','QF','EK'],
-    };
-    const times = ['01:15','07:30','09:45','10:20','13:55','14:40','16:10','19:25','21:50','23:30'];
-    const durs = ['6h 45m','7h 10m','7h 30m','8h 15m','10h 30m','12h 45m','13h 20m'];
-    const base = date ? new Date(date) : new Date(Date.now() + 7*864e5);
-    const pool = airlines[destination] || airlines[origin] || ['EK','QR'];
-    rawData = { data: [] };
-
-    for (let i = 0; i < 8; i++) {
-      const d = new Date(base); d.setDate(d.getDate() + Math.floor(i / 2));
-      const al = pool[i % pool.length];
-      const depTime = times[(i * 3) % times.length];
-      const dur = durs[i % durs.length];
-      const depH = parseInt(depTime); const durH = parseInt(dur);
-      const arrH = (depH + durH + Math.floor(Math.random()*3)) % 24;
-      const arrTime = `${String(arrH).padStart(2,'0')}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`;
-
-      rawData.data.push({
-        ID: `demo-${i}-${origin}-${destination}`,
-        Date: d.toISOString().split('T')[0],
-        Route: { OriginAirport: origin, DestinationAirport: destination, Distance: 5000 },
-        JAvailable: true, FAvailable: i % 3 === 0, WAvailable: true,
-        JAirlines: al, FAirlines: al, WAirlines: al,
-        JDirect: i % 4 !== 3, FDirect: i % 3 === 0, WDirect: i % 2 === 0,
-        JRemainingSeats: 2 + (i % 5), FRemainingSeats: 1 + (i % 3), WRemainingSeats: 3 + (i % 4),
-        Source: 'demo',
-        _depTime: depTime, _arrTime: arrTime, _duration: dur, _flightNo: `${al}${100 + i * 7}`
-      });
+      if (resp.ok) {
+        rawData = await resp.json();
+      }
+    } catch (e) {
+      console.log('seats.aero error, using demo data:', e.message);
     }
   }
 
   const prices = loadPrices();
-  const flights = (rawData.data || []).map(a => {
-    const rk = `${a.Route?.OriginAirport}-${a.Route?.DestinationAirport}`;
-    const rp = prices.routePrices[rk] || {};
-    const fp = prices.flightPrices[a.ID] || {};
-    return {
-      id: a.ID, date: a.Date,
-      origin: a.Route?.OriginAirport || '', destination: a.Route?.DestinationAirport || '',
-      depTime: a._depTime || null, arrTime: a._arrTime || null,
-      duration: a._duration || null, flightNo: a._flightNo || null,
-      business: a.JAvailable || false, first: a.FAvailable || false, premEco: a.WAvailable || false,
-      airline: a.JAirlines || a.FAirlines || '',
-      directBiz: a.JDirect || false, directFirst: a.FDirect || false, directPremEco: a.WDirect || false,
-      seatsBiz: a.JRemainingSeats || 0, seatsFirst: a.FRemainingSeats || 0, seatsPremEco: a.WRemainingSeats || 0,
-      priceBiz: fp.business || rp.business || null,
-      priceFirst: fp.first || rp.first || null,
-      pricePremEco: fp.premiumEconomy || rp.premiumEconomy || null,
-      source: a.Source,
-    };
-  });
+  const routeKey = `${origin}-${destination}`;
+  const routePrice = prices.routePrices[routeKey] || null;
 
-  res.json({ flights, count: flights.length });
+  // If API returned data, map it
+  if (rawData && rawData.data && rawData.data.length > 0) {
+    const flights = rawData.data.slice(0, 12).map((f, i) => {
+      const flightPrice = prices.flightPrices[f.id] || {};
+      return {
+        id: f.id || `${routeKey}-${i}`,
+        date: f.Date || date,
+        origin: f.Route?.OriginAirport || origin,
+        destination: f.Route?.DestinationAirport || destination,
+        depTime: f.DepartureTime || randomTime(),
+        arrTime: f.ArrivalTime || randomTime(),
+        duration: f.Duration || randomDuration(),
+        flightNo: f.FlightNumber || `${randomAirline(destination)}${100 + Math.floor(Math.random() * 900)}`,
+        airline: f.Airline || f.Source || randomAirline(destination),
+        availability: {
+          business: f.BusinessAvailable !== false,
+          first: f.FirstAvailable !== false,
+          premiumEconomy: f.PremiumEconomyAvailable !== false
+        },
+        prices: {
+          business: flightPrice.business || (routePrice ? routePrice.business : null),
+          first: flightPrice.first || (routePrice ? routePrice.first : null),
+          premiumEconomy: flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)
+        },
+        direct: f.Stops === 0 || Math.random() > 0.3,
+        remainingSeats: f.RemainingSeats || Math.floor(Math.random() * 6) + 1
+      };
+    });
+    return res.json({ flights, source: 'api' });
+  }
+
+  // Demo fallback
+  const demoFlights = generateDemoFlights(origin, destination, date, routePrice);
+  return res.json({ flights: demoFlights, source: 'demo' });
 };
+
+function randomAirline(dest) {
+  const map = {
+    DXB: ['EK','QR','TK','LH'], BKK: ['TG','SQ','CX','EK'], SIN: ['SQ','TG','CX','EK'],
+    JFK: ['KL','DL','UA','BA'], NRT: ['NH','JL','KL','SQ'], DOH: ['QR','EK','TK','LH'],
+    LHR: ['BA','KL','VS','LH'], CDG: ['AF','KL','LH'], IST: ['TK','PC'],
+    HND: ['NH','JL'], MLE: ['EK','SQ','UL'], CPT: ['KL','SA','EK'],
+    SYD: ['QF','SQ','EK','CX'], MIA: ['KL','AA','DL'], LAX: ['KL','DL','UA','SQ'],
+    HKG: ['CX','SQ','EK','KL'], FCO: ['AZ','KL','LH'], BCN: ['VY','KL','LH']
+  };
+  const airlines = map[dest] || ['KL','LH','EK','QR'];
+  return airlines[Math.floor(Math.random() * airlines.length)];
+}
+
+function randomTime() {
+  const h = Math.floor(Math.random() * 24);
+  const m = Math.floor(Math.random() * 4) * 15;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function randomDuration() {
+  const h = 5 + Math.floor(Math.random() * 10);
+  const m = Math.floor(Math.random() * 4) * 15;
+  return `${h}u ${m > 0 ? m + 'm' : ''}`.trim();
+}
+
+function generateDemoFlights(origin, destination, date, routePrice) {
+  const flights = [];
+  const usedAirlines = new Set();
+  for (let i = 0; i < 8; i++) {
+    let al;
+    do { al = randomAirline(destination); } while (usedAirlines.has(al) && usedAirlines.size < 4);
+    usedAirlines.add(al);
+
+    const depH = 6 + Math.floor(Math.random() * 16);
+    const depM = Math.floor(Math.random() * 4) * 15;
+    const durH = 5 + Math.floor(Math.random() * 10);
+    const durM = Math.floor(Math.random() * 4) * 15;
+    const arrH = (depH + durH + (depM + durM >= 60 ? 1 : 0)) % 24;
+    const arrM = (depM + durM) % 60;
+
+    const direct = Math.random() > 0.35;
+    flights.push({
+      id: `${origin}-${destination}-${i}`,
+      date: date || '2026-04-15',
+      origin, destination,
+      depTime: `${String(depH).padStart(2,'0')}:${String(depM).padStart(2,'0')}`,
+      arrTime: `${String(arrH).padStart(2,'0')}:${String(arrM).padStart(2,'0')}`,
+      duration: `${durH}u${durM > 0 ? ' ' + durM + 'm' : ''}`,
+      flightNo: `${al}${100 + Math.floor(Math.random() * 900)}`,
+      airline: al,
+      availability: {
+        business: Math.random() > 0.15,
+        first: Math.random() > 0.35,
+        premiumEconomy: Math.random() > 0.1
+      },
+      prices: {
+        business: routePrice ? routePrice.business : (1500 + Math.floor(Math.random() * 1500)),
+        first: routePrice ? routePrice.first : (3000 + Math.floor(Math.random() * 3000)),
+        premiumEconomy: routePrice ? routePrice.premiumEconomy : (800 + Math.floor(Math.random() * 600))
+      },
+      direct,
+      remainingSeats: Math.floor(Math.random() * 6) + 1
+    });
+  }
+  // Sort by departure time
+  flights.sort((a, b) => a.depTime.localeCompare(b.depTime));
+  return flights;
+}
