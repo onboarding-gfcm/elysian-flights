@@ -67,10 +67,9 @@ module.exports = async function handler(req, res) {
       const flightPrice = prices.flightPrices[avail.ID] || {};
       const hasJ = avail.JAvailable === true;
       const hasF = avail.FAvailable === true;
-      const hasW = avail.WAvailable === true;
 
-      // Skip if no premium cabin available
-      if (!hasJ && !hasF && !hasW) continue;
+      // Skip if no Business or First available (ignore economy/premium economy)
+      if (!hasJ && !hasF) continue;
 
       // Get trips (individual flight options) from AvailabilityTrips
       const trips = avail.AvailabilityTrips || [];
@@ -79,7 +78,7 @@ module.exports = async function handler(req, res) {
         // No trip details — show as single entry without times
         const jAirlines = avail.JAirlines || '';
         const fAirlines = avail.FAirlines || '';
-        const primaryAirline = (jAirlines || fAirlines || avail.WAirlines || '').split(',')[0].trim() || 'EK';
+        const primaryAirline = (jAirlines || fAirlines || '').split(',')[0].trim() || 'EK';
 
         flights.push({
           id: avail.ID,
@@ -93,23 +92,23 @@ module.exports = async function handler(req, res) {
           airline: 'EK',
           source: avail.Source || 'qantas',
           segments: [],
-          availability: { business: hasJ, first: hasF, premiumEconomy: hasW },
+          availability: { business: hasJ, first: hasF },
           prices: {
             business: hasJ ? (flightPrice.business || (routePrice ? routePrice.business : null)) : null,
-            first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null,
-            premiumEconomy: hasW ? (flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)) : null
+            first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null
           },
-          direct: (hasJ && avail.JDirect === true) || (hasF && avail.FDirect === true) || (hasW && avail.WDirect === true),
-          remainingSeats: Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0, avail.WRemainingSeats || 0) || 1,
-          _mileage: { business: avail.JMileageCost || null, first: avail.FMileageCost || null, premiumEconomy: avail.WMileageCost || null }
+          direct: (hasJ && avail.JDirect === true) || (hasF && avail.FDirect === true),
+          remainingSeats: Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0) || 1,
+          _mileage: { business: avail.JMileageCost || null, first: avail.FMileageCost || null }
         });
         continue;
       }
 
       // Each trip is a separate bookable flight option — trip data is FLAT (not nested segments)
-      // Trip keys: ID, TotalDuration, Stops, Carriers, FlightNumbers, DepartsAt, ArrivesAt,
-      //            OriginAirport, DestinationAirport, Connections, Cabin, RemainingSeats, MileageCost
+      // Only include Business (J) and First (F) cabin trips — skip economy
       for (const trip of trips) {
+        const cabin = (trip.Cabin || '').toLowerCase();
+        if (cabin === 'economy' || cabin === 'y' || cabin === 'premium_economy' || cabin === 'w') continue;
         const depTime = formatDateTime(trip.DepartsAt);
         const arrTime = formatDateTime(trip.ArrivesAt);
         const duration = trip.TotalDuration || computeDuration(trip.DepartsAt, trip.ArrivesAt);
@@ -167,32 +166,40 @@ module.exports = async function handler(req, res) {
           source: avail.Source || 'qantas',
           segments: segmentDetails,
           stops: stops,
-          availability: { business: hasJ, first: hasF, premiumEconomy: hasW },
+          availability: { business: hasJ, first: hasF },
           prices: {
             business: hasJ ? (flightPrice.business || (routePrice ? routePrice.business : null)) : null,
-            first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null,
-            premiumEconomy: hasW ? (flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)) : null
+            first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null
           },
           direct: isDirect,
-          remainingSeats: trip.RemainingSeats || Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0, avail.WRemainingSeats || 0) || 1,
-          _mileage: { business: trip.MileageCost || avail.JMileageCost || null, first: avail.FMileageCost || null, premiumEconomy: avail.WMileageCost || null }
+          remainingSeats: trip.RemainingSeats || Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0) || 1,
+          _mileage: { business: trip.MileageCost || avail.JMileageCost || null, first: avail.FMileageCost || null }
         });
       }
     }
 
+    // Deduplicate: keep only one entry per flightNo + depTime + date combo
+    const seen = new Set();
+    const uniqueFlights = flights.filter(f => {
+      const key = `${f.flightNo}|${f.depTime}|${f.date}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
     // Sort by departure time, then by date
-    flights.sort((a, b) => {
+    uniqueFlights.sort((a, b) => {
       if (a.date !== b.date) return (a.date || '').localeCompare(b.date || '');
       return (a.depTime || '').localeCompare(b.depTime || '');
     });
 
     return res.json({
-      flights: flights.slice(0, 30),
+      flights: uniqueFlights.slice(0, 30),
       source: 'api',
       program: 'qantas',
       airline: 'emirates',
       totalResults: resultsArray.length,
-      displayedResults: flights.length
+      displayedResults: uniqueFlights.length
     });
 
   } catch (e) {
