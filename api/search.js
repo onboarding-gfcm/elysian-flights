@@ -182,7 +182,8 @@ module.exports = async function handler(req, res) {
       program: 'qantas',
       airline: 'emirates',
       totalResults: resultsArray.length,
-      displayedResults: flights.length
+      displayedResults: flights.length,
+      _debug: resultsArray.length > 0 ? { firstResult: { JAvailable: resultsArray[0].JAvailable, FAvailable: resultsArray[0].FAvailable, WAvailable: resultsArray[0].WAvailable, YAvailable: resultsArray[0].YAvailable, JAirlines: resultsArray[0].JAirlines, FAirlines: resultsArray[0].FAirlines, WAirlines: resultsArray[0].WAirlines, Source: resultsArray[0].Source, RawKeys: Object.keys(resultsArray[0]).filter(k => k.includes('vail') || k.includes('irect') || k.includes('irline')).join(',') } } : null
     });
 
   } catch (e) {
