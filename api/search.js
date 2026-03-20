@@ -120,7 +120,8 @@ module.exports = async function handler(req, res) {
         const airlineCode = carriers.split(',')[0].trim() || 'EK';
 
         // Build connection segments for display
-        const connections = trip.Connections ? trip.Connections.split(',').map(c => c.trim()) : [];
+        const connRaw = trip.Connections || '';
+        const connections = (typeof connRaw === 'string' && connRaw) ? connRaw.split(',').map(c => c.trim()) : [];
         const segmentDetails = [];
 
         if (connections.length > 0 && !isDirect) {
