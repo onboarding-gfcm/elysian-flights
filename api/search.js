@@ -106,49 +106,58 @@ module.exports = async function handler(req, res) {
         continue;
       }
 
-      // Each trip is a separate bookable flight option (different routing/times)
+      // Each trip is a separate bookable flight option — trip data is FLAT (not nested segments)
+      // Trip keys: ID, TotalDuration, Stops, Carriers, FlightNumbers, DepartsAt, ArrivesAt,
+      //            OriginAirport, DestinationAirport, Connections, Cabin, RemainingSeats, MileageCost
       for (const trip of trips) {
-        const segments = trip.AvailabilitySegments || [];
-        if (segments.length === 0) continue;
+        const depTime = formatDateTime(trip.DepartsAt);
+        const arrTime = formatDateTime(trip.ArrivesAt);
+        const duration = trip.TotalDuration || computeDuration(trip.DepartsAt, trip.ArrivesAt);
+        const flightNo = trip.FlightNumbers || 'EK---';
+        const stops = trip.Stops || 0;
+        const isDirect = stops === 0;
+        const carriers = trip.Carriers || 'EK';
+        const airlineCode = carriers.split(',')[0].trim() || 'EK';
 
-        // Sort segments by order
-        segments.sort((a, b) => (a.Order || 0) - (b.Order || 0));
+        // Build connection segments for display
+        const connections = trip.Connections ? trip.Connections.split(',').map(c => c.trim()) : [];
+        const segmentDetails = [];
 
-        const firstSeg = segments[0];
-        const lastSeg = segments[segments.length - 1];
-
-        // Parse departure and arrival times
-        const depTime = formatDateTime(firstSeg.DepartsAt);
-        const arrTime = formatDateTime(lastSeg.ArrivesAt);
-        const duration = computeDuration(firstSeg.DepartsAt, lastSeg.ArrivesAt);
-
-        // Build flight number from segments
-        const flightNumbers = segments.map(s => s.FlightNumber).filter(Boolean);
-        const flightNo = flightNumbers.join(' / ') || 'EK---';
-
-        // Direct = only 1 segment
-        const isDirect = segments.length === 1;
-
-        // Get the airline from the first segment's flight number
-        const airlineCode = firstSeg.FlightNumber ? firstSeg.FlightNumber.replace(/[0-9]/g, '') : 'EK';
-
-        // Build segment details for frontend
-        const segmentDetails = segments.map(s => ({
-          flightNo: s.FlightNumber || '',
-          origin: s.OriginAirport || '',
-          destination: s.DestinationAirport || '',
-          depTime: formatDateTime(s.DepartsAt),
-          arrTime: formatDateTime(s.ArrivesAt),
-          duration: computeDuration(s.DepartsAt, s.ArrivesAt),
-          aircraft: s.AircraftName || s.AircraftCode || '',
-          fareClass: s.FareClass || ''
-        }));
+        if (connections.length > 0 && !isDirect) {
+          // Multi-segment: origin -> connection1 -> connection2 -> destination
+          const allPoints = [trip.OriginAirport, ...connections, trip.DestinationAirport];
+          const flightNos = flightNo.split(',').map(f => f.trim());
+          for (let i = 0; i < allPoints.length - 1; i++) {
+            segmentDetails.push({
+              flightNo: flightNos[i] || flightNo,
+              origin: allPoints[i] || '',
+              destination: allPoints[i + 1] || '',
+              depTime: i === 0 ? depTime : '',
+              arrTime: i === allPoints.length - 2 ? arrTime : '',
+              duration: '',
+              aircraft: '',
+              fareClass: trip.Cabin || ''
+            });
+          }
+        } else {
+          // Direct flight — single segment
+          segmentDetails.push({
+            flightNo: flightNo,
+            origin: trip.OriginAirport || origin,
+            destination: trip.DestinationAirport || destination,
+            depTime: depTime,
+            arrTime: arrTime,
+            duration: duration,
+            aircraft: '',
+            fareClass: trip.Cabin || ''
+          });
+        }
 
         flights.push({
           id: trip.ID || avail.ID + '-' + (trip.Order || 0),
           date: avail.Date || date,
-          origin: firstSeg.OriginAirport || origin,
-          destination: lastSeg.DestinationAirport || destination,
+          origin: trip.OriginAirport || origin,
+          destination: trip.DestinationAirport || destination,
           depTime: depTime,
           arrTime: arrTime,
           duration: duration,
@@ -156,7 +165,7 @@ module.exports = async function handler(req, res) {
           airline: airlineCode || 'EK',
           source: avail.Source || 'qantas',
           segments: segmentDetails,
-          stops: segments.length - 1,
+          stops: stops,
           availability: { business: hasJ, first: hasF, premiumEconomy: hasW },
           prices: {
             business: hasJ ? (flightPrice.business || (routePrice ? routePrice.business : null)) : null,
@@ -164,8 +173,8 @@ module.exports = async function handler(req, res) {
             premiumEconomy: hasW ? (flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)) : null
           },
           direct: isDirect,
-          remainingSeats: Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0, avail.WRemainingSeats || 0) || 1,
-          _mileage: { business: avail.JMileageCost || null, first: avail.FMileageCost || null, premiumEconomy: avail.WMileageCost || null }
+          remainingSeats: trip.RemainingSeats || Math.max(avail.JRemainingSeats || 0, avail.FRemainingSeats || 0, avail.WRemainingSeats || 0) || 1,
+          _mileage: { business: trip.MileageCost || avail.JMileageCost || null, first: avail.FMileageCost || null, premiumEconomy: avail.WMileageCost || null }
         });
       }
     }
@@ -182,8 +191,7 @@ module.exports = async function handler(req, res) {
       program: 'qantas',
       airline: 'emirates',
       totalResults: resultsArray.length,
-      displayedResults: flights.length,
-      _debug: resultsArray.length > 0 ? { first: { J: resultsArray[0].JAvailable, F: resultsArray[0].FAvailable, W: resultsArray[0].WAvailable, tripsN: (resultsArray[0].AvailabilityTrips || []).length, segCounts: (resultsArray[0].AvailabilityTrips || []).map(t => (t.AvailabilitySegments || []).length), tripKeys: (resultsArray[0].AvailabilityTrips || []).length > 0 ? Object.keys((resultsArray[0].AvailabilityTrips || [])[0]).join(',') : 'none' } } : null
+      displayedResults: flights.length
     });
 
   } catch (e) {
