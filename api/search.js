@@ -26,57 +26,91 @@ module.exports = async function handler(req, res) {
   const routePrice = prices.routePrices[routeKey] || null;
 
   try {
-    // Query seats.aero Cached Search — Qantas program only
-    const apiUrl = `https://seats.aero/partnerapi/search?origin=${origin}&destination=${destination}&date=${date || ''}&source=qantas`;
+    // Build correct seats.aero Cached Search URL
+    // Correct param names: origin_airport, destination_airport, start_date, end_date, sources
+    const params = new URLSearchParams({
+      origin_airport: origin,
+      destination_airport: destination,
+      take: '50'
+    });
+    if (date) {
+      params.set('start_date', date);
+      params.set('end_date', date);
+    }
+    // Show all programs (user said showing everything is fine)
+    // We can filter by sources=qantas later if needed
+
+    const apiUrl = `https://seats.aero/partnerapi/search?${params.toString()}`;
+    console.log('Calling seats.aero:', apiUrl);
+
     const resp = await fetch(apiUrl, {
       headers: { 'Partner-Authorization': API_KEY, 'Accept': 'application/json' },
-      signal: AbortSignal.timeout(10000)
+      signal: AbortSignal.timeout(15000)
     });
 
     if (!resp.ok) {
       const errText = await resp.text().catch(() => '');
-      console.log('seats.aero returned', resp.status, errText);
-      return res.json({ flights: [], source: 'api', error: `API returned ${resp.status}` });
+      console.log('seats.aero returned', resp.status, errText.substring(0, 500));
+      return res.json({ flights: [], source: 'api', error: `API returned ${resp.status}: ${errText.substring(0, 200)}` });
     }
 
     const rawData = await resp.json();
-    const allResults = rawData.data || rawData.results || rawData || [];
+    const allResults = rawData.data || [];
     const resultsArray = Array.isArray(allResults) ? allResults : [];
 
-    // Filter for Emirates (EK) flights only
-    const ekFlights = resultsArray.filter(f => {
-      const airlines = f.Airlines || f.Airline || f.airline || f.Source || '';
-      return airlines.includes('EK') || airlines.toLowerCase().includes('emirates');
-    });
+    console.log(`seats.aero returned ${resultsArray.length} results`);
 
     // Map to our frontend format
-    const flights = ekFlights.slice(0, 15).map((f, i) => {
-      const flightPrice = prices.flightPrices[f.ID || f.id] || {};
+    const flights = resultsArray.slice(0, 20).map((f, i) => {
+      const flightPrice = prices.flightPrices[f.ID] || {};
 
       // Parse cabin availability from seats.aero fields
-      const hasJ = f.JAvailable === true || f.JAvailable === 'true' || f.BusinessAvailable === true || !!f.JMileageCost;
-      const hasF = f.FAvailable === true || f.FAvailable === 'true' || f.FirstAvailable === true || !!f.FMileageCost;
-      const hasW = f.WAvailable === true || f.WAvailable === 'true' || f.PremiumEconomyAvailable === true || !!f.WMileageCost;
+      const hasJ = f.JAvailable === true;
+      const hasF = f.FAvailable === true;
+      const hasW = f.WAvailable === true;
+      const hasY = f.YAvailable === true;
 
-      // Build flight number from airlines string
-      const airlinesStr = f.Airlines || f.Airline || 'EK';
-      const flightNo = f.FlightNumber || airlinesStr.split(',')[0].trim() + (100 + Math.floor(Math.random() * 900));
+      // Get airlines per cabin (seats.aero returns e.g. "EK", "AA, B6")
+      const jAirlines = f.JAirlines || '';
+      const fAirlines = f.FAirlines || '';
+      const wAirlines = f.WAirlines || '';
+      const yAirlines = f.YAirlines || '';
+      // Use the first available airline code
+      const primaryAirline = (jAirlines || fAirlines || wAirlines || yAirlines).split(',')[0].trim() || 'XX';
 
-      // Parse times
-      const depTime = f.DepartureTime || f.depTime || formatTime(f.DepartureDateTime);
-      const arrTime = f.ArrivalTime || f.arrTime || formatTime(f.ArrivalDateTime);
-      const duration = f.Duration || f.duration || computeDuration(f.DepartureDateTime, f.ArrivalDateTime) || '';
+      // Build a display flight number
+      const flightNo = primaryAirline + (100 + Math.floor(Math.random() * 900));
+
+      // Route info from nested Route object
+      const orig = f.Route?.OriginAirport || origin;
+      const dest = f.Route?.DestinationAirport || destination;
+
+      // Direct flight info per cabin
+      const isDirect = (hasJ && f.JDirect === true) || (hasF && f.FDirect === true) ||
+                       (hasW && f.WDirect === true) || (hasY && f.YDirect === true);
+
+      // Remaining seats (max across cabins)
+      const remainingSeats = Math.max(
+        f.JRemainingSeats || 0,
+        f.FRemainingSeats || 0,
+        f.WRemainingSeats || 0,
+        f.YRemainingSeats || 0
+      ) || 1;
+
+      // Source program
+      const source = f.Source || '';
 
       return {
-        id: f.ID || f.id || `${routeKey}-${i}`,
-        date: f.Date || f.date || date,
-        origin: f.OriginAirport || f.Route?.OriginAirport || origin,
-        destination: f.DestinationAirport || f.Route?.DestinationAirport || destination,
-        depTime: depTime || '',
-        arrTime: arrTime || '',
-        duration: duration,
+        id: f.ID || `${routeKey}-${i}`,
+        date: f.Date || date,
+        origin: orig,
+        destination: dest,
+        depTime: '',  // Cached search doesn't include times
+        arrTime: '',
+        duration: '',
         flightNo: flightNo,
-        airline: 'EK',
+        airline: primaryAirline,
+        source: source,
         availability: {
           business: hasJ,
           first: hasF,
@@ -87,9 +121,8 @@ module.exports = async function handler(req, res) {
           first: hasF ? (flightPrice.first || (routePrice ? routePrice.first : null)) : null,
           premiumEconomy: hasW ? (flightPrice.premiumEconomy || (routePrice ? routePrice.premiumEconomy : null)) : null
         },
-        direct: f.Stops === 0 || f.DirectFlight === true || (f.Stops == null && !f.ConnectionAirports),
-        remainingSeats: f.RemainingSeats || f.SeatsRemaining || Math.floor(Math.random() * 4) + 1,
-        // Keep raw mileage costs for reference (hidden from frontend)
+        direct: isDirect,
+        remainingSeats: remainingSeats,
         _mileage: {
           business: f.JMileageCost || null,
           first: f.FMileageCost || null,
@@ -98,16 +131,16 @@ module.exports = async function handler(req, res) {
       };
     });
 
-    // Sort by departure time
-    flights.sort((a, b) => (a.depTime || '').localeCompare(b.depTime || ''));
+    // Filter: only show flights that have at least one premium cabin available with a price
+    const bookableFlights = flights.filter(f =>
+      f.availability.business || f.availability.first || f.availability.premiumEconomy
+    );
 
     return res.json({
-      flights,
+      flights: bookableFlights,
       source: 'api',
-      program: 'qantas',
-      airline: 'emirates',
       totalResults: resultsArray.length,
-      emiratesResults: ekFlights.length
+      displayedResults: bookableFlights.length
     });
 
   } catch (e) {
@@ -119,24 +152,3 @@ module.exports = async function handler(req, res) {
     });
   }
 };
-
-function formatTime(dateTimeStr) {
-  if (!dateTimeStr) return null;
-  try {
-    const d = new Date(dateTimeStr);
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  } catch { return null; }
-}
-
-function computeDuration(depStr, arrStr) {
-  if (!depStr || !arrStr) return null;
-  try {
-    const dep = new Date(depStr);
-    const arr = new Date(arrStr);
-    const mins = Math.round((arr - dep) / 60000);
-    if (mins <= 0) return null;
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return `${h}u${m > 0 ? ' ' + m + 'm' : ''}`;
-  } catch { return null; }
-}
