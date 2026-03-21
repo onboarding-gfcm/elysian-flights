@@ -11,8 +11,9 @@ const MARGIN = 150; // EUR profit margin per ticket
 // Approximate exchange rates to EUR
 const EUR_RATES = { EUR:1, USD:0.92, GBP:1.16, AUD:0.60, CAD:0.68, QAR:0.25, AED:0.25 };
 
-function toEur(amount, currency) {
-  if (!amount || amount <= 0) return 0;
+function toEur(amountCents, currency) {
+  if (!amountCents || amountCents <= 0) return 0;
+  const amount = amountCents / 100; // API returns cents
   const rate = EUR_RATES[(currency || 'USD').toUpperCase()] || 0.92;
   return amount * rate;
 }
