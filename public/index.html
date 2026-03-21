@@ -1,355 +1,678 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Élysian Flights — Premium Travel Concierge</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --gold:#B8945F;--gold-l:#D4B07A;--gold-d:#9A7A4A;
-      --bg:#09090B;--card:#111113;--card2:#18181B;--card-h:#1C1C1F;
-      --brd:#27272A;--brd-l:#3F3F46;
-      --txt:#FAFAFA;--txt2:#A1A1AA;--txt3:#71717A;--txt4:#52525B;
-      --grn:#22C55E;--grn-bg:rgba(34,197,94,.1);
-      --red:#EF4444;--wa:#25D366;
-      --r:12px;
-    }
-    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
-    .serif{font-family:'DM Serif Display',serif}
-    .hidden{display:none!important}
-
-    /* HEADER */
-    header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--brd)}
-    .h-in{max-width:1200px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-size:20px;font-weight:600;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
-    .logo-icon{width:32px;height:32px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
-    .logo b{color:var(--gold)}
-    nav a{color:var(--txt3);text-decoration:none;font-size:13px;font-weight:500;margin-left:32px;transition:.2s}
-    nav a:hover{color:var(--txt)}
-
-    /* HERO */
-    .hero{padding:140px 32px 100px;text-align:center;position:relative;overflow:hidden}
-    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(184,148,95,.08) 0%,transparent 60%)}
-    .hero-tag{display:inline-block;padding:6px 16px;border:1px solid var(--brd);border-radius:20px;font-size:12px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
-    .hero h1{font-size:clamp(32px,5vw,56px);font-weight:300;letter-spacing:-0.5px;margin-bottom:12px;line-height:1.15}
-    .hero h1 em{font-style:normal;color:var(--gold);font-weight:400}
-    .hero p{font-size:17px;color:var(--txt3);max-width:480px;margin:0 auto}
-
-    /* SEARCH */
-    .search-w{max-width:1000px;margin:-48px auto 0;padding:0 20px;position:relative;z-index:10}
-    .search-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:28px 32px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
-    .trip-tog{display:flex;gap:6px;margin-bottom:20px}
-    .trip-tog button{background:transparent;border:1px solid var(--brd);color:var(--txt3);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;transition:.2s}
-    .trip-tog button.on{background:var(--gold);color:var(--bg);border-color:var(--gold)}
-    .s-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end}
-    .fld{position:relative}
-    .fld label{display:block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
-    .fld input{width:100%;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:12px 14px;color:var(--txt);font-family:inherit;font-size:14px;outline:none;transition:.2s}
-    .fld input:focus{border-color:var(--gold)}
-    .fld input::placeholder{color:var(--txt4)}
-
-    /* Airport Autocomplete Dropdown */
-    .ap-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--brd-l);border-radius:10px;margin-top:4px;max-height:280px;overflow-y:auto;z-index:200;display:none;box-shadow:0 16px 48px rgba(0,0,0,.5)}
-    .ap-dropdown.show{display:block}
-    .ap-item{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:.15s;border-bottom:1px solid var(--brd)}
-    .ap-item:last-child{border-bottom:none}
-    .ap-item:hover,.ap-item.active{background:var(--card-h)}
-    .ap-icon{width:32px;height:32px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-    .ap-info{flex:1;min-width:0}
-    .ap-name{font-size:14px;font-weight:500;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .ap-city{font-size:12px;color:var(--txt3)}
-    .ap-code{font-size:13px;font-weight:600;color:var(--gold);flex-shrink:0;letter-spacing:.5px}
-    .ap-dropdown::-webkit-scrollbar{width:6px}
-    .ap-dropdown::-webkit-scrollbar-track{background:transparent}
-    .ap-dropdown::-webkit-scrollbar-thumb{background:var(--brd-l);border-radius:3px}
-
-    .btn-s{background:var(--gold);color:var(--bg);border:none;border-radius:8px;padding:12px 28px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
-    .btn-s:hover{background:var(--gold-l);transform:translateY(-1px)}
-    .btn-s:disabled{opacity:.4;cursor:not-allowed;transform:none}
-
-    /* RESULTS */
-    .res-w{max-width:1000px;margin:40px auto;padding:0 20px}
-    .res-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    .res-h h2{font-size:24px;font-weight:400}
-    .res-h h2 em{font-style:normal;color:var(--gold)}
-    .res-cnt{color:var(--txt3);font-size:13px}
-
-    /* STEPS */
-    .steps{display:flex;align-items:center;gap:8px;margin-bottom:28px}
-    .stp{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--txt4)}
-    .stp.on{color:var(--gold)}.stp.done{color:var(--grn)}
-    .stp-num{width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
-    .stp.done .stp-num{background:var(--grn);border-color:var(--grn);color:var(--bg)}
-    .stp-line{width:32px;height:1px;background:var(--brd)}
-
-    /* FLIGHT CARD */
-    .f-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:20px 24px;margin-bottom:12px;transition:.2s;cursor:default}
-    .f-card:hover{border-color:var(--brd-l);background:var(--card-h)}
-    .f-top{display:flex;align-items:center;gap:16px;margin-bottom:14px}
-    .f-logo{width:44px;height:44px;border-radius:10px;background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .f-logo img{width:36px;height:36px;object-fit:contain}
-    .f-airline{flex:1}
-    .f-airline-name{font-size:15px;font-weight:500}
-    .f-flight-no{font-size:12px;color:var(--txt3);margin-top:2px}
-    .f-badge{font-size:11px;padding:4px 10px;border-radius:6px;font-weight:500}
-    .f-badge.direct{background:var(--grn-bg);color:var(--grn)}
-    .f-badge.stop{background:rgba(234,179,8,.1);color:#EAB308}
-    .f-seats{font-size:11px;color:var(--txt4);margin-left:8px}
-    .f-mid{display:flex;align-items:center;gap:20px;margin-bottom:16px}
-    .f-time{text-align:center}
-    .f-time-val{font-size:22px;font-weight:600;letter-spacing:-.5px}
-    .f-time-code{font-size:12px;color:var(--txt3);margin-top:2px}
-    .f-route-line{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-    .f-dur{font-size:12px;color:var(--txt3)}
-    .f-line{width:100%;height:1px;background:var(--brd);position:relative}
-    .f-line::after{content:'✈';position:absolute;right:-4px;top:-8px;font-size:14px;color:var(--gold)}
-    .f-date{font-size:12px;color:var(--txt3);margin-bottom:10px;font-weight:500}
-    .f-program{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;margin-bottom:8px;background:rgba(212,175,55,0.15);color:var(--gold);border:1px solid rgba(212,175,55,0.3);letter-spacing:0.5px;text-transform:uppercase}
-    .f-program.fb{background:rgba(0,100,200,0.15);color:#4da6ff;border-color:rgba(0,100,200,0.3)}
-    .f-program.va{background:rgba(200,0,50,0.15);color:#ff6b6b;border-color:rgba(200,0,50,0.3)}
-    .f-program.aa{background:rgba(0,150,100,0.15);color:#5cd6a0;border-color:rgba(0,150,100,0.3)}
-    .f-segments{margin-bottom:14px;background:var(--bg);border-radius:10px;padding:12px 16px}
-    .f-seg{display:flex;align-items:center;gap:14px;padding:6px 0}
-    .f-seg + .f-seg{border-top:1px solid var(--brd);margin-top:6px;padding-top:10px}
-    .f-seg-times{display:flex;align-items:center;gap:8px;min-width:120px}
-    .f-seg-time{font-size:14px;font-weight:600}
-    .f-seg-arrow{font-size:11px;color:var(--txt4)}
-    .f-seg-detail{flex:1;font-size:12px;color:var(--txt3)}
-    .f-seg-route{font-weight:500;color:var(--txt2)}
-    .f-seg-info{font-size:11px;color:var(--txt4);margin-top:2px}
-    .f-stop-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(234,179,8,.1);color:#EAB308;margin-left:8px}
-    .f-prices{display:flex;gap:8px;flex-wrap:wrap}
-    .f-price-btn{flex:1;min-width:120px;padding:10px 12px;border-radius:8px;border:1px solid var(--brd);background:var(--card2);cursor:pointer;transition:.2s;text-align:center}
-    .f-price-btn:hover{border-color:var(--gold);background:rgba(184,148,95,.08)}
-    .f-price-btn.sel{border-color:var(--gold);background:rgba(184,148,95,.15)}
-    .f-price-btn.na{opacity:.3;cursor:not-allowed}
-    .f-price-cabin{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-    .f-price-val{font-size:16px;font-weight:600;color:var(--gold)}
-    .f-price-na{font-size:13px;color:var(--txt4)}
-
-    /* SUMMARY */
-    .summary{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:32px;margin-bottom:24px}
-    .sum-title{font-size:20px;font-weight:500;margin-bottom:20px}
-    .sum-flight{display:flex;gap:16px;align-items:center;padding:16px;background:var(--bg);border-radius:10px;margin-bottom:12px}
-    .sum-dir{font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;width:60px}
-    .sum-detail{flex:1}
-    .sum-route{font-size:16px;font-weight:500}
-    .sum-info{font-size:13px;color:var(--txt3);margin-top:4px}
-    .sum-price{font-size:18px;font-weight:600;color:var(--gold)}
-    .sum-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid var(--brd);margin-top:8px}
-    .sum-total-label{font-size:16px;color:var(--txt2)}
-    .sum-total-val{font-size:28px;font-weight:600;color:var(--gold)}
-    .btn-wa{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:var(--wa);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:.2s;margin-top:16px}
-    .btn-wa:hover{background:#1da851;transform:translateY(-1px)}
-    .btn-back{background:transparent;border:1px solid var(--brd);color:var(--txt3);padding:10px 20px;border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:12px;transition:.2s}
-    .btn-back:hover{border-color:var(--txt3);color:var(--txt)}
-
-    /* ERROR */
-    .err-msg{text-align:center;padding:40px 20px}
-    .err-msg h3{font-size:18px;margin-bottom:8px}
-    .err-msg p{color:var(--txt3);font-size:14px}
-
-    /* LOADING */
-    .loading{text-align:center;padding:60px 20px}
-    .spinner{width:32px;height:32px;border:3px solid var(--brd);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
-    @keyframes spin{to{transform:rotate(360deg)}} html{scroll-behavior:smooth} #results,#summaryWrap{scroll-margin-top:80px}
-    .loading p{color:var(--txt3);font-size:14px}
-
-    /* FOOTER */
-    footer{text-align:center;padding:40px 20px;color:var(--txt4);font-size:13px;border-top:1px solid var(--brd);margin-top:60px}
-
-    @media(max-width:768px){
-      .s-row{grid-template-columns:1fr 1fr;gap:10px}
-      .btn-s{grid-column:span 2}
-      .f-mid{flex-wrap:wrap}
-      .f-prices{flex-direction:column}
-      .sum-flight{flex-direction:column;text-align:center}
-    }
-  
-    /* Custom Calendar Datepicker */
-    .date-display{width:100%;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:12px 14px;color:var(--txt);font-family:inherit;font-size:14px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;user-select:none}
-    .date-display:hover{border-color:var(--brd-l)}
-    .date-display.active{border-color:var(--gold)}
-    .date-display .dd-text{color:var(--txt)}
-    .date-display .dd-placeholder{color:var(--txt4)}
-    .date-display .dd-icon{color:var(--txt3);font-size:10px;flex-shrink:0;margin-left:8px}
-    .cal-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--brd-l);border-radius:10px;margin-top:4px;z-index:200;display:none;box-shadow:0 16px 48px rgba(0,0,0,.5);padding:16px;min-width:280px}
-    .cal-dropdown.show{display:block}
-    .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    .cal-title{font-size:14px;font-weight:600;color:var(--txt);letter-spacing:.3px}
-    .cal-nav{width:30px;height:30px;border-radius:8px;background:var(--card2);border:1px solid var(--brd);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.15s;line-height:1}
-    .cal-nav:hover{background:var(--card-h);border-color:var(--brd-l);color:var(--txt)}
-    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
-    .cal-dow{font-size:10px;font-weight:600;color:var(--txt4);padding:6px 0;text-transform:uppercase;letter-spacing:.8px}
-    .cal-day{font-size:13px;padding:8px 2px;border-radius:6px;cursor:pointer;color:var(--txt2);transition:.15s;font-weight:500}
-    .cal-day:hover:not(.past):not(.empty){background:var(--card-h);color:var(--txt)}
-    .cal-day.today{color:var(--gold);font-weight:700}
-    .cal-day.selected{background:var(--gold)!important;color:var(--bg)!important;font-weight:700}
-    .cal-day.other{color:var(--txt4);opacity:.35}
-    .cal-day.past{color:var(--txt4);opacity:.25;cursor:default;pointer-events:none}
-    .cal-day.empty{pointer-events:none}
-    .cal-today-btn{display:block;width:100%;margin-top:10px;padding:8px;background:transparent;border:1px solid var(--brd);border-radius:8px;color:var(--gold);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.5px}
-    .cal-today-btn:hover{background:var(--card2);border-color:var(--gold-d)}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Élysian Flights — Premium Business & First Class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f4f6f8; --white: #ffffff; --black: #0d1117; --dark: #1c2333;
+  --navy: #0f2044; --navy-mid: #1a3560; --blue: #1d4ed8; --blue-light: #3b82f6;
+  --mid: #4b5563; --light: #9ca3af; --border: #e5e7eb; --border-dark: #d1d5db;
+  --gold: #d4a843; --gold-light: #f0c96a; --green: #059669;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); overflow-x: hidden; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(255,255,255,0.96); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); padding: 0 48px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.5px; color: var(--navy); text-decoration: none; }
+.nav-logo .dot { color: var(--gold); }
+.nav-links { display: flex; gap: 2px; list-style: none; }
+.nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: var(--mid); padding: 7px 16px; border-radius: 8px; transition: all 0.18s; }
+.nav-links a:hover, .nav-links a.active { color: var(--navy); background: var(--bg); font-weight: 600; }
+.nav-wa {
+  display: flex; align-items: center; gap: 7px; background: #25D366; color: white;
+  padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  text-decoration: none; transition: all 0.18s;
+}
+.nav-wa:hover { background: #20ba5e; transform: translateY(-2px); }
+.nav-wa svg { width: 16px; height: 16px; }
+.hero {
+  padding: 100px 48px 60px; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color: white; position: relative; overflow: hidden; margin-top: 68px;
+}
+.hero::before { content: ''; position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=60') center/cover no-repeat; opacity: 0.08; pointer-events: none; }
+.hero-in { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+.hero-left { color: white; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+  padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.8);
+  margin-bottom: 22px;
+}
+.hero-eyebrow .gold { color: var(--gold-light); }
+.hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(36px, 4.2vw, 58px); line-height: 1.06; letter-spacing: -1.5px; margin-bottom: 18px; }
+.hero h1 em { font-style: italic; color: var(--gold-light); font-weight: 700; }
+.hero-desc { font-size: 15px; color: rgba(255,255,255,0.62); line-height: 1.65; max-width: 430px; margin-bottom: 32px; }
+.hero-stats { display: flex; gap: 28px; }
+.hero-stat .num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--gold-light); }
+.hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.hero-right { display: flex; align-items: flex-end; justify-content: flex-end; }
+.hero-plane-img { width: 100%; max-width: 520px; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.45)); animation: floatPlane 7s ease-in-out infinite; }
+@keyframes floatPlane { 0%,100%{transform:translateY(0) rotate(-1.5deg)} 50%{transform:translateY(-14px) rotate(0.5deg)} }
+.search-outer {
+  background: linear-gradient(155deg, #0a1628 0%, #0f2044 50%, #1a3a6e 100%);
+  padding: 0 48px 56px; position: relative;
+}
+.search-outer::before { content:''; position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=60') center/cover no-repeat; opacity:0.08; pointer-events:none; }
+.search-card { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 28px 32px; box-shadow: var(--shadow-lg); position: relative; z-index: 1; }
+.search-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+.search-tabs { display: flex; gap: 6px; }
+.search-tab { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--border); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s; background: white; color: var(--mid); }
+.search-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+.search-row { display: grid; gap: 12px; align-items: end; }
+.row-oneway { grid-template-columns: 1.15fr 36px 1fr 1fr 1fr auto; }
+.row-roundtrip { grid-template-columns: 1.05fr 36px 0.95fr 0.9fr 0.9fr 0.9fr auto; }
+.sfield { display: flex; flex-direction: column; gap: 6px; }
+.sfield label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--light); }
+.airport-picker { position: relative; }
+.ap-trigger { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.18s; min-height: 52px; user-select: none; }
+.ap-trigger:hover { border-color: var(--blue-light); }
+.ap-trigger.focused { border-color: var(--blue); background: white; }
+.ap-flag { font-size: 20px; flex-shrink: 0; line-height: 1; }
+.ap-text { flex: 1; min-width: 0; }
+.ap-city { font-size: 14px; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ap-code { font-size: 11px; color: var(--light); font-weight: 500; }
+.ap-dropdown {
+  display: none; position: absolute; top: calc(100% + 5px); left: 0;
+  right: 0; background: white; border: 1.5px solid var(--border); border-radius: 12px;
+  max-height: 320px; overflow-y: auto; z-index: 100; box-shadow: var(--shadow-lg);
+}
+.ap-dropdown.show { display: block; }
+.ap-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border); transition: all 0.15s;
+}
+.ap-item:last-child { border-bottom: none; }
+.ap-item:hover, .ap-item.active { background: var(--bg); }
+.ap-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--gold); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.ap-info { flex: 1; min-width: 0; }
+.ap-name { font-size: 14px; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ap-city { font-size: 12px; color: var(--light); }
+.ap-code { font-size: 13px; font-weight: 600; color: var(--gold); flex-shrink: 0; letter-spacing: 0.5px; }
+.ap-dropdown::-webkit-scrollbar { width: 6px; }
+.ap-dropdown::-webkit-scrollbar-track { background: transparent; }
+.ap-dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.cal-toggle-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; font-size: 14px; font-weight: 500; color: var(--black); display: flex; align-items: center; gap: 8px; justify-content: space-between; min-height: 52px; }
+.cal-toggle-btn:hover { border-color: var(--blue-light); }
+.cal-toggle-btn.active { border-color: var(--blue); background: white; }
+.cal-toggle-btn-text { flex: 1; text-align: left; }
+.cal-toggle-btn-date { color: var(--mid); font-weight: 600; }
+.cal-toggle-btn-icon { font-size: 12px; color: var(--light); }
+.cal-dropdown { display: none; position: absolute; top: calc(100% + 5px); left: 0; z-index: 100; background: white; border: 1.5px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-lg); padding: 16px; min-width: 320px; }
+.cal-dropdown.show { display: block; }
+.cal-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-nav { background: none; border: none; color: var(--navy); font-size: 20px; cursor: pointer; padding: 0; font-weight: 600; transition: all 0.18s; }
+.cal-nav:hover { color: var(--blue); transform: scale(1.1); }
+.cal-title { font-size: 15px; font-weight: 700; color: var(--black); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+.cal-dow { font-size: 11px; font-weight: 700; color: var(--light); text-align: center; padding: 8px 0; text-transform: uppercase; }
+.cal-day { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.cal-day.empty { cursor: default; }
+.cal-day.past { color: var(--border); }
+.cal-day.today { background: var(--gold); color: white; font-weight: 700; }
+.cal-day.selected { background: var(--navy); color: white; font-weight: 700; }
+.cal-day:not(.empty):not(.past):hover { background: var(--bg); color: var(--navy); }
+.cal-today-btn { background: var(--navy); color: white; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.18s; }
+.cal-today-btn:hover { background: var(--navy-mid); }
+.btn-search { background: var(--gold); color: white; border: none; border-radius: var(--radius-sm); padding: 12px 28px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+.btn-search:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-search:active { transform: translateY(0); }
+.results-section { max-width: 1200px; margin: 0 auto; padding: 48px; }
+.results-section.hidden { display: none; }
+.results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.results-header h2 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--black); }
+.results-header h2 em { font-style: normal; color: var(--gold); }
+.results-count { font-size: 13px; color: var(--light); }
+.steps { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+.stp { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--light); }
+.stp.on { color: var(--gold); }
+.stp.done { color: var(--green); }
+.stp-num { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.stp.done .stp-num { background: var(--green); border-color: var(--green); color: white; }
+.stp-line { width: 32px; height: 1px; background: var(--border); }
+.flight-card {
+  background: white; border: 1.5px solid var(--border); border-radius: 16px; padding: 24px;
+  margin-bottom: 16px; transition: all 0.18s;
+}
+.flight-card:hover { border-color: var(--blue-light); box-shadow: var(--shadow); }
+.fc-top { display: flex; flex-direction: column; gap: 16px; }
+.fc-bar { height: 3px; width: 100%; background: none; border-radius: 2px; margin-bottom: 4px; }
+.fc-bar.first { background: var(--gold); }
+.fc-al { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.fc-al-logo { width: 48px; height: 48px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.fc-al-logo img { width: 40px; height: 40px; object-fit: contain; }
+.fc-al-name { font-size: 16px; font-weight: 700; color: var(--black); }
+.fc-al-name-small { font-size: 12px; color: var(--light); margin-top: 2px; }
+.fc-badges { display: flex; gap: 8px; margin-left: auto; }
+.fc-badge { font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
+.fc-badge.direct { background: rgba(5, 150, 105, 0.1); color: var(--green); }
+.fc-badge.stop { background: rgba(212, 168, 67, 0.1); color: var(--gold); }
+.fc-seats { font-size: 11px; color: var(--light); }
+.fc-end { text-align: center; }
+.fc-time { font-size: 22px; font-weight: 700; color: var(--black); letter-spacing: -0.5px; }
+.fc-city { font-size: 12px; color: var(--light); margin-top: 4px; font-weight: 600; }
+.fc-mid { display: flex; align-items: center; gap: 16px; justify-content: space-between; margin: 16px 0; }
+.fc-duration { font-size: 12px; color: var(--light); text-align: center; }
+.fc-line { flex: 1; height: 1px; background: var(--border); position: relative; }
+.fc-line::after { content: '✈'; position: absolute; left: 50%; top: -8px; transform: translateX(-50%); font-size: 14px; color: var(--gold); }
+.fc-price-block { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.fc-price-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--light); margin-bottom: 8px; }
+.fc-cabins { display: flex; gap: 8px; flex-wrap: wrap; }
+.fc-cabin-btn { flex: 1; min-width: 100px; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; background: white; cursor: pointer; transition: all 0.18s; text-align: center; }
+.fc-cabin-btn:hover { border-color: var(--blue-light); background: var(--bg); }
+.fc-cabin-btn.na { opacity: 0.5; cursor: not-allowed; }
+.fc-cabin-name { font-size: 12px; font-weight: 600; color: var(--black); }
+.fc-cabin-price { font-size: 16px; font-weight: 700; color: var(--gold); margin-top: 4px; }
+.fc-cabin-na { font-size: 11px; color: var(--light); margin-top: 4px; }
+.loading { text-align: center; padding: 60px 20px; }
+.spinner { display: inline-block; width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading p { margin-top: 16px; color: var(--light); font-size: 14px; }
+.err-msg { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 24px; text-align: center; }
+.err-msg h3 { color: var(--black); margin-bottom: 8px; }
+.err-msg p { color: var(--light); font-size: 14px; }
+.summary-section { max-width: 1200px; margin: 0 auto; padding: 48px; }
+.summary-section.hidden { display: none; }
+.sum-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--black); margin-bottom: 28px; }
+.sum-flight { display: flex; gap: 24px; padding: 20px; background: var(--bg); border-radius: 16px; margin-bottom: 16px; }
+.sum-dir { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--light); min-width: 60px; }
+.sum-detail { flex: 1; }
+.sum-route { font-size: 16px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+.sum-info { font-size: 13px; color: var(--light); }
+.sum-price { font-size: 18px; font-weight: 700; color: var(--gold); text-align: right; }
+.sum-total { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 16px; color: white; margin-bottom: 24px; }
+.sum-total-label { font-size: 14px; font-weight: 600; }
+.sum-total-val { font-size: 28px; font-weight: 800; color: var(--gold-light); }
+.btn-wa {
+  background: #25D366; color: white; border: none; border-radius: 12px; padding: 16px 28px;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 12px; width: 100%;
+}
+.btn-wa:hover { background: #20ba5e; transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-back {
+  background: transparent; color: var(--navy); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 28px;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.18s; width: 100%;
+}
+.btn-back:hover { background: var(--bg); border-color: var(--navy); }
+.destinations { padding: 60px 48px; background: white; }
+.dest-container { max-width: 1200px; margin: 0 auto; }
+.dest-title { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); margin-bottom: 32px; text-align: center; }
+.dest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+.dest-card { background: white; border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.18s; }
+.dest-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+.dest-image { width: 100%; height: 200px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); }
+.dest-content { padding: 20px; }
+.dest-city { font-size: 20px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+.dest-desc { font-size: 13px; color: var(--light); }
+.airlines { padding: 60px 48px; background: var(--bg); }
+.airlines-container { max-width: 1200px; margin: 0 auto; }
+.airlines-title { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); margin-bottom: 32px; text-align: center; }
+.airlines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; }
+.airline-card { background: white; border: 1.5px solid var(--border); border-radius: 16px; padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px; transition: all 0.18s; }
+.airline-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+.airline-logo { width: 80px; height: 40px; object-fit: contain; }
+.whyus { padding: 60px 48px; background: white; }
+.whyus-container { max-width: 1200px; margin: 0 auto; }
+.whyus-title { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); margin-bottom: 32px; text-align: center; }
+.whyus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; }
+.whyus-card { text-align: center; }
+.whyus-icon { font-size: 48px; margin-bottom: 16px; }
+.whyus-head { font-size: 18px; font-weight: 700; color: var(--black); margin-bottom: 8px; }
+.whyus-text { font-size: 14px; color: var(--light); line-height: 1.6; }
+.faq { padding: 60px 48px; background: var(--bg); }
+.faq-container { max-width: 800px; margin: 0 auto; }
+.faq-title { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); margin-bottom: 32px; text-align: center; }
+.faq-item { background: white; border: 1.5px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+.faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: var(--black); transition: all 0.18s; }
+.faq-question:hover { background: var(--bg); }
+.faq-toggle { font-size: 18px; transition: all 0.18s; }
+.faq-item.open .faq-toggle { transform: rotate(180deg); }
+.faq-answer { display: none; padding: 0 20px 20px; color: var(--light); font-size: 14px; line-height: 1.6; }
+.faq-item.open .faq-answer { display: block; }
+.coming-soon { padding: 120px 48px; text-align: center; background: var(--bg); min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.coming-soon h2 { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--navy); margin-bottom: 16px; }
+.coming-soon p { font-size: 16px; color: var(--light); }
+footer {
+  background: var(--navy); color: white; padding: 40px 48px; margin-top: 60px;
+}
+.footer-in { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+.footer-col h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 16px; }
+.footer-col p { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.8; }
+.footer-col a { color: rgba(255,255,255,0.85); text-decoration: none; display: block; font-size: 13px; margin-bottom: 8px; transition: all 0.18s; }
+.footer-col a:hover { color: var(--gold); }
+.footer-bottom { text-align: center; margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: rgba(255,255,255,0.5); }
+.hidden { display: none !important; }
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { gap: 0; }
+  .nav-links a { padding: 5px 12px; font-size: 12px; }
+  .hero-in { grid-template-columns: 1fr; gap: 32px; }
+  .hero-right { justify-content: center; }
+  .search-outer { padding: 0 24px 40px; }
+  .search-card { padding: 20px; }
+  .row-oneway, .row-roundtrip { grid-template-columns: 1fr; }
+  .results-section, .summary-section { padding: 32px 24px; }
+  .destinations, .airlines, .whyus, .faq { padding: 40px 24px; }
+  .footer-in { gap: 24px; }
+}
+</style>
 </head>
 <body>
-  <header><div class="h-in">
-    <div class="logo"><div class="logo-icon">✈</div> <b>Élysian</b> Flights</div>
-    <nav><a href="#search-section">Search</a><a href="#contact">Contact</a></nav>
-  </div></header>
 
-  <section class="hero">
-    <div class="hero-tag">Premium Travel Concierge</div>
-    <h1>Fly <em>Business &amp; First Class</em><br>at the best price</h1>
-    <p>We book the best premium flights worldwide at competitive rates. Select your flight, we handle the rest.</p>
-  </section>
+<nav>
+  <a href="#" class="nav-logo">Élysian<span class="dot">.</span>Flights</a>
+  <ul class="nav-links">
+    <li><a href="#flights" class="active">Flights</a></li>
+    <li><a href="#hotels">Hotels</a></li>
+    <li><a href="#concierge">Concierge</a></li>
+  </ul>
+  <a href="https://wa.me/31639027470" target="_blank" class="nav-wa">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+    Boek
+  </a>
+</nav>
 
-  <div class="search-w" id="search-section">
-    <div class="search-card">
-      <div class="trip-tog">
-        <button class="on" onclick="setTrip('oneway',this)">One way</button>
-        <button onclick="setTrip('roundtrip',this)">Round trip</button>
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-left">
+      <div class="hero-eyebrow">✨ <span class="gold">Premium</span> Travel</div>
+      <h1>Vlieg Business & First Class<br>voor de <em>beste prijs</em></h1>
+      <p class="hero-desc">Élysian Flights brengt u de meest exclusieve vluchten in luxe cabines tegen ongeëvenaarde prijzen. Premium reizen, netjes geprijsd.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num">50K+</div>
+          <div class="lbl">KLANTEN</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">120+</div>
+          <div class="lbl">ROUTES</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">24/7</div>
+          <div class="lbl">SUPPORT</div>
+        </div>
       </div>
-      <div class="s-row">
-        <div class="fld" id="origWrap">
-          <label>From</label>
-          <input id="iOrig" autocomplete="off" placeholder="City or airport" value="" onfocus="openAP(this,'orig')" oninput="filterAP(this,'orig')">
-          <div class="ap-dropdown" id="ddOrig"></div>
+    </div>
+    <div class="hero-right">
+      <svg class="hero-plane-img" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="planeGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:var(--gold-light);stop-opacity:1"/><stop offset="100%" style="stop-color:var(--gold);stop-opacity:1"/></linearGradient></defs>
+        <ellipse cx="200" cy="250" rx="120" ry="30" fill="rgba(0,0,0,0.05)"/>
+        <path d="M 80 180 L 320 180 L 300 140 L 100 140 Z" fill="url(#planeGrad)" stroke="white" stroke-width="2"/>
+        <circle cx="110" cy="200" r="18" fill="white" opacity="0.3"/>
+        <circle cx="150" cy="200" r="18" fill="white" opacity="0.3"/>
+        <circle cx="190" cy="200" r="18" fill="white" opacity="0.3"/>
+        <circle cx="230" cy="200" r="18" fill="white" opacity="0.3"/>
+        <circle cx="270" cy="200" r="18" fill="white" opacity="0.3"/>
+        <path d="M 320 170 L 340 160 L 335 185 Z" fill="url(#planeGrad)"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="search-outer">
+  <div class="search-card">
+    <div class="search-top">
+      <div class="search-tabs">
+        <button class="search-tab active" onclick="setTrip('enkel', this)">Enkele reis</button>
+        <button class="search-tab" onclick="setTrip('retour', this)">Retour</button>
+      </div>
+    </div>
+    <div class="search-row row-roundtrip" id="searchRow">
+      <div class="sfield">
+        <label>Van</label>
+        <div class="airport-picker">
+          <input type="text" id="iOrig" class="ap-trigger" placeholder="Amsterdam (AMS)" onfocus="openAP(this, 'orig')" oninput="filterAP(this, 'orig')">
+          <div id="ddOrig" class="ap-dropdown"></div>
         </div>
-        <div class="fld" id="destWrap">
-          <label>To</label>
-          <input id="iDest" autocomplete="off" placeholder="City or airport" value="" onfocus="openAP(this,'dest')" oninput="filterAP(this,'dest')">
-          <div class="ap-dropdown" id="ddDest"></div>
+      </div>
+      <div style="display: flex; align-items: flex-end; justify-content: center; color: var(--light);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+      <div class="sfield">
+        <label>Naar</label>
+        <div class="airport-picker">
+          <input type="text" id="iDest" class="ap-trigger" placeholder="Dubai (DXB)" onfocus="openAP(this, 'dest')" oninput="filterAP(this, 'dest')">
+          <div id="ddDest" class="ap-dropdown"></div>
         </div>
-        <div class="fld"><label>Departure</label><div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"><span class="dd-placeholder">Pick date</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iDep"><div class="cal-dropdown" id="calDep"></div></div>
-        <div class="fld hidden" id="retFld"><label>Return</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Pick date</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
-        <button class="btn-s" id="btnSearch" onclick="doSearch()">Search</button>
+      </div>
+      <div class="sfield">
+        <label>Heen</label>
+        <button class="cal-toggle-btn" id="iDepDisplay" onclick="toggleCal('dep')">
+          <span class="cal-toggle-btn-text"><span class="cal-toggle-btn-date" id="depDateDisplay">7 Apr 2025</span></span>
+          <span class="cal-toggle-btn-icon">📅</span>
+        </button>
+        <input type="hidden" id="iDep">
+        <div class="cal-dropdown" id="calDep"></div>
+      </div>
+      <div class="sfield" id="retFld">
+        <label>Terug</label>
+        <button class="cal-toggle-btn" id="iRetDisplay" onclick="toggleCal('ret')">
+          <span class="cal-toggle-btn-text"><span class="cal-toggle-btn-date" id="retDateDisplay">14 Apr 2025</span></span>
+          <span class="cal-toggle-btn-icon">📅</span>
+        </button>
+        <input type="hidden" id="iRet">
+        <div class="cal-dropdown" id="calRet"></div>
+      </div>
+      <button class="btn-search" onclick="doSearch()">Zoeken</button>
+    </div>
+  </div>
+</section>
+
+<section class="results-section hidden" id="results">
+  <div class="results-header">
+    <div>
+      <h2 id="resTitle">Vluchten <em>zoeken...</em></h2>
+      <p class="results-count" id="resCnt"></p>
+    </div>
+  </div>
+  <div id="stepsBar"></div>
+  <div id="flightList"></div>
+</section>
+
+<section class="summary-section hidden" id="summaryWrap">
+  <div id="summaryContent"></div>
+</section>
+
+<section class="destinations" id="destinations">
+  <div class="dest-container">
+    <h2 class="dest-title">Populaire Bestemmingen</h2>
+    <div class="dest-grid">
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">Dubai</div>
+          <p class="dest-desc">Luxe, moderne skyline en oneindig comfort.</p>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">London</div>
+          <p class="dest-desc">Klassieke elegantie met moderne sophisticatie.</p>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">Paris</div>
+          <p class="dest-desc">Het hart van Europese kultuur en raffinement.</p>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">New York</div>
+          <p class="dest-desc">De stad die nooit slaapt, vol energie.</p>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">Singapore</div>
+          <p class="dest-desc">Futuristisch Azië aan het kruispunt.</p>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-image"></div>
+        <div class="dest-content">
+          <div class="dest-city">Tokio</div>
+          <p class="dest-desc">Tradition en technologie in perfecte harmonie.</p>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="res-w hidden" id="results">
-    <div id="stepsBar"></div>
-    <div class="res-h"><h2 id="resTitle"></h2><span class="res-cnt" id="resCnt"></span></div>
-    <div id="flightList"></div>
+<section class="airlines" id="airlines">
+  <div class="airlines-container">
+    <h2 class="airlines-title">Onze Partner Airlines</h2>
+    <div class="airlines-grid">
+      <div class="airline-card"><div style="font-weight: 700; color: var(--navy);">KLM</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #c40c33;">Emirates</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #4d3a7f;">Qatar Airways</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #e4002b;">Turkish Airlines</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #003d82;">Lufthansa</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #003366;">British Airways</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #041e50;">Air France</div></div>
+      <div class="airline-card"><div style="font-weight: 700; color: #00a0df;">Cathay Pacific</div></div>
+    </div>
   </div>
+</section>
 
-  <div class="res-w hidden" id="summaryWrap">
-    <div class="summary" id="summaryContent"></div>
+<section class="whyus">
+  <div class="whyus-container">
+    <h2 class="whyus-title">Waarom Élysian Flights?</h2>
+    <div class="whyus-grid">
+      <div class="whyus-card">
+        <div class="whyus-icon">✈️</div>
+        <div class="whyus-head">Premium Routes</div>
+        <p class="whyus-text">Toegang tot exclusieve Business & First Class vluchtopties worldwide.</p>
+      </div>
+      <div class="whyus-card">
+        <div class="whyus-icon">💰</div>
+        <div class="whyus-head">Best Prices</div>
+        <p class="whyus-text">Concurrerende prijzen zonder compromissen op kwaliteit.</p>
+      </div>
+      <div class="whyus-card">
+        <div class="whyus-icon">🛡️</div>
+        <div class="whyus-head">24/7 Support</div>
+        <p class="whyus-text">Ons team helpt je altijd, op elk moment van je reis.</p>
+      </div>
+      <div class="whyus-card">
+        <div class="whyus-icon">🌍</div>
+        <div class="whyus-head">Global Network</div>
+        <p class="whyus-text">120+ routes naar de mooiste bestemingen ter wereld.</p>
+      </div>
+      <div class="whyus-card">
+        <div class="whyus-icon">⭐</div>
+        <div class="whyus-head">VIP Experience</div>
+        <p class="whyus-text">Lounge access, priority boarding, en meer privileges.</p>
+      </div>
+      <div class="whyus-card">
+        <div class="whyus-icon">📱</div>
+        <div class="whyus-head">Easy Booking</div>
+        <p class="whyus-text">Simpel, intuïtief platform. Boek in secondes.</p>
+      </div>
+    </div>
   </div>
+</section>
 
-  <footer id="contact">&copy; 2026 Élysian Flights — Premium Travel Concierge</footer>
+<section class="faq" id="faq">
+  <div class="faq-container">
+    <h2 class="faq-title">Veelgestelde Vragen</h2>
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Wat is het verschil tussen Premium Economy en Business?
+        <span class="faq-toggle">▼</span>
+      </div>
+      <div class="faq-answer">
+        Premium Economy biedt extra ruimte en geïmproved service. Business Class biedt luxe bedden, gourmet maaltijden, en direct aisle access. First Class is onze meest exclusieve optie met personalized service.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Kan ik mijn reservering wijzigen of annuleren?
+        <span class="faq-toggle">▼</span>
+      </div>
+      <div class="faq-answer">
+        Ja! Contact onze WhatsApp support voor wijzigingen. Annuleringsbeleid hangt af van je ticket type. Business en First Class tickets hebben meestal flexibele voorwaarden.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Hoe book ik via Élysian Flights?
+        <span class="faq-toggle">▼</span>
+      </div>
+      <div class="faq-answer">
+        Selecteer je route, datum en voorkeur cabin hierboven. Kies je vlucht en click "Boek via WhatsApp". Ons team zal je bevestiging en betaaldertails sturen.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Wat zijn de leggings allowed in Business Class?
+        <span class="faq-toggle">▼</span>
+      </div>
+      <div class="faq-answer">
+        Alle baggage voorrechten hangen af van je airline en ticket type. Over het algemeen: 1 carry-on bag + 1 personal item in alle klassen. Check je bevestiging voor details.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Biedt Élysian Flights frequent flyer miles?
+        <span class="faq-toggle">▼</span>
+      </div>
+      <div class="faq-answer">
+        Alle vluchten kwalificeren voor airline frequent flyer miles! Zeg je programmanummer bij het boeken en earn volle miles op je vlucht.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-in">
+    <div class="footer-col">
+      <h4>Over ons</h4>
+      <p>Élysian Flights brengt premium travel within reach. Wij geloven dat iedereen First Class experience verdient.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigatie</h4>
+      <a href="#flights">Flights</a>
+      <a href="#hotels">Hotels (Soon)</a>
+      <a href="#concierge">Concierge (Soon)</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="https://wa.me/31639027470" target="_blank">WhatsApp +31 63 902 7470</a>
+      <a href="mailto:hello@elysian.flights">Email</a>
+    </div>
+    <div class="footer-col">
+      <h4>Légal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Booking Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Élysian Flights. Alle rechten voorbehouden. Premium Travel, Netjes Geprijsd.™</div>
+</footer>
 
 <script>
-// ========== AIRPORT DATABASE ==========
+// Custom logo data (base64 SVG)
+const CUSTOM_LOGOS = {
+  'KL': 'data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MzggMzcxLjAxIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzAwYTFlNDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPktMTSBMb2dvIFZlY3RvcjwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDg4LjE5LDMxNC41aDIwYy4xNyw2LjguMTUsMTMuNTguMTEsMjAuMzgsNi42OSwwLDEzLjQsMCwyMC4wOSwwLC4wNSw2LjY3LjA1LDEzLjM0LS4xNSwyMC02LjYzLDAtMTMuMjgsMC0xOS45MiwwLDAsNi41NywwLDEzLjE1LDAsMTkuNzMtNi42LjQyLTEzLjIuMzMtMTkuOC4yNywwLTYuNjcsMC0xMy4zNi0uMDctMjAuMDUtNi43MS4wOS0xMy40LjA1LTIwLjA5LjA3LS4xMS02LjY1LS4wOS0xMy4zMi0uMTEtMjAsNi43NSwwLDEzLjQ5LDAsMjAuMjIsMEM0ODguMzcsMzI4LjEsNDg5LDMyMS4yNiw0ODguMTksMzE0LjVabS0xMTUuOSw1Ni4zNGMyMC4xNi00Ljg1LDQyLjI5LDExLjkyLDQxLjg1LDMyLjksMS41NSwxOC4zNC0xNC40OSwzNS41My0zMi43NCwzNS44OEMzNjUuMDUsNDQxLDM0OS4wNSw0MjksMzQ1LjYsNDEzLDM0MC41NSwzOTQuNzQsMzUzLjc1LDM3NC4yOSwzNzIuMjksMzcwLjg0Wm04MC4xNSwwYzIwLjE0LTQuNzcsNDIuMzUsMTIsNDEuNzgsMzMsMS42MiwxOC44Ni0xNS41NSwzNi4zNC0zNC4zLDM1Ljg1LTE2LjU2LjcxLTMyLTEyLjI4LTM0LjYyLTI4LjU2QzQyMS42LDM5My4yMyw0MzQuNTIsMzc0LjE0LDQ1Mi40NCwzNzAuOFptODAuMTksMGMxOS41NC00LjY1LDQwLjg5LDExLDQxLjYzLDMxLjE5LDEuNTcsMTMuNzMtNi4yOSwyNy41My0xOC40OCwzMy43OC0xMi44Miw2LjkxLTI5Ljc5LDQuNDYtNDAuMjMtNS42My0xMS43Mi0xMS0xNC4xNi0zMC4zLTUuMzgtNDMuNzdBMzQuNDEsMzQuNDEsMCwwLDEsNTMyLjYzLDM3MC44NFptODAuMzEsMGMxNy41Mi0zLjkzLDM2LjUyLDgsNDAuNTQsMjUuNTRBMzQuNzksMzQuNzksMCwwLDEsNjAzLjEsNDM1LjVhMzQuNjMsMzQuNjMsMCwwLDEtMTcuODMtMzUuMjRDNTg2LjkzLDM4NS44OCw1OTguNjcsMzczLjM0LDYxMi45NCwzNzAuOFpNMzc4LjczLDQ5MC4xOGMtLjUyLTEzLjkyLS4yOC0yNy44OS0uMTMtNDEuODEsODAuMTUuMjMsMTYwLjMuMDUsMjQwLjQ1LjA5cTAsMjAuODEsMCw0MS41OEM1MzguOTQsNDkwLjEzLDQ1OC44Miw0ODkuODYsMzc4LjczLDQ5MC4xOFpNMTgxLDUyNS40OXEzMC4zNCwwLDYwLjcyLDBjMCwxOS4zNiwwLDM4Ljc0LDAsNTguMTEsMjAuMDctMTkuMjEsMzkuNjgtMzguODgsNTkuNzUtNTguMDlxMzAuNi0uMDksNjEuMTksMGMtMjMuNTEsMjMuOS00Ny42Niw0Ny4xNy03MSw3MS4yNCwyOS40MSwyOC41MSw1Ny44MSw1OC4wNyw4Ny40Niw4Ni4yNy4yNi01Mi41LDAtMTA1LC4xMS0xNTcuNTNxMzEtLjA2LDYyLjA3LDAsMCw1OS43NSwwLDExOS40OWMzMy4wNS0uMDksNjYuMDguMTEsOTkuMTEtLjExLjQ2LDEzLjUxLjA3LDI3LC4yMiw0MC41NHEtMTIwLjQ4LDAtMjQxLDBjLTE5LTE5LjIzLTM4LjI1LTM4LjItNTcuMzMtNTcuMzQtLjI4LDE5LjE1LDAsMzguMjktLjE3LDU3LjQ1LTIwLjM5LS4xNC00MC43OSwwLTYxLjE5LS4wOVptMzc2LjY2LDBjMzMuMzItLjExLDY2LjY0LjIyLDEwMC0uMTYsMTAuNTIsMjguNiwxOS43Myw1Ny42OSwyOS42Niw4Ni41MS44Mi0xLjI5LDItMi4zOSwyLjQxLTMuOSw5LjQ5LTI3LjUxLDE5LjIxLTU0Ljk0LDI4LjgtODIuNDNxNTAuMjUtLjA2LDEwMC41MSwwVjY4NS4zMmMtMjAuNTEuMjYtNDEsLjA5LTYxLjU0LjA5LDAtMzYuNzguMTgtNzMuNTktLjExLTExMC4zOS0yLjg2LDEuNi0zLjE1LDUuMjMtNC4zNyw4LTExLjkxLDM0LjE4LTI0LjEyLDY4LjI1LTM2LDEwMi40Mi0xOS4yOSwwLTM4LjU5LjI2LTU3Ljg2LS4xMi0xMi4wOS0zNC45NS0yNC41OS02OS43My0zNi43OS0xMDQuNjJhNi4xNCw2LjE0LDAsMCwwLTMuMjQtNC4yOGMtLjA2LDM2LjM1LDAsNzIuNzEsMCwxMDkuMDhxLTMwLjcsMC02MS40MSwwUTU1Ny43LDYwNS40OCw1NTcuNjYsNTI1LjQ5WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4MSAtMzE0LjUpIi8+PC9zdmc+',
+  'EK': 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjM2MiAyNTAwIgogICB2aWV3Qm94PSIwIDAgMjUwLjMxMzY0IDI2NC45MzgyMyIKICAgdmVyc2lvbj0iMS4xIgogICBpZD0ic3ZnNiIKICAgc29kaXBvZGk6ZG9jbmFtZT0iRW1pcmF0ZXMgYmFubmVyIGxvZ28uc3ZnIgogICB3aWR0aD0iMjUwLjMxMzY0IgogICBoZWlnaHQ9IjI2NC45MzgyMyIKICAgaW5rc2NhcGU6dmVyc2lvbj0iMS40ICg4NmE4YWQ3LCAyMDI0LTEwLTExKSIKICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiCiAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzNiIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgaWQ9Im5hbWVkdmlldzYiCiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjMDAwMDAwIgogICAgIGJvcmRlcm9wYWNpdHk9IjAuMjUiCiAgICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlY2hlY2tlcmJvYXJkPSIwIgogICAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIKICAgICBpbmtzY2FwZTp6b29tPSIwLjQ0MjkzMTY5IgogICAgIGlua3NjYXBlOmN4PSI1MjYuMDQwNDgiCiAgICAgaW5rc2NhcGU6Y3k9IjcyOC4xMDMyNCIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAwMSIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iLTkiCiAgICAgaW5rc2NhcGU6d2luZG93LXk9Ii05IgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ic3ZnNiIgLz4KICA8cGF0aAogICAgIGQ9Ik0gMCwwIEggMjUwLjMxMzY0IFYgMjY0LjkzODI0IEggMCBaIgogICAgIGZpbGw9IiNkNzFhMjEiCiAgICAgaWQ9InBhdGgxIgogICAgIHN0eWxlPSJzdHJva2Utd2lkdGg6MC4xMDU5NzUiIC8+CiAgPGcKICAgICBmaWxsPSIjZmZmZmZmIgogICAgIGlkPSJnNiIKICAgICB0cmFuc2Zvcm09InNjYWxlKDAuMTA1OTc1MjkpIj4KICAgIDxwYXRoCiAgICAgICBkPSJtIDEyODUuMSw2MTkuOSBjIC0xNC45LDE5LjIgLTIzLDQyLjkgLTIzLjEsNjcuMiB2IDIxMSBjIC0xLjEsMTYgLTcuMiwzMC44IC0xNy4xLDQzLjUgLTUuNSw1LjUgLTM4LDM0LjcgLTQwLjgsMzggbCAxOC4yLDAuNiBjIDYuMSwtNS41IDY4LjgsLTYxLjEgNzQuOSwtNjguOCAxOC4yLC0xOS44IDI4LjYsLTQ1LjcgMjguNiwtNzIuNyBWIDYzNS45IGMgLTAuNSwtMjAuNyA3LjIsLTQwLjcgMjEuNSwtNTUuNiA3LjcsLTguMyAzMS45LC0yOC42IDM2LjMsLTMzLjYgbCAtMTkuMywtMC42IGMgLTMuNyw1IC03Mi42LDY3LjIgLTc5LjIsNzMuOCB6IG0gLTE1NC44LDc2Ny4zIDc2LjYsNjYuNyBoIDUxLjIgYyA0OSwwIDk2LjQsLTE5LjMgMTMxLjEsLTU0IDMxLjQsLTMxLjQgNDMsLTczLjggNDMsLTExMy41IHYgLTEwOS42IGMgLTAuNiwtMjQuOCAtMTEsLTQ4LjUgLTI5LjcsLTY1IC0zLjMsLTMuMyAtMjUuOSwtMjQuOCAtMjUuOSwtMjQuOCB2IDg0LjMgYyAwLDAgMjQuOCwyNS4zIDI5LjIsMzAuMyAyMi42LDI0LjIgMjIuNiw2OC4zIC00OS42LDEzOC4zIC0xMi43LDEyLjEgLTQ4LjUsNDYuMyAtOTgsNDYuMyB6IgogICAgICAgaWQ9InBhdGgyIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gMTM0My41LDkzNy4yIGMgLTguMyw4LjggLTE2LjUsMzAuOCAtMTYuNSw1MC43IHYgNDEuMyBoIDQxLjkgYyAxNi41LDAgMzgsLTE0LjkgNDIuNCwtMjIuNiB2IC00MS4zIGMgNi4yLDkuMSAxMy44LDE3LjEgMjIuNiwyMy43IDQuNCwtNS41IDQzLC01MS44IDc0LjksLTUyLjMgNTMuNCwtMC42IDQxLjMsNjcuMiAxOS44LDg4LjcgLTcuMiw3LjIgLTM4LjYsMzUuOCAtNDguNSw0NS4yIC0yNS4zLDI0LjIgLTY4LjksMTIuNyAtNjguOSwtNDkuNiAwLDAgLTQ2LjMsNDQuMSAtNTMuNCw1MC4xIC03LjIsNi4xIC0zMC44LDMxLjQgLTMwLjgsMzEuNCBWIDEyMTIgYyAwLDUyLjMgLTE3LjEsNzAgLTMxLjQsODUuOSAtNS41LDYuMSAtNjQuNCw2MCAtNzIuNyw2Ni4xIGwgLTE5LjMsMC42IGMgMCwwIDM0LjcsLTMxLjQgNDEuMywtMzguNiA3LjcsLTguMyAxNy4xLC0yNC44IDE3LjEsLTUyLjMgMCwtNy4yIC0xLjEsLTE3MS45IC0xLjEsLTE3MS45IEggOTkyLjEgYyAtOTMuNiwwIC0xMTMuNSwtMTAzLjUgLTExNCwtMTMxLjYgViA4NjYuMSBjIDAsLTE3LjEgLTExLC00NS43IC0yOC4xLC01NC41IGggMjYuNCBjIDMuMywxLjEgMTkuOCw3LjcgMTkuOCw3MS42IDAsMCAtMS4xLDczLjggLTEuMSw3OC4yIDAsMzIuNSAyNS45LDY5LjQgNjIuOCw2OS40IGwgMzA0LC0wLjYgYyAwLC04LjMgOC4zLC0zOS4xIDIzLjEsLTU1LjYgOC4zLC05LjQgNzMuOCwtNjguOCA4MSwtNzQuOSBoIDE5LjMgYyAtMi44LDIuOCAtMzQuNywzMC44IC00MS4zLDM4LjYgeiBtIDk5LjcsNjIuMiBjIDcuOSwxMC43IDE2LjUsMjAuOSAyNS45LDMwLjMgMzMsMjYuNCA0OC41LC0yLjIgMjYuNCwtMzEuOSAtOC44LC0xMi4yIC00Mi40LC04LjkgLTUyLjMsMS42IHoiCiAgICAgICBpZD0icGF0aDMiIC8+CiAgICA8cGF0aAogICAgICAgZD0ibSAxMTE3LjEsMTE5NS41IGMgMCwxNC45IC00Ni44LDU0IC00OS42LDU2LjIgLTMuMywtMTYgLTE1LjQsLTMzLjEgLTUwLjEsLTY4LjMgbCA1MS4yLC01MS4yIGMgMzQuOCwzNC43IDQ4LjUsNDIuNCA0OC41LDYzLjMgeiBtIDg5LjMsLTU4OC44IGMgMTAuNSwxMC41IDMyLjUsMzggMTkuMyw1MS44IC0xMS42LDExLjYgLTI5LjcsMzAuMyAtMjkuNywzMC4zIC0xLjEsLTYuNiAtMTguMiwtMjMuMSAtMTguMiwtMjMuMSB2IDU1LjYgYyAtMC42LDIyLjYgLTguOCwyOC42IC04LjgsMjguNiAwLDAgNDEuMyw0MC43IDQxLjMsOTMuNiB2IDU0IGMgMC41LDEwLjIgLTMuMywyMC4yIC0xMC41LDI3LjUgLTMuOSw0LjQgLTQxLjksNDMgLTQ3LjksNDcuOSAtOC44LDcuNyAtMTkuOCwxMi4xIC0zMS40LDExLjYgSCA5NzcuOCBjIC0yMi42LDAgLTQ1LjcsLTE3LjYgLTQ1LjcsLTM1LjIgMCwtNC40IDAuNiwtNTIuOSAwLjYsLTUyLjkgNy4yLDguMyAxNC45LDE4LjIgMzIuNSwxOC4yIDE0LjMsMCAyOC42LC0xMSAzMi41LC0xNS40IDMuOSwtNC40IDEwOCwtMTEyLjQgMTA4LC0xMTIuNCAwLDAgLTQ4LjUsLTQ1LjIgLTgwLjQsLTY2LjYgLTE1LjQsLTEwLjUgLTM2LjQsMi44IC0zOS43LDE2LjUgLTkuOSw0MyAwLDEwOCAwLDEwOCBsIC0zOS4xLC0zOS4xIGMgLTE2LC0xNiAtMTUuNCwtNTEuOCAzLjgsLTcwLjUgMi44LC0zLjMgMzEuOSwtMzUuMyA2OC4zLC0zNS4zIGggNTYuNyBjIDM4LDAgNzkuOSwzOCA3OS45LDM4IDMuMywtMy45IDUuNSwtOC4zIDYuMSwtMTMuMiAwLC0xOS44IC0wLjYsLTcyLjEgLTAuNiwtNzIuMSAtMjguNiwtMjguNiAtMzIuNSwtNTguNCAtMTguNywtNzIuMiAyNS45LC0yNS45IDM1LjMsLTM0LjcgMzUuMywtMzQuNyAwLDAgLTEuMiwzMS4zIDI5LjEsNjEuMSB6IG0gLTE3OS4xLDI4Ni40IGMgLTE0LjMsMTQuOSAtMTYuNSwxOC4yIC0yOS43LDI2LjQgaCAxNjAuOCBjIDQzLjUsMCAzNC43LC0yNyAyNywtNDAuOCAtMTYsLTI4LjEgLTY2LjYsLTc5LjkgLTY2LjYsLTc5LjkgMCwwIC04OC43LDkxLjYgLTkxLjUsOTQuMyB6IgogICAgICAgaWQ9InBhdGg0IiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gODQzLjksMTAzOS42IGggLTI2LjQgYyAwLDAgMjguMSwxNS40IDI4LjEsNTUuNiB2IDEyOC4zIGMgMCw4My4yIDY4LjgsMTYwLjMgMTUyLjYsMTYwLjMgaCA3MCBjIDQxLjksMCA1Ni43LC05LjkgODIuMSwtMzIuNSA5LjQsLTguMyAyMS41LC0yMiAyNS45LC0yNyAxNC4zLC0xNi41IDMwLjMsLTI5LjcgMzAuMywtNzIuNyB2IC00MS45IGMgMCwtMzYuNCAtMjAuOSwtNTEuMiAtMzEuNCwtNjEuNyAtNi42LC02LjYgLTI0LjIsLTIzLjcgLTI0LjIsLTIzLjcgdiA4NS45IGMgMCwwIDE3LjYsMTguNyAyNS4zLDI0LjggMzYuMywyOC42IDcuNyw3OC4yIC0yNi40LDc4LjIgSCA5OTUuOSBjIC01Ni4yLDEuMSAtMTMyLjcsLTQ5IC0xMzIuNywtMTMzLjkgdiAtNjkuNCBjIDAuNSwtNzAuMyAtMTkuMywtNzAuMyAtMTkuMywtNzAuMyB6IgogICAgICAgaWQ9InBhdGg1IiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gMTAxMi41LDExOTYuMSBjIDAsMTQuOSAtNDYuOCw1NCAtNDkuNiw1Ni4yIC0zLjMsLTE2IC0xNS40LC0zMy4xIC01MC4xLC02OC4zIGwgNTEuMiwtNTEuMiBjIDM0LjIsMzQuMSA0OC41LDQxLjggNDguNSw2My4zIHogbSAtNTM3LjEsNTcwIGggLTgyLjYgYyAtMjUuOSwwIC0yMy43LC0yMS41IC0yNi40LC0zOS43IHYgLTExNy45IGMgMCwwIDE4LjIsLTAuNiAzOC42LC0wLjYgMjIuNiwwIDUxLjIsLTMuMyA3OC44LDEyLjEgLTE0LjMsLTMwLjMgLTQ1LjMsLTQ5LjEgLTc4LjgsLTQ3LjkgaCAtMzggdiAtMzggYyAwLDAgMCwtMzMuMSAtOC4zLC00Mi40IGggNTQuNSBjIDQ2LjgsMCA4My4yLC0wLjYgMTIxLjIsMjQuMiAwLDAgLTcuMiwtNjIuMiAtOTgsLTYyLjIgSCAyNTkgYyAwLDAgMzAuOCwyNi40IDI5LjcsNzkuOSBsIDEuMSwyMTQuOCBjIDAsNTQgMjEuNSw1NS42IDIxLjUsNTUuNiBoIDE3NC42IGMgMzkuNywwIDUzLjQsLTI4LjEgNTMuNCwtNDMuNSBsIDAuNiwtMjAuNCBjIDAsMC4xIC0xMi43LDI2IC02NC41LDI2IHogTSA5NDAuMywxNzQ4IHYgLTE1MC40IGMgMCwtNTguNCAtNDcuNCwtNzMuOCAtODMuMiwtNzMuOCAtNDYuOCwwIC02MS4xLDM5LjEgLTY3LjIsNTIuOSAtMTAuNSwtMzYuMyAtNDcuNCwtNTIuOSAtNzcuMSwtNTIuOSAtNTYuNywwIC03MS4xLDU0IC03MS4xLDU0IDAsMCAtMS4xLC01Mi4zIC00Ni44LC01Mi4zIGggLTQ0LjYgYyAwLDAgMjUuOSwxMC41IDI1LjksNTUuNiBWIDE3NDggYyAwLDU1LjEgMjIsNTYuMiAyMiw1Ni4yIEggNjcyIEMgNjU0LjQsMTc5MSA2NDMuOSwxNzcwIDY0My45LDE3NDcuNSB2IC0xNDguMiBjIDEuMSwtNi42IDEyLjEsLTI4LjYgNDMuNSwtMjguNiAxOC4yLDAgMzgsMTguNyAzNy41LDM5LjcgViAxNzQ4IGMgMCw1NS42IDIyLDU2LjIgMjIsNTYuMiBoIDczLjggYyAtMTcuNiwtMTMuOCAtMjguMSwtMzQuMiAtMjguMSwtNTYuNyB2IC0xNDguMiBjIDcuMiwtMjEuNyAzMC42LC0zMy41IDUyLjMsLTI2LjQgMTYuNSw1LjUgMjguMSwyMC40IDI4LjYsMzggViAxNzQ4IGMgMC42LDU2LjIgMjIsNTUuNiAyMiw1NS42IGggNzMuOCBjIC0xNy43LC0xMyAtMjguNSwtMzMuNiAtMjksLTU1LjYgeiBtIDEyOC45LDAgYyAwLDIyLjEgMTAuNCw0Mi45IDI4LjEsNTYuMiBoIC03My44IGMgMCwwIC0yMi42LDAuNiAtMjIuNiwtNTUuNiB2IC0xNjggYyAwLC00NC4xIC0yNS4zLC01NS42IC0yNS4zLC01NS42IGggNDQuNiBjIDE2LDAgNDguNSwwIDQ4LjUsNjIuMiB2IDE1OS43IHogbSAyMjYuOSwtMjAxLjYgYyAwLDAgLTcuMiwtMTkuOCAtMzcuNSwtMTkuOCAtNDYuMywwIC01Ny4zLDU1LjEgLTU3LjMsNTUuMSAtMy45LC00My41IC0xNS40LC01Ni4yIC00Ny45LC01Ni4yIGggLTQ0LjYgYyAwLDAgMjUuOSwxMC41IDI1LjksNTUuNiBWIDE3NDggYyAwLDU1LjEgMjIsNTYuMiAyMiw1Ni4yIGggNzMuOCBjIC0xNy43LC0xMy4zIC0yOC4xLC0zNC4xIC0yOC4xLC01Ni4yIHYgLTEzNy4xIGMgMS43LC0xMS42IDguMywtMjIgMTguMiwtMjguMSAyNC44LC0xNi41IDU3LjMsLTExLjYgNzYuNiwxMSB6IG0gMzQzLjIsOS45IGMgMTUuNCwwIDMwLjMsMy44IDQzLjUsMTEgdiAtNDEuOSBoIC02MS43IHYgLTYzLjkgYyAtMTMuMiwyMC45IC0zMC4zLDM5LjcgLTQ5LjYsNTUuNiAtMjAuOSwxNy4xIC02NSwzOC42IC02NSwzOC42IGwgNDYuOCwwLjYgdiAxOTMuOSBjIDAsNTQgMjIuNiw1NCAyMi42LDU0IGggNzMuMyBjIC0xNy42LC0xMi43IC0yOC4xLC0zMyAtMjguNiwtNTQuNSB2IC0xOTMuMyB6IG0gMjIzLjYsODQuMyBjIC00MS4zLDQzIC03My44LDM2LjMgLTk5LjcsNjguMyAwLDAgNC40LDQzIDM2LjksNTcuOCAxMSw1IDU2LjcsMjEuNSA4NS45LC0yOS4yIHYgNDUuMiBjIDAsMCAtMTguNywyMiAtNzguOCwyMiAtNzIuMiwwIC0xMjEuNywtNTYuNyAtMTIxLjcsLTEzMy44IDAsLTc2IDQwLjIsLTE0NiAxMTYuOCwtMTQ2LjUgNzQuNCwtMS4yIDExNS4xLDU5LjQgNjAuNiwxMTYuMiB6IG0gLTQ1LjIsLTE3LjcgYyAxMi4xLC0yMi42IDIyLC03OS45IC0xOS44LC03Ni42IC00OC41LDMuOSAtMzkuMSwxMzIuMiAtMzkuMSwxMzIuMiAxNiwtMTcuNiA0MC4yLC0yMS40IDU4LjksLTU1LjYgeiBtIC03ODIuNiwtMTIwIGMgMTguNywtMC42IDMzLC0xNiAzMywtMzQuMiAtMC42LC0xOC43IC0xNiwtMzMuMSAtMzQuMiwtMzMuMSAtMTguMiwwLjYgLTMzLDE1LjQgLTMzLDMzLjYgMCwxOC44IDE1LjQsMzMuNiAzNC4yLDMzLjcgeiBtIDMzNy42LDI2OS4zIGMgLTE2LjUsMCAtMjguNiwtMTcuNiAtMjguNiwtMzUuMyAwLC02OS40IDU2LjcsLTc5LjMgNzIuMiwtOTcuNSB2IDExNy4zIGMgLTcuMiw1LjYgLTEzLjksMTUuNSAtNDMuNiwxNS41IHogbSA0My41LC0xNTkuNyBjIC0xNy4xLDI5LjggLTE1MC40LDM2LjQgLTEzMCwxMzkuNCA4LjMsNDAuOCAzNS4zLDUyLjkgNjkuNCw1Mi45IDMzLjEsMCA1My40LC0xNy4xIDYxLjcsLTMzLjYgNSwzMC44IDIwLjksMzMgMjAuOSwzMyBoIDczLjggYyAtMTcuNiwtMTMuMiAtMjguNiwtMzMuNiAtMjguNiwtNTUuNiB2IC0xNTcgYyAwLC0zNy41IC00MS4zLC02Ni42IC04NS40LC02Ni42IC0yNC41LC0wLjYgLTQ4LjYsNi42IC02OC44LDIwLjQgdiA0OC41IGMgMCwwIDE1LjQsLTM4LjYgNTMuNCwtMzguNiAzNy41LDAgNDAuMiwxOC43IDQwLjIsMjguMSAwLjYsOS44IC0xLjEsMjAuMyAtNi42LDI5LjEgeiBtIDYwOS44LDExNS42IGMgMC42LDE5LjggLTE3LjEsNDUuNyAtNTQuNSw0NS43IC0zOC42LDAgLTU0LC0zOS4xIC01NCwtMzkuMSB2IDQ5LjYgYyAyMC45LDEzLjIgNDUuMiwxOS44IDcwLDE5LjggNTAuMSwwIDEwMS4zLC0zOCAxMDAuMiwtOTEuNCAtMC41LC0xNy41IC02LjUsLTM0LjUgLTE3LjEsLTQ4LjUgLTE3LjEsLTIyLjYgLTQ3LjksLTM4LjYgLTcyLjIsLTUzLjQgLTEzLjgsLTguMyAtMjAuOSwtMjMuNyAtMjAuOSwtMjguNiAtMC42LC05LjQgNC40LC0yOC4xIDQxLjMsLTI4LjEgMzYuNCwwIDUyLjMsMzguNiA1Mi4zLDM4LjYgdiAtNDYuOCBjIC0yMC40LC0xNC4zIC00NS4yLC0yMiAtNzAuNSwtMjIgLTQ0LjEsMCAtODQuMywyOS4yIC04My4yLDY2LjYgMC42LDMzLjEgMTQuMyw1NCA0MS4zLDc0LjQgMTIuMSw4LjcgMjQuOCwxNi42IDM4LDIzLjcgMjEsMTEuNCAyOC43LDI1LjggMjkuMywzOS41IHoiCiAgICAgICBpZD0icGF0aDYiIC8+CiAgPC9nPgo8L3N2Zz4K',
+  'EY': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNCIgZmlsbD0iIzFhMWEyZSIvPgo8dGV4dCB4PSI1MCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCdUaW1lcyBOZXcgUm9tYW4nLHNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjQzVBNDRFIiBsZXR0ZXItc3BhY2luZz0iMC41IiBkaXJlY3Rpb249InJ0bCI+2KfZhNin2KrYrdin2K88L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IidBcmlhbCBCbGFjaycsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNyIgZmlsbD0iI0M1QTQ0RSIgbGV0dGVyLXNwYWNpbmc9IjQiPkVUSUhBRDwvdGV4dD4KPGxpbmUgeDE9IjIwIiB5MT0iNzQiIHgyPSI4MCIgeTI9Ijc0IiBzdHJva2U9IiNDNUE0NEUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjYiLz4KPC9zdmc+Cg==',
+  'AF': 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDMycHQiIGhlaWdodD0iNDYuNnB0IiB2aWV3Qm94PSIwIDAgNDMyIDQ2LjYiIHZlcnNpb249IjEuMSI+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAxIj4KICA8cGF0aCBkPSJNIDMyOSA1IEwgMzc3IDUgTCAzNzcgMzcgTCAzMjkgMzcgWiBNIDMyOSA1ICIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAyIj4KICA8cGF0aCBkPSJNIDM1Ni42MDE1NjMgNS4xMDE1NjMgQyAzNjMuMjM4MjgxIDUuMTAxNTYzIDM2OS44NzEwOTQgNS4xMDE1NjMgMzc2LjUwNzgxMyA1LjEwMTU2MyBDIDM3MC41NTQ2ODggMTMuMTkxNDA2IDM2NC45MjE4NzUgMjMuMDc4MTI1IDM1OC4yNzM0MzggMzEuNDA2MjUgQyAzNTYuMDYyNSAzNC4xNzk2ODggMzUzLjUwNzgxMyAzNi41ODU5MzggMzQ5LjQyMTg3NSAzNi42NTIzNDQgQyAzNDMuMTQwNjI1IDM2Ljc0NjA5NCAzMzUuNTM5MDYzIDM2Ljk0MTQwNiAzMjkuMTYwMTU2IDM2Ljk0MTQwNiBDIDMyOS4yMjY1NjMgMzYuMDQ2ODc1IDMzMC41MjczNDQgMzYuMTI1IDMzMC45OTIxODggMzYgQyAzMzQuODcxMDk0IDM0Ljk4MDQ2OSAzMzcuNDgwNDY5IDMyLjQyMTg3NSAzMzkuNzYxNzE5IDI5LjE3OTY4OCBDIDM0NS4yODEyNSAyMS4zMjQyMTkgMzUxLjE4NzUgMTIuNjM2NzE5IDM1Ni42MDE1NjMgNS4xMDE1NjMgIi8+CjwvY2xpcFBhdGg+CjxjbGlwUGF0aCBpZD0iY2xpcDMiPgogIDxwYXRoIGQ9Ik0gMzU2LjYwMTU2MyA1LjEwMTU2MyBDIDM2My4yMzgyODEgNS4xMDE1NjMgMzY5Ljg3MTA5NCA1LjEwMTU2MyAzNzYuNTA3ODEzIDUuMTAxNTYzIEMgMzcwLjU1NDY4OCAxMy4xOTE0MDYgMzY0LjkyMTg3NSAyMy4wNzgxMjUgMzU4LjI3MzQzOCAzMS40MDYyNSBDIDM1Ni4wNjI1IDM0LjE3OTY4OCAzNTMuNTA3ODEzIDM2LjU4NTkzOCAzNDkuNDIxODc1IDM2LjY1MjM0NCBDIDM0My4xNDA2MjUgMzYuNzQ2MDk0IDMzNS41MzkwNjMgMzYuOTQxNDA2IDMyOS4xNjAxNTYgMzYuOTQxNDA2IEMgMzI5LjIyNjU2MyAzNi4wNDY4NzUgMzMwLjUyNzM0NCAzNi4xMjUgMzMwLjk5MjE4OCAzNiBDIDMzNC44NzEwOTQgMzQuOTgwNDY5IDMzNy40ODA0NjkgMzIuNDIxODc1IDMzOS43NjE3MTkgMjkuMTc5Njg4IEMgMzQ1LjI4MTI1IDIxLjMyNDIxOSAzNTEuMTg3NSAxMi42MzY3MTkgMzU2LjYwMTU2MyA1LjEwMTU2MyAiLz4KPC9jbGlwUGF0aD4KPGNsaXBQYXRoIGlkPSJjbGlwNCI+CiAgPHBhdGggZD0iTSAzMjkuMTAxNTYzIDQuOTQxNDA2IEwgMzI4Ljk5MjE4OCAzNyBMIDM3Ni41IDM3LjE2MDE1NiBMIDM3Ni42MDkzNzUgNS4xMDE1NjMgWiBNIDMyOS4xMDE1NjMgNC44Mzk4NDQgTCAzMjkuMTAxNTYzIDQuOTQxNDA2IEwgMzc2LjYwOTM3NSA1LjEwMTU2MyBMIDM3Ni42MDkzNzUgNSBaIE0gMzI5LjEwMTU2MyA0LjgzOTg0NCAiLz4KPC9jbGlwUGF0aD4KPGltYWdlIGlkPSJpbWFnZTUiIHdpZHRoPSIyMzciIGhlaWdodD0iMTYwIiB4bGluazpocmVmPSJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQU8wQUFBQ2dDQUlBQUFCdjZYeHFBQUFBQm1KTFIwUUEvd0QvQVArZ3ZhZVRBQUFDeDBsRVFWUjRuTzNiUVhhYlVCQkUwWkRETGpMSjNyUFJESktSSTl1eGhFVC94NzBMc0pGcGlpNnd0bDgvZm42RHhlMW5Id0FkMjNtL2VqL3hkOE5SdnA5OUFIQUFlVXlCUEtaQUhsTWdqeW1ZK056TkxZS3ZzbGRRTURHUHAzR3B6eWVQS1pESFM1SStiOGhqQ3VReHh6ZzNFT1Z4MHVYTzZuN0J6MHlQUEtiQWUya0s1SEhYbFU3dGZxbFBTOVc0NTI0dUsrNWdyNkJnWEI0UDVGS2ZUeDVUSUkvWEkzcitKWThwa01jYzRQUTBsTWNVZUM5TmdUeW13SDU4TmMzZzJyZm9CK05TN01jVXpOb3IzQnE0ajU1SHdhdzhIc2gxdmdSNVRJRThYb3pjdVVrZVgxam8zUHQrSGdjNGZZamtNUVhlZzFBZ2p5bVF4eFRJWXdya01RV0Qzb080TTV4cTdUKy8veittWUZBZUQrUVNYNFdlUjRFOFhvemN1VWtlVXlDUGVkU0VLSlRIRkhnUFFvRThwa0FlVXlDUEtmQzhndmV0RTNKVHZwODM0eWhZbGIyQ0FudkZ1MXpoQzVISGZHcUJHZG1YT0VyK2NLcmVJNDhwc0IvemtDRTVLSThwOEY2YUFubE1nVHltUUI1VElJOHBtUExjelcyQlI5Z3JLSmlTeDlPNHZOY2lqeW1ReDh1UU9CK1F4eFRJWSs2M2JWTmljSjl6S0hBMzcwRW9NTWNVbUdNSzlEd09jSHJIOHR5TkFuc0ZCZWFZQW5OTWdaN0hrYzZxVzNvZUJmWUtDc3d4QmVhWUFqMlA0NzIrZE9sNUZOZ3JLRERIRkpoakN2UThudWhsN1V2UG84QmVRWUU1cHNBY1U2RG44UXJQcm1GNkhnWDJDZ3JNTVFYbW1BSTlqNWQ2VWgvVDh5aXdWMUJnamlrd3h4VG9lWnpnOEZhbTUxRmdyNkRBSEZOZ2ppblE4empUZGxEbDI0LzZRWEFpZXdVRjVwZ0NjMHlCbnNjSUQ3WTA3L01vc0ZkUVlJNHBNTWNVNkhuTWNsOWgwL01vc0ZkUVlJNHBNTWNVNkhsTTlOWGFwdWRSWUsrZ3dCeFRZSTRwMFBNWTdULzdtNTVIZ2IyQ0FuTk1nVG1tUU05akRSOFhPVDJQQW5zRkJlYVlBbk5NZ1o3SFltNDJPajJQQW5zRkJlYVlBbk5NZ1o3SGt0NzBPajJQQW5zRkJlYVlBbk5NZ1o3MzE3WnBDZ3Y3RGRqbEExTU9vQnVsQUFBQUFFbEZUa1N1UW1DQyIvPgo8Y2xpcFBhdGggaWQ9ImNsaXA1Ij4KICA8cGF0aCBkPSJNIDM5NyAxMCBMIDQzMiAxMCBMIDQzMiA0Ni42MDE1NjMgTCAzOTcgNDYuNjAxNTYzIFogTSAzOTcgMTAgIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPGcgaWQ9InN1cmZhY2UxIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAxKSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAyKSIgY2xpcC1ydWxlPSJldmVub2RkIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAzKSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXA0KSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPHVzZSB4bGluazpocmVmPSIjaW1hZ2U1IiB0cmFuc2Zvcm09Im1hdHJpeCgwLjIsMCwwLC0wLjIsMzI5LjEsMzcpIi8+CjwvZz4KPC9nPgo8L2c+CjwvZz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gOTYuNDg4MjgxIDM2LjA5Mzc1IEwgODYuMTY3OTY5IDI1Ljc3MzQzOCBDIDg2Ljk4ODI4MSAyNS41MzEyNSA4Ny44MDA3ODEgMjUuMjIyNjU2IDg4LjYwMTU2MyAyNC44MzIwMzEgQyA5MC4wMTk1MzEgMjQuMTQwNjI1IDkxLjA2MjUgMjMuMzkwNjI1IDkyLjIxNDg0NCAyMS42Njc5NjkgQyA5My4wNTQ2ODggMjAuNDA2MjUgOTMuNDg0Mzc1IDE4LjY5MTQwNiA5My40ODQzNzUgMTYuOTE0MDYzIEMgOTMuNDg0Mzc1IDE0LjYxMzI4MSA5Mi42ODc1IDEyLjczNDM3NSA5MS4wOTM3NSAxMS4yODEyNSBDIDg5LjUgOS44MjQyMTkgODcuNTE5NTMxIDguODgyODEzIDg1LjE1NjI1IDguNDQ1MzEzIEMgODMuNjIxMDk0IDguMTU2MjUgODAuMzIwMzEzIDguMDExNzE5IDc1LjI1NzgxMyA4LjAxMTcxOSBMIDYxLjg5ODQzOCA4LjAxMTcxOSBMIDYxLjg5ODQzOCAzNi45NTMxMjUgTCA3MC4yMjI2NTYgMzYuOTUzMTI1IEwgNzAuMjIyNjU2IDI2LjYxNzE4OCBMIDc1LjM4NjcxOSAyNi42MTcxODggTCA4MC4xODM1OTQgMzEuNTM5MDYzIEwgODIuNjkxNDA2IDM0LjExMzI4MSBMIDgyLjY5NTMxMyAzNC4xMTMyODEgTCA4NC42MDkzNzUgMzYuMDgyMDMxIEMgODUuMDcwMzEzIDM2LjU1NDY4OCA4NS45ODQzNzUgMzYuOTQxNDA2IDg2LjY0NDUzMSAzNi45NDE0MDYgTCA5Ny4zMzU5MzggMzYuOTQxNDA2IFogTSA3MC4yMjI2NTYgMTMuNDg4MjgxIEwgNzQuMjQ2MDk0IDEzLjQ4ODI4MSBDIDc3LjI0NjA5NCAxMy40ODgyODEgNzkuMjQyMTg4IDEzLjU1NDY4OCA4MC4yMzQzNzUgMTMuNjg3NSBDIDgxLjU4NTkzOCAxMy44NTU0NjkgODIuNzAzMTI1IDE0LjI4NTE1NiA4My41ODIwMzEgMTQuOTY4NzUgQyA4NC40NjQ4NDQgMTUuNjUyMzQ0IDg0LjY3MTg3NSAxNi4yNjU2MjUgODQuNjcxODc1IDE3LjMyMDMxMyBDIDg0LjY3MTg3NSAxOC4xNzU3ODEgODQuNTg5ODQ0IDE4LjYwMTU2MyA4My45NjA5MzggMTkuMjQ2MDk0IEMgODMuMzM1OTM4IDE5Ljg5MDYyNSA4Mi40Njg3NSAyMC4zNjMyODEgODEuMzU5Mzc1IDIwLjY2Nzk2OSBDIDgwLjI1MzkwNiAyMC45Njg3NSA3OC4wNTg1OTQgMjEuMTIxMDk0IDc0Ljc4MTI1IDIxLjEyMTA5NCBMIDcwLjIyMjY1NiAyMS4xMjEwOTQgTCA3MC4yMjI2NTYgMTMuNDg4MjgxICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDcuMDk5OTE1JSwxMS4zOTk4NDElLDI1LjQ5ODk2MiUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA1My41ODk4NDQgMzYuOTc2NTYzIEwgNDQuODUxNTYzIDM2Ljk3NjU2MyBMIDQ0Ljg1MTU2MyA3LjY1MjM0NCBMIDUzLjU4OTg0NCA3LjY1MjM0NCBMIDUzLjU4OTg0NCAzNi45NzY1NjMgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoNy4wOTk5MTUlLDExLjM5OTg0MSUsMjUuNDk4OTYyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEyOC43NSAyNy43NTc4MTMgTCAxMjguNzUgMjEuMjQ2MDk0IEwgMTA5LjQwMjM0NCAyMS4yNDYwOTQgTCAxMDkuNDAyMzQ0IDE0LjAzMTI1IEwgMTI5LjM0NzY1NiAxNC4wMzEyNSBMIDEyOS4zNDc2NTYgNy43NDYwOTQgTCAxMDEuMDUwNzgxIDcuNzQ2MDk0IEwgMTAxLjA1MDc4MSAzNi45NDE0MDYgTCAxMDkuMzIwMzEzIDM2Ljk0MTQwNiBMIDEwOS4zMjAzMTMgMjcuNzU3ODEzIEwgMTI4Ljc1IDI3Ljc1NzgxMyAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMTY5LjI3MzQzOCAzNS45OTYwOTQgTCAxNTguOTUzMTI1IDI1LjY3NTc4MSBDIDE1OS43Njk1MzEgMjUuNDMzNTk0IDE2MC41ODIwMzEgMjUuMTI1IDE2MS4zODY3MTkgMjQuNzM0Mzc1IEMgMTYyLjgwNDY4OCAyNC4wNDI5NjkgMTYzLjg0NzY1NiAyMy4yOTI5NjkgMTY0Ljk5NjA5NCAyMS41NzAzMTMgQyAxNjUuODM5ODQ0IDIwLjMwODU5NCAxNjYuMjY5NTMxIDE4LjU5NzY1NiAxNjYuMjY5NTMxIDE2LjgyMDMxMyBDIDE2Ni4yNjk1MzEgMTQuNTE1NjI1IDE2NS40Njg3NSAxMi42MzY3MTkgMTYzLjg3ODkwNiAxMS4xODM1OTQgQyAxNjIuMjgxMjUgOS43MzA0NjkgMTYwLjMwNDY4OCA4Ljc4NTE1NiAxNTcuOTQxNDA2IDguMzUxNTYzIEMgMTU2LjQwMjM0NCA4LjA1ODU5NCAxNTMuMTA1NDY5IDcuOTE0MDYzIDE0OC4wMzkwNjMgNy45MTQwNjMgTCAxMzQuNjgzNTk0IDcuOTE0MDYzIEwgMTM0LjY4MzU5NCAzNi44NTkzNzUgTCAxNDMuMDA3ODEzIDM2Ljg1OTM3NSBMIDE0My4wMDc4MTMgMjYuNTE5NTMxIEwgMTQ4LjE3MTg3NSAyNi41MTk1MzEgTCAxNTIuOTY4NzUgMzEuNDQxNDA2IEwgMTU1LjQ3NjU2MyAzNC4wMTk1MzEgTCAxNTcuMzk0NTMxIDM1Ljk4NDM3NSBDIDE1Ny44NTU0NjkgMzYuNDU3MDMxIDE1OC43Njk1MzEgMzYuODQzNzUgMTU5LjQyNTc4MSAzNi44NDM3NSBMIDE3MC4xMjEwOTQgMzYuODQzNzUgWiBNIDE0My4wMDc4MTMgMTMuMzkwNjI1IEwgMTQ3LjAyNzM0NCAxMy4zOTA2MjUgQyAxNTAuMDI3MzQ0IDEzLjM5MDYyNSAxNTIuMDI3MzQ0IDEzLjQ1NzAzMSAxNTMuMDE5NTMxIDEzLjU4OTg0NCBDIDE1NC4zNzEwOTQgMTMuNzYxNzE5IDE1NS40ODQzNzUgMTQuMTg3NSAxNTYuMzY3MTg4IDE0Ljg3MTA5NCBDIDE1Ny4yNDYwOTQgMTUuNTU4NTk0IDE1Ny40NTcwMzEgMTYuMTY3OTY5IDE1Ny40NTcwMzEgMTcuMjIyNjU2IEMgMTU3LjQ1NzAzMSAxOC4wNzgxMjUgMTU3LjM3NSAxOC41MDM5MDYgMTU2Ljc0NjA5NCAxOS4xNDg0MzggQyAxNTYuMTE3MTg4IDE5Ljc5Mjk2OSAxNTUuMjUzOTA2IDIwLjI2OTUzMSAxNTQuMTQ0NTMxIDIwLjU3MDMxMyBDIDE1My4wMzkwNjMgMjAuODc1IDE1MC44NDM3NSAyMS4wMjM0MzggMTQ3LjU2MjUgMjEuMDIzNDM4IEwgMTQzLjAwNzgxMyAyMS4wMjM0MzggTCAxNDMuMDA3ODEzIDEzLjM5MDYyNSAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMzEuNzAzMTI1IDM2Ljk0MTQwNiBMIDQyLjE0NDUzMSAzNi45NDE0MDYgTCAyMy42Nzk2ODggNy44NDc2NTYgTCAxNi41MjczNDQgNy44NDc2NTYgTCAwIDM3LjAzOTA2MyBMIDguMjE0ODQ0IDM3LjAzOTA2MyBMIDExLjc0NjA5NCAzMC4zNjcxODggTCAyNy45NDE0MDYgMzAuMzY3MTg4IFogTSAxNC44NjcxODggMjQuNDcyNjU2IEwgMTkuNTIzNDM4IDE1LjY3NTc4MSBMIDI0LjU2MjUgMjQuNDcyNjU2IFogTSAxNC44NjcxODggMjQuNDcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDcuMDk5OTE1JSwxMS4zOTk4NDElLDI1LjQ5ODk2MiUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAyMDIuMzc4OTA2IDM2Ljg0Mzc1IEwgMjEyLjY0ODQzOCAzNi44NDM3NSBMIDE5NC40ODQzNzUgNy43NSBMIDE4Ny40NDUzMTMgNy43NSBMIDE3MS4xODM1OTQgMzYuOTQxNDA2IEwgMTc5LjI2NTYyNSAzNi45NDE0MDYgTCAxODIuNzQyMTg4IDMwLjI2OTUzMSBMIDE5OC42NzU3ODEgMzAuMjY5NTMxIFogTSAxODUuODEyNSAyNC4zNzUgTCAxOTAuMzk0NTMxIDE1LjU3ODEyNSBMIDE5NS4zNTE1NjMgMjQuMzc1IFogTSAxODUuODEyNSAyNC4zNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoNy4wOTk5MTUlLDExLjM5OTg0MSUsMjUuNDk4OTYyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDIxMy45MzM1OTQgNy43NDYwOTQgTCAyMTMuOTMzNTk0IDM2Ljk3NjU2MyBMIDIyMC44OTQ1MzEgMzYuOTc2NTYzIEwgMjIwLjg5NDUzMSAxOS43MTQ4NDQgTCAyNDEuMjYxNzE5IDM2Ljk0MTQwNiBMIDI0Ny4xOTkyMTkgMzYuOTQxNDA2IEwgMjQ3LjE5OTIxOSA3Ljc0NjA5NCBMIDI0MC4xMDE1NjMgNy43NDYwOTQgTCAyNDAuMTAxNTYzIDI0LjcyNjU2MyBMIDIxOS41IDcuNzQ2MDk0IEwgMjEzLjkzMzU5NCA3Ljc0NjA5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMjk5LjY0MDYyNSAxOS4yNTM5MDYgTCAyOTkuNjQwNjI1IDEzLjg1NTQ2OSBMIDMyMC40NDE0MDYgMTMuODU1NDY5IEwgMzIwLjQ0MTQwNiA3Ljc1IEwgMjkwLjk2MDkzOCA3Ljc1IEwgMjkwLjk2MDkzOCAzNi45NDE0MDYgTCAzMjAuNDQxNDA2IDM2Ljk0MTQwNiBMIDMyMC40NDE0MDYgMzAuODUxNTYzIEwgMjk5LjY0MDYyNSAzMC44NTE1NjMgTCAyOTkuNjQwNjI1IDI1LjQ1NzAzMSBMIDMyMC40NDE0MDYgMjUuNDU3MDMxIEwgMzIwLjQ0MTQwNiAxOS4yNTM5MDYgTCAyOTkuNjQwNjI1IDE5LjI1MzkwNiAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMjczLjU0Njg3NSAzMC44NTE1NjMgQyAyNjMuNjg3NSAzMS4zMzU5MzggMjU5Ljk0NTMxMyAyNi41NzgxMjUgMjYwLjAxMTcxOSAyMi4xNjQwNjMgQyAyNjAuMDY2NDA2IDE4LjQwMjM0NCAyNjIuOTE3OTY5IDEzLjg0NzY1NiAyNzIuMTkxNDA2IDEzLjkzNzUgQyAyNzYuOTA2MjUgMTMuOTgwNDY5IDI4MS45Njg3NSAxNS4yMzA0NjkgMjg1LjcyMjY1NiAxNi45MTc5NjkgTCAyODUuNzIyNjU2IDkuODQzNzUgQyAyODIuMTc5Njg4IDguMjU3ODEzIDI3Ny43MzA0NjkgNy4zMzk4NDQgMjcyLjU3ODEyNSA3LjI2NTYyNSBDIDI1OC45NDkyMTkgNy4wNzQyMTkgMjUwLjYyMTA5NCAxMy43MjY1NjMgMjUwLjUzOTA2MyAyMi4wNTQ2ODggQyAyNTAuNDQxNDA2IDMxLjgxNjQwNiAyNjAuMTk1MzEzIDM3LjQyNTc4MSAyNzIuNTc4MTI1IDM3LjQyNTc4MSBDIDI3Ny40NzY1NjMgMzcuNDI1NzgxIDI4Mi4wMjM0MzggMzYuMzYzMjgxIDI4NS43MjI2NTYgMzQuNTcwMzEzIEwgMjg1LjcyMjY1NiAyNy41NDI5NjkgQyAyODIuNDg4MjgxIDI5LjIzODI4MSAyNzguMTcxODc1IDMwLjYyNSAyNzMuNTQ2ODc1IDMwLjg1MTU2MyAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQyMS45ODA0NjkgMi4yODkwNjMgTCA0MjEuNzIyNjU2IDIuMTcxODc1IEwgNDIxLjc4NTE1NiAyLjAzMTI1IEwgNDIyLjQ4NDM3NSAyLjM0NzY1NiBMIDQyMi40MjE4NzUgMi40ODgyODEgTCA0MjIuMTY0MDYzIDIuMzcxMDk0IEwgNDIxLjgyMDMxMyAzLjEzMjgxMyBMIDQyMS42MzY3MTkgMy4wNTA3ODEgTCA0MjEuOTgwNDY5IDIuMjg5MDYzICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNDIyLjYyMTA5NCAyLjQwMjM0NCBMIDQyMi45MDYyNSAyLjU0Mjk2OSBMIDQyMi43ODkwNjMgMy4zMjAzMTMgTCA0MjIuNzkyOTY5IDMuMzI0MjE5IEwgNDIzLjMzNTkzOCAyLjc1IEwgNDIzLjYyMTA5NCAyLjg5MDYyNSBMIDQyMy4xODM1OTQgMy43ODEyNSBMIDQyMy4wMTU2MjUgMy42OTkyMTkgTCA0MjMuMzcxMDk0IDIuOTYwOTM4IEwgNDIyLjc3MzQzOCAzLjU3ODEyNSBMIDQyMi42MDE1NjMgMy40OTYwOTQgTCA0MjIuNzE4NzUgMi42NDQ1MzEgTCA0MjIuNzE0ODQ0IDIuNjQ0NTMxIEwgNDIyLjM1OTM3NSAzLjM3ODkwNiBMIDQyMi4xODc1IDMuMjkyOTY5IEwgNDIyLjYyMTA5NCAyLjQwMjM0NCAiLz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXA1KSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQyNC43MzQzNzUgMTAuMTEzMjgxIEwgNDI0LjcxNDg0NCAxMC4xMzY3MTkgQyA0MjguMTA1NDY5IDEzLjU0Mjk2OSA0MzAuMzM1OTM4IDE4LjEzNjcxOSA0MzAuNjk1MzEzIDIzLjMwNDY4OCBDIDQzMS40OTYwOTQgMzQuNzI2NTYzIDQyMi44ODY3MTkgNDQuNjI4OTA2IDQxMS40NjQ4NDQgNDUuNDI5Njg4IEMgNDA2LjA5NzY1NiA0NS44MDQ2ODggNDAxLjA2NjQwNiA0NC4xMDE1NjMgMzk3LjE1NjI1IDQxLjAwMzkwNiBMIDM5Ny4xMzI4MTMgNDEuMDI3MzQ0IEMgNDAxLjE5MTQwNiA0NC44MTI1IDQwNi43NDYwOTQgNDYuOTY0ODQ0IDQxMi43MTg3NSA0Ni41NTA3ODEgQyA0MjQuMTM2NzE5IDQ1Ljc1IDQzMi43NDYwOTQgMzUuODQzNzUgNDMxLjk0OTIxOSAyNC40MjU3ODEgQyA0MzEuNTQ2ODc1IDE4LjY1MjM0NCA0MjguODEyNSAxMy41OTc2NTYgNDI0LjczNDM3NSAxMC4xMTMyODEgIi8+CjwvZz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDM4Ny45OTYwOTQgMzMuNjgzNTk0IEMgMzg3LjMzNTkzOCAzNC4wNDY4NzUgMzg3LjE4NzUgMzQuNjAxNTYzIDM4Ny41MjczNDQgMzUuNDU3MDMxIEMgMzg3LjgzOTg0NCAzNi4yMzQzNzUgMzg4LjMyODEyNSAzNi41NzQyMTkgMzg4Ljg0NzY1NiAzNi4zNjMyODEgQyAzODkuMjY1NjI1IDM2LjE5OTIxOSAzODkuMzM5ODQ0IDM1LjgzNTkzOCAzODkuMTY0MDYzIDM0Ljg5ODQzOCBMIDM4OS4wODk4NDQgMzQuNTM5MDYzIEMgMzg4LjkxNzk2OSAzMy42MTcxODggMzg4Ljg5MDYyNSAzMy4yMTg3NSAzODkgMzIuODI0MjE5IEMgMzg5LjEwOTM3NSAzMi4zODI4MTMgMzg5LjM2MzI4MSAzMi4wODk4NDQgMzg5Ljc1IDMxLjkzMzU5NCBDIDM5MC42OTE0MDYgMzEuNTU4NTk0IDM5MS41NzgxMjUgMzIuMTM2NzE5IDM5Mi4xMDU0NjkgMzMuNDU3MDMxIEMgMzkyLjY3NTc4MSAzNC44ODI4MTMgMzkyLjM2NzE4OCAzNS45NTcwMzEgMzkxLjI1NzgxMyAzNi40MTc5NjkgTCAzOTAuOTgwNDY5IDM1LjcyMjY1NiBDIDM5MS43NTM5MDYgMzUuMzg2NzE5IDM5MS45NDUzMTMgMzQuNjYwMTU2IDM5MS41MzUxNTYgMzMuNjI4OTA2IEMgMzkxLjE5NTMxMyAzMi43ODUxNTYgMzkwLjY1NjI1IDMyLjQxMDE1NiAzOTAuMDg5ODQ0IDMyLjYzNjcxOSBDIDM4OS42MzY3MTkgMzIuODE2NDA2IDM4OS41MjczNDQgMzMuMjM4MjgxIDM4OS42OTUzMTMgMzQuMTk5MjE5IEwgMzg5Ljc2MTcxOSAzNC42MDE1NjMgTCAzODkuODI0MjE5IDM0Ljk1NzAzMSBDIDM4OS45NDUzMTMgMzUuNjY3OTY5IDM4OS45NjA5MzggMzUuOTIxODc1IDM4OS44OTA2MjUgMzYuMjIyNjU2IEMgMzg5LjgwMDc4MSAzNi42MDE1NjMgMzg5LjU1NDY4OCAzNi44Nzg5MDYgMzg5LjE2Nzk2OSAzNy4wMzUxNTYgQyAzODguMjg5MDYzIDM3LjM4NjcxOSAzODcuNDQxNDA2IDM2Ljg2NzE4OCAzODYuOTY4NzUgMzUuNjc5Njg4IEMgMzg2LjQ1MzEyNSAzNC4zOTA2MjUgMzg2LjczMDQ2OSAzMy40Mzc1IDM4Ny43MTg3NSAzMi45OTIxODggTCAzODcuOTk2MDk0IDMzLjY4MzU5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDM4Ny40MDYyNSAyNi4xOTkyMTkgTCAzOTAuNTUwNzgxIDIzLjU0Njg3NSBMIDM5MC41NzQyMTkgMjQuNTI3MzQ0IEwgMzg3LjkxMDE1NiAyNi43MzQzNzUgTCAzODguNzczNDM4IDI3LjY4NzUgTCAzOTAuNjQ0NTMxIDI3LjY0NDUzMSBMIDM5MC42NjAxNTYgMjguNDE0MDYzIEwgMzg1LjMxNjQwNiAyOC41MzEyNSBMIDM4NS4yOTY4NzUgMjcuNzY1NjI1IEwgMzg3LjQwMjM0NCAyNy43MTg3NSBMIDM4Ny42OTE0MDYgMjcuNzE4NzUgTCAzODcuOTY0ODQ0IDI3LjcxNDg0NCBMIDM4Ny43ODEyNSAyNy41MjM0MzggTCAzODcuNjAxNTYzIDI3LjMzMjAzMSBMIDM4NS4yMzA0NjkgMjQuNzgxMjUgTCAzODUuMjEwOTM4IDIzLjc2NTYyNSBMIDM4Ny40MDYyNSAyNi4xOTkyMTkgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAzODkuNzczNDM4IDE3LjkyMTg3NSBMIDM5MS44MzU5MzggMTguNjQ0NTMxIEwgMzkxLjU3ODEyNSAxOS4zNjcxODggTCAzODkuNTE5NTMxIDE4LjY0NDUzMSBMIDM4NS44MjgxMjUgMTkuNzU3ODEzIEwgMzg2LjEzNjcxOSAxOC44NzUgTCAzODguNDI5Njg4IDE4LjIzNDM3NSBMIDM4OC43MTQ4NDQgMTguMTU2MjUgQyAzODguODI4MTI1IDE4LjEyMTA5NCAzODguODk4NDM4IDE4LjEwOTM3NSAzODkuMTAxNTYzIDE4LjA3MDMxMyBDIDM4OC45MjE4NzUgMTcuODU1NDY5IDM4OC44Nzg5MDYgMTcuODA0Njg4IDM4OC42OTE0MDYgMTcuNTM5MDYzIEwgMzg3LjI3NzM0NCAxNS42MjUgTCAzODcuNTcwMzEzIDE0Ljc4NTE1NiBMIDM4OS43NzM0MzggMTcuOTIxODc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMzkzLjM5MDYyNSA4LjEwOTM3NSBMIDM5Mi4yNjE3MTkgOS40ODgyODEgTCAzOTUuNjMyODEzIDEyLjI1IEwgMzk0LjgyNDIxOSAxMy4yNDIxODggTCAzOTEuNDQ5MjE5IDEwLjQ4MDQ2OSBMIDM5MC4zMjQyMTkgMTEuODUxNTYzIEwgMzg5LjU2MjUgMTEuMjI2NTYzIEwgMzkyLjYyODkwNiA3LjQ4NDM3NSBMIDM5My4zOTA2MjUgOC4xMDkzNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0MDAuNjA1NDY5IDMuMDQyOTY5IEwgMzk3LjkwNjI1IDQuNjE3MTg4IEwgMzk4LjQ4NDM3NSA1LjYwMTU2MyBMIDQwMC45NjA5MzggNC4xNTYyNSBMIDQwMS40MjE4NzUgNC45NDUzMTMgTCAzOTguOTQ1MzEzIDYuMzk0NTMxIEwgMzk5LjYwOTM3NSA3LjUzMTI1IEwgNDAyLjM2MzI4MSA1LjkyMTg3NSBMIDQwMi44NTkzNzUgNi43NzM0MzggTCAzOTkuMDAzOTA2IDkuMDI3MzQ0IEwgMzk2LjMwNDY4OCA0LjQxNDA2MyBMIDQwMC4xMDkzNzUgMi4xODc1IEwgNDAwLjYwNTQ2OSAzLjA0Mjk2OSAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQxMC45NTMxMjUgNS4xMTcxODggTCA0MDkuNTU0Njg4IDUuMjA3MDMxIEwgNDA4Ljg2MzI4MSA0LjA1NDY4OCBMIDQwNi43MTA5MzggNC4zOTQ1MzEgTCA0MDYuNDA2MjUgNS43MTQ4NDQgTCA0MDUuMDc0MjE5IDYuMDU0Njg4IEwgNDA2LjQ4MDQ2OSAwLjIxNDg0NCBMIDQwNy43OTY4NzUgMC4wMDM5MDYyNSBaIE0gNDA3Ljg5ODQzOCAyLjM2MzI4MSBDIDQwNy42MDU0NjkgMS44NzEwOTQgNDA3LjQ4ODI4MSAxLjY1NjI1IDQwNy4zMjAzMTMgMS4yNzM0MzggQyA0MDcuMjczNDM4IDEuNjU2MjUgNDA3LjIyMjY1NiAxLjk0MTQwNiA0MDcuMDkzNzUgMi40ODgyODEgTCA0MDYuODcxMDk0IDMuNTA3ODEzIEwgNDA4LjQyNTc4MSAzLjI2MTcxOSBMIDQwNy44OTg0MzggMi4zNjMyODEgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0MTkuNTM5MDYzIDYuODI4MTI1IEwgNDE4LjQxNDA2MyA2LjM5ODQzOCBMIDQxOC44NDM3NSA0LjgxMjUgQyA0MTguODkwNjI1IDQuNjI1IDQxOC45NjA5MzggNC4zNjcxODggNDE5LjA1NDY4OCA0LjA0Mjk2OSBDIDQxOS4xNDA2MjUgMy43MTA5MzggNDE5LjIxODc1IDMuNDQ5MjE5IDQxOS4yNzczNDQgMy4yNTc4MTMgQyA0MTkuMzQzNzUgMy4wNDI5NjkgNDE5LjQxNDA2MyAyLjgyMDMxMyA0MTkuNDg0Mzc1IDIuNTg5ODQ0IEwgNDE5LjYxMzI4MSAyLjIwNzAzMSBDIDQxOS4yOTY4NzUgMi43NDYwOTQgNDE5LjE3MTg3NSAyLjkzNzUgNDE4Ljg4MjgxMyAzLjM3ODkwNiBDIDQxOC43NjE3MTkgMy41NzAzMTMgNDE4LjY0NDUzMSAzLjczMDQ2OSA0MTguNTU0Njg4IDMuODYzMjgxIEwgNDE3LjAzNTE1NiA1Ljk4ODI4MSBMIDQxNi4wNjI1IDUuNzMwNDY5IEwgNDE1Ljc1NzgxMyAzLjE3NTc4MSBDIDQxNS43MzgyODEgMy4wNDY4NzUgNDE1LjcyMjY1NiAyLjg1OTM3NSA0MTUuNzAzMTI1IDIuNjA5Mzc1IEMgNDE1LjY4NzUgMi4yNjk1MzEgNDE1LjY3MTg3NSAyLjAxOTUzMSA0MTUuNjY0MDYzIDEuODM5ODQ0IEMgNDE1LjY1NjI1IDEuNjk5MjE5IDQxNS42NTYyNSAxLjQ4NDM3NSA0MTUuNjYwMTU2IDEuMTk1MzEzIEwgNDE1LjUyNzM0NCAxLjgzOTg0NCBDIDQxNS4zNjcxODggMi41NDI5NjkgNDE1LjI5Njg3NSAyLjg0NzY1NiA0MTUuMDg1OTM4IDMuNjkxNDA2IEwgNDE0LjY0MDYyNSA1LjQxMDE1NiBMIDQxMy40NTcwMzEgNS4yMjY1NjMgTCA0MTQuNzk2ODc1IC0wLjAwMzkwNjI1IEwgNDE2LjU5Mzc1IDAuMzQzNzUgTCA0MTYuODQ3NjU2IDIuODE2NDA2IEMgNDE2LjkxNDA2MyAzLjM5ODQzOCA0MTYuOTIxODc1IDMuODgyODEzIDQxNi44OTg0MzggNC41NzQyMTkgQyA0MTcuMTAxNTYzIDQuMTc5Njg4IDQxNy4xNzE4NzUgNC4wNDY4NzUgNDE3LjQwNjI1IDMuNjg3NSBDIDQxNy41NTg1OTQgMy40NDUzMTMgNDE3LjY5NTMxMyAzLjIzODI4MSA0MTcuODE2NDA2IDMuMDU0Njg4IEwgNDE5LjIyNjU2MyAxLjAzNTE1NiBMIDQyMC45Mjk2ODggMS42MTMyODEgTCA0MTkuNTM5MDYzIDYuODI4MTI1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNDA5LjMyNDIxOSAxNy4xMjUgQyA0MDguNjcxODc1IDE3LjY5NTMxMyA0MDcuMzkwNjI1IDE4LjkyNTc4MSA0MDYuMTQ4NDM4IDIwLjExNzE4OCBMIDQwNC43NDIxODggMjEuNDY0ODQ0IEMgNDAzLjU5Mzc1IDIxLjI1MzkwNiA0MDIuNDYwOTM4IDIxLjE1NjI1IDQwMS4yOTY4NzUgMjEuMTU2MjUgQyAzOTguNjkxNDA2IDIxLjE1NjI1IDM5Ni4zMDQ2ODggMjEuODc1IDM5NS4yMTg3NSAyMi45ODQzNzUgQyAzOTQuODA0Njg4IDIzLjQwNjI1IDM5NC41OTc2NTYgMjMuODcxMDk0IDM5NC42MDU0NjkgMjQuMzU1NDY5IEMgMzk0LjYzMjgxMyAyNS42MTMyODEgMzk2LjA3NDIxOSAyNi4yNSAzOTYuNTE1NjI1IDI2LjQxNDA2MyBDIDM5OC44MjgxMjUgMjcuMjc3MzQ0IDQwMC43Njk1MzEgMjcuMDI3MzQ0IDQwMi44MDg1OTQgMjUuNjAxNTYzIEMgNDAzLjkzNzUgMjQuODEyNSA0MDUuMjg5MDYzIDIzLjU0Njg3NSA0MDYuMzQ3NjU2IDIyLjUzNTE1NiBDIDQwNy4xNzE4NzUgMjIuNzIyNjU2IDQwOC4xMDE1NjMgMjIuOTY0ODQ0IDQwOS4xMDU0NjkgMjMuMjYxNzE5IEwgNDEwLjAzMTI1IDIzLjUzMTI1IEMgNDA4LjgzNTkzOCAyNC43MTA5MzggNDA3LjYwMTU2MyAyNS45NTMxMjUgNDA2LjQ2MDkzOCAyNi45NjA5MzggTCA0MDYuMzcxMDk0IDI3LjAzOTA2MyBDIDQwNC43ODUxNTYgMjguNDQxNDA2IDQwMy42MzI4MTMgMjkuNDUzMTI1IDQwMS45NzY1NjMgMjkuODIwMzEzIEMgNDAwLjgwODU5NCAzMC4wODIwMzEgMzk5Ljk4MDQ2OSAyOS44MzIwMzEgMzk5LjcwNzAzMSAyOS42Njc5NjkgQyAzOTkuNjgzNTk0IDI5LjY3MTg3NSAzOTkuNjQ0NTMxIDI5LjcxODc1IDM5OS42NDQ1MzEgMjkuNzE4NzUgQyA0MDAuNjA1NDY5IDMwLjUxMTcxOSA0MDEuNTE1NjI1IDMwLjk1NzAzMSA0MDMuMDc4MTI1IDMwLjgyNDIxOSBDIDQwNC41NjY0MDYgMzAuNjk1MzEzIDQwNi4yODUxNTYgMjkuNzUzOTA2IDQwOC4wNDY4NzUgMjguMTA5Mzc1IEwgNDEwLjQyMTg3NSAyNS43NzczNDQgTCA0MTIuMDg1OTM4IDI0LjEyNSBDIDQxMi4wODU5MzggMjQuMTM2NzE5IDQxNS40NDkyMTkgMjUuMTEzMjgxIDQxNS40NDkyMTkgMjUuMTEzMjgxIEMgNDE1LjQ3NjU2MyAyNS4xMjEwOTQgNDE1LjUxMTcxOSAyNS4xMjg5MDYgNDE1LjUxMTcxOSAyNS4xMjg5MDYgQyA0MTUuNDc2NTYzIDI1LjEzMjgxMyA0MTMuNDI5Njg4IDI3LjE1MjM0NCA0MTMuNDI5Njg4IDI3LjE1MjM0NCBMIDQxMS42NDA2MjUgMjguOTMzNTk0IEMgNDA5LjgwODU5NCAzMC43MTQ4NDQgNDA4LjgxMjUgMzEuNjM2NzE5IDQwNy43NDIxODggMzIuMzk0NTMxIEMgNDA1Ljk3MjY1NiAzMy42NDg0MzggNDA0LjQ2NDg0NCAzNC4zMDA3ODEgNDAzLjEyNSAzNC4zOTA2MjUgQyA0MDIuNDM3NSAzNC40Mzc1IDQwMS40Mzc1IDM0LjM4NjcxOSA0MDAuNjA1NDY5IDMzLjg5ODQzOCBDIDQwMC41NzAzMTMgMzMuODkwNjI1IDQwMC41MTk1MzEgMzMuOTM3NSA0MDAuNTE5NTMxIDMzLjkzNzUgQyA0MDEuNDIxODc1IDM0LjcxNDg0NCA0MDIuNTMxMjUgMzUuNjM2NzE5IDQwNC40Mzc1IDM1LjU4NTkzOCBDIDQwNi41OTM3NSAzNS41MjM0MzggNDA4LjUwMzkwNiAzNC40ODQzNzUgNDExLjQ3NjU2MyAzMS43NTM5MDYgQyA0MTIuODM1OTM4IDMwLjUwNzgxMyA0MTQuMTc5Njg4IDI5LjExNzE4OCA0MTUuMzcxMDk0IDI3Ljg4NjcxOSBMIDQxNy41NzgxMjUgMjUuNjQ4NDM4IEMgNDE5LjAzNTE1NiAyNS45NzI2NTYgNDIwLjMzNTkzOCAyNi4xMDE1NjMgNDIxLjc3MzQzOCAyNi4wNzQyMTkgQyA0MjMuODY3MTg4IDI2LjAzMTI1IDQyNS42NTYyNSAyNS4wMjczNDQgNDI1LjY3OTY4OCAyMy44ODI4MTMgQyA0MjUuNjk5MjE5IDIzLjAzNTE1NiA0MjUuMDAzOTA2IDIyLjU4NTkzOCA0MjQuNTg1OTM4IDIyLjMxNjQwNiBDIDQyNC4yNDIxODggMjIuMDg5ODQ0IDQyMy4zMDQ2ODggMjEuNTcwMzEzIDQyMi4wMDc4MTMgMjEuNTcwMzEzIEMgNDIwLjQ0MTQwNiAyMS41NzAzMTMgNDE4LjgwMDc4MSAyMi4yNjU2MjUgNDE3LjE0MDYyNSAyMy42Mjg5MDYgTCA0MTYuMDM1MTU2IDI0LjYwNTQ2OSBDIDQxNi4wNDY4NzUgMjQuNjAxNTYzIDQxNS42Mjg5MDYgMjQuNDkyMTg4IDQxNS42Mjg5MDYgMjQuNDkyMTg4IEwgNDEyLjU1MDc4MSAyMy42MzI4MTMgQyA0MTMuNDYwOTM4IDIyLjc4NTE1NiA0MTQuMjM0Mzc1IDIyLjA1ODU5NCA0MTQuOTI5Njg4IDIxLjQzNzUgQyA0MTYuNjEzMjgxIDE5Ljk0MTQwNiA0MTguNDc2NTYzIDE5LjMyODEyNSA0MTkuNTYyNSAxOS4yNTc4MTMgQyA0MjAuMzU1NDY5IDE5LjIwNzAzMSA0MjEuNzM4MjgxIDE5LjI3MzQzOCA0MjIuMzA4NTk0IDE5LjY3NTc4MSBDIDQyMi4zMzU5MzggMTkuNjcxODc1IDQyMi4zNzEwOTQgMTkuNjEzMjgxIDQyMi4zNzEwOTQgMTkuNjEzMjgxIEMgNDIwLjg1OTM3NSAxOC4zMjAzMTMgNDE5LjU0Njg3NSAxOC4xNDg0MzggNDE4LjQ2NDg0NCAxOC4xNDg0MzggQyA0MTcuNDAyMzQ0IDE4LjE0ODQzOCA0MTUuNjkxNDA2IDE4LjQ4ODI4MSA0MTMuNjAxNTYzIDIwLjEwOTM3NSBDIDQxMi43NDYwOTQgMjAuNzY5NTMxIDQxMS42NDA2MjUgMjEuODc1IDQxMC40ODA0NjkgMjMuMDQyOTY5IEMgNDEwLjQ4MDQ2OSAyMy4wMzUxNTYgNDA4LjkyNTc4MSAyMi41NjI1IDQwOC45MjU3ODEgMjIuNTYyNSBMIDQwOC41NDY4NzUgMjIuNDQ1MzEzIEMgNDA4LjU0Njg3NSAyMi40NDUzMTMgNDA2LjkxNDA2MyAyMS45NDkyMTkgNDA2LjkxNDA2MyAyMS45NDkyMTkgQyA0MDYuOTQ5MjE5IDIxLjk0OTIxOSA0MDcuODQ3NjU2IDIxLjA3MDMxMyA0MDcuODQ3NjU2IDIxLjA3MDMxMyBDIDQwOC45NDkyMTkgMTkuOTg4MjgxIDQwOS45ODgyODEgMTguOTY4NzUgNDEwLjgwMDc4MSAxOC4yODUxNTYgQyA0MTMuNzUzOTA2IDE1LjgwNDY4OCA0MTUuNjA5Mzc1IDE1LjQ4MDQ2OSA0MTYuOTAyMzQ0IDE1LjQ3MjY1NiBDIDQxOC4zMTY0MDYgMTUuNDY4NzUgNDE5LjQ0MTQwNiAxNS43NTc4MTMgNDIwLjI0MjE4OCAxNi4zMzk4NDQgQyA0MjAuMjY1NjI1IDE2LjMzNTkzOCA0MjAuMzA0Njg4IDE2LjI4MTI1IDQyMC4zMDQ2ODggMTYuMjgxMjUgQyA0MTguNjQ0NTMxIDE0Ljc4NTE1NiA0MTcuNDUzMTI1IDE0LjMwNDY4OCA0MTUuMzk0NTMxIDE0LjI4OTA2MyBDIDQxMy41ODk4NDQgMTQuMjczNDM4IDQxMS40MzM1OTQgMTUuMjgxMjUgNDA5LjMyNDIxOSAxNy4xMjUgWiBNIDM5Ny43MjY1NjMgMjUuOTcyNjU2IEMgMzk2Ljc2OTUzMSAyNS45MDYyNSAzOTYuMzA0Njg4IDI1LjUxOTUzMSAzOTYuMzA0Njg4IDI0Ljc4NTE1NiBDIDM5Ni4zMDQ2ODggMjQuNjg3NSAzOTYuMzY3MTg4IDIyLjM0NzY1NiA0MDEuNzI2NTYzIDIyLjA3ODEyNSBDIDQwMi4zMzk4NDQgMjIuMDQ2ODc1IDQwMy4wMTk1MzEgMjIuMDI3MzQ0IDQwNC4wNTg1OTQgMjIuMTQ4NDM4IEMgNDA0LjAxOTUzMSAyMi4xNDg0MzggNDAzLjQ1MzEyNSAyMi42Njc5NjkgNDAzLjQ1MzEyNSAyMi42Njc5NjkgTCA0MDMuMTIxMDk0IDIyLjk2ODc1IEMgNDAxLjgyNDIxOSAyNC4xNDA2MjUgMzk5LjY2NDA2MyAyNi4xMDE1NjMgMzk3LjcyNjU2MyAyNS45NzI2NTYgWiBNIDQxOS40MTc5NjkgMjQuMDcwMzEzIEMgNDIwLjk2MDkzOCAyMy4wMzUxNTYgNDIyLjI0MjE4OCAyMi40NzY1NjMgNDIzLjAzOTA2MyAyMi41MDc4MTMgQyA0MjMuNTExNzE5IDIyLjUyMzQzOCA0MjQuMDc4MTI1IDIyLjY2Nzk2OSA0MjQuMDc4MTI1IDIzLjI1IEMgNDI0LjA3ODEyNSAyMy44NDc2NTYgNDIzLjUwNzgxMyAyNC4zNTE1NjMgNDIyLjM5MDYyNSAyNC43NSBDIDQyMS40MTAxNTYgMjUuMDk3NjU2IDQxOS45MDYyNSAyNS4xODc1IDQxOC4yNjU2MjUgMjUuMDAzOTA2IEMgNDE4LjcxODc1IDI0LjU5Mzc1IDQxOS4wOTc2NTYgMjQuMjg5MDYzIDQxOS40MTc5NjkgMjQuMDcwMzEzICIvPgo8L2c+Cjwvc3ZnPgo='
+};
+
 const AIRPORTS=[
-  {code:'AMS',name:'Amsterdam Airport Schiphol',city:'Amsterdam',country:'Netherlands',pop:1},
-  {code:'DXB',name:'Dubai International Airport',city:'Dubai',country:'UAE',pop:.95},
-  {code:'LHR',name:'London Heathrow Airport',city:'London',country:'United Kingdom',pop:.94},
-  {code:'CDG',name:'Paris Charles de Gaulle',city:'Paris',country:'France',pop:.93},
-  {code:'JFK',name:'John F. Kennedy International',city:'New York',country:'United States',pop:.92},
-  {code:'SIN',name:'Singapore Changi Airport',city:'Singapore',country:'Singapore',pop:.91},
-  {code:'BKK',name:'Suvarnabhumi Airport',city:'Bangkok',country:'Thailand',pop:.90},
-  {code:'NRT',name:'Narita International Airport',city:'Tokyo',country:'Japan',pop:.89},
-  {code:'HND',name:'Tokyo Haneda Airport',city:'Tokyo',country:'Japan',pop:.88},
-  {code:'DOH',name:'Hamad International Airport',city:'Doha',country:'Qatar',pop:.87},
-  {code:'IST',name:'Istanbul Airport',city:'Istanbul',country:'Turkey',pop:.86},
-  {code:'FCO',name:'Leonardo da Vinci-Fiumicino',city:'Rome',country:'Italy',pop:.85},
-  {code:'BCN',name:'Barcelona-El Prat Airport',city:'Barcelona',country:'Spain',pop:.84},
-  {code:'LAX',name:'Los Angeles International',city:'Los Angeles',country:'United States',pop:.83},
-  {code:'MIA',name:'Miami International Airport',city:'Miami',country:'United States',pop:.82},
-  {code:'SYD',name:'Sydney Kingsford Smith',city:'Sydney',country:'Australia',pop:.81},
-  {code:'HKG',name:'Hong Kong International',city:'Hong Kong',country:'China',pop:.80},
-  {code:'MLE',name:'Velana International Airport',city:'Malé',country:'Maldives',pop:.79},
-  {code:'CPT',name:'Cape Town International',city:'Cape Town',country:'South Africa',pop:.78},
-  {code:'ORD',name:"O'Hare International Airport",city:'Chicago',country:'United States',pop:.77},
-  {code:'FRA',name:'Frankfurt Airport',city:'Frankfurt',country:'Germany',pop:.76},
-  {code:'MUC',name:'München Franz Josef Strauss',city:'Munich',country:'Germany',pop:.75},
-  {code:'ZRH',name:'Zürich Airport',city:'Zurich',country:'Switzerland',pop:.74},
-  {code:'MAD',name:'Adolfo Suárez Madrid-Barajas',city:'Madrid',country:'Spain',pop:.73},
-  {code:'ATL',name:'Hartsfield-Jackson Atlanta',city:'Atlanta',country:'United States',pop:.72},
-  {code:'DEN',name:'Denver International Airport',city:'Denver',country:'United States',pop:.71},
-  {code:'SFO',name:'San Francisco International',city:'San Francisco',country:'United States',pop:.70},
-  {code:'SEA',name:'Seattle-Tacoma International',city:'Seattle',country:'United States',pop:.69},
-  {code:'YYZ',name:'Toronto Pearson International',city:'Toronto',country:'Canada',pop:.68},
-  {code:'PEK',name:'Beijing Capital International',city:'Beijing',country:'China',pop:.67},
-  {code:'PVG',name:'Shanghai Pudong International',city:'Shanghai',country:'China',pop:.66},
-  {code:'ICN',name:'Incheon International Airport',city:'Seoul',country:'South Korea',pop:.65},
-  {code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'Malaysia',pop:.64},
-  {code:'BOM',name:'Chhatrapati Shivaji Maharaj',city:'Mumbai',country:'India',pop:.63},
-  {code:'DEL',name:'Indira Gandhi International',city:'Delhi',country:'India',pop:.62},
-  {code:'DPS',name:'Ngurah Rai International',city:'Bali',country:'Indonesia',pop:.61},
-  {code:'AUH',name:'Abu Dhabi International',city:'Abu Dhabi',country:'UAE',pop:.60},
-  {code:'CAN',name:'Guangzhou Baiyun International',city:'Guangzhou',country:'China',pop:.59},
-  {code:'GRU',name:'São Paulo–Guarulhos International',city:'São Paulo',country:'Brazil',pop:.58},
-  {code:'EZE',name:'Ministro Pistarini International',city:'Buenos Aires',country:'Argentina',pop:.57},
-  {code:'MEX',name:'Mexico City International',city:'Mexico City',country:'Mexico',pop:.56},
-  {code:'JNB',name:'O.R. Tambo International',city:'Johannesburg',country:'South Africa',pop:.55},
-  {code:'CAI',name:'Cairo International Airport',city:'Cairo',country:'Egypt',pop:.54},
-  {code:'LIS',name:'Humberto Delgado Airport',city:'Lisbon',country:'Portugal',pop:.53},
-  {code:'VIE',name:'Vienna International Airport',city:'Vienna',country:'Austria',pop:.52},
-  {code:'OSL',name:'Oslo Gardermoen Airport',city:'Oslo',country:'Norway',pop:.51},
-  {code:'CPH',name:'Copenhagen Kastrup Airport',city:'Copenhagen',country:'Denmark',pop:.50},
-  {code:'ARN',name:'Stockholm Arlanda Airport',city:'Stockholm',country:'Sweden',pop:.49},
-  {code:'HEL',name:'Helsinki-Vantaa Airport',city:'Helsinki',country:'Finland',pop:.48},
-  {code:'BRU',name:'Brussels Airport Zaventem',city:'Brussels',country:'Belgium',pop:.47},
-  {code:'DUB',name:'Dublin Airport',city:'Dublin',country:'Ireland',pop:.46},
-  {code:'ATH',name:'Athens International Airport',city:'Athens',country:'Greece',pop:.45},
-  {code:'PMI',name:'Palma de Mallorca Airport',city:'Mallorca',country:'Spain',pop:.44},
-  {code:'AGP',name:'Málaga-Costa del Sol Airport',city:'Málaga',country:'Spain',pop:.43},
-  {code:'ALC',name:'Alicante-Elche Airport',city:'Alicante',country:'Spain',pop:.42},
-  {code:'TFS',name:'Tenerife South Airport',city:'Tenerife',country:'Spain',pop:.41},
-  {code:'MCT',name:'Muscat International Airport',city:'Muscat',country:'Oman',pop:.40},
-  {code:'CMB',name:'Bandaranaike International',city:'Colombo',country:'Sri Lanka',pop:.39},
-  {code:'PHX',name:'Phoenix Sky Harbor International',city:'Phoenix',country:'United States',pop:.38},
-  {code:'BOS',name:'Boston Logan International',city:'Boston',country:'United States',pop:.37},
-  {code:'IAD',name:'Washington Dulles International',city:'Washington D.C.',country:'United States',pop:.36},
-  {code:'EWR',name:'Newark Liberty International',city:'Newark',country:'United States',pop:.35},
-  {code:'LGA',name:'LaGuardia Airport',city:'New York',country:'United States',pop:.34},
-  {code:'YVR',name:'Vancouver International Airport',city:'Vancouver',country:'Canada',pop:.33},
-  {code:'AKL',name:'Auckland Airport',city:'Auckland',country:'New Zealand',pop:.32},
-  {code:'MEL',name:'Melbourne Tullamarine Airport',city:'Melbourne',country:'Australia',pop:.31},
-  {code:'PER',name:'Perth Airport',city:'Perth',country:'Australia',pop:.30},
-  {code:'NBO',name:'Jomo Kenyatta International',city:'Nairobi',country:'Kenya',pop:.29},
-  {code:'ADD',name:'Bole International Airport',city:'Addis Ababa',country:'Ethiopia',pop:.28},
-  {code:'CMN',name:'Mohammed V International',city:'Casablanca',country:'Morocco',pop:.27},
-  {code:'RAK',name:'Marrakech Menara Airport',city:'Marrakech',country:'Morocco',pop:.26},
-  {code:'TUN',name:'Tunis-Carthage International',city:'Tunis',country:'Tunisia',pop:.25},
-  {code:'MRU',name:'Sir Seewoosagur Ramgoolam',city:'Mauritius',country:'Mauritius',pop:.24},
-  {code:'CUR',name:'Hato International Airport',city:'Curaçao',country:'Curaçao',pop:.23},
-  {code:'SXM',name:'Princess Juliana International',city:'Sint Maarten',country:'Sint Maarten',pop:.22},
-  {code:'BON',name:'Flamingo International Airport',city:'Bonaire',country:'Bonaire',pop:.21},
-  {code:'AUA',name:'Queen Beatrix International',city:'Aruba',country:'Aruba',pop:.20},
-  {code:'PUJ',name:'Punta Cana International',city:'Punta Cana',country:'Dominican Republic',pop:.19},
-  {code:'CUN',name:'Cancún International Airport',city:'Cancún',country:'Mexico',pop:.18},
-  {code:'GIG',name:'Rio de Janeiro–Galeão',city:'Rio de Janeiro',country:'Brazil',pop:.17},
-  {code:'SCL',name:'Arturo Merino Benítez',city:'Santiago',country:'Chile',pop:.16},
-  {code:'LIM',name:'Jorge Chávez International',city:'Lima',country:'Peru',pop:.15},
-  {code:'BOG',name:'El Dorado International',city:'Bogotá',country:'Colombia',pop:.14},
-  {code:'PTY',name:'Tocumen International Airport',city:'Panama City',country:'Panama',pop:.13}
+{code:'AMS',name:'Amsterdam Airport Schiphol',city:'Amsterdam',country:'Nederland',pop:1},
+{code:'DXB',name:'Dubai International Airport',city:'Dubai',country:'VAE',pop:.95},
+{code:'LHR',name:'London Heathrow Airport',city:'Londen',country:'Verenigd Koninkrijk',pop:.94},
+{code:'CDG',name:'Paris Charles de Gaulle',city:'Parijs',country:'Frankrijk',pop:.93},
+{code:'JFK',name:'John F. Kennedy International',city:'New York',country:'Verenigde Staten',pop:.92},
+{code:'SIN',name:'Singapore Changi Airport',city:'Singapore',country:'Singapore',pop:.91},
+{code:'BKK',name:'Suvarnabhumi Airport',city:'Bangkok',country:'Thailand',pop:.90},
+{code:'NRT',name:'Narita International Airport',city:'Tokio',country:'Japan',pop:.89},
+{code:'HND',name:'Tokyo Haneda Airport',city:'Tokio',country:'Japan',pop:.88},
+{code:'DOH',name:'Hamad International Airport',city:'Doha',country:'Qatar',pop:.87},
+{code:'IST',name:'Istanbul Airport',city:'Istanbul',country:'Turkije',pop:.86},
+{code:'FCO',name:'Leonardo da Vinci-Fiumicino',city:'Rome',country:'Italië',pop:.85},
+{code:'BCN',name:'Barcelona-El Prat Airport',city:'Barcelona',country:'Spanje',pop:.84},
+{code:'LAX',name:'Los Angeles International',city:'Los Angeles',country:'Verenigde Staten',pop:.83},
+{code:'MIA',name:'Miami International Airport',city:'Miami',country:'Verenigde Staten',pop:.82},
+{code:'SYD',name:'Sydney Kingsford Smith',city:'Sydney',country:'Australië',pop:.81},
+{code:'HKG',name:'Hong Kong International',city:'Hong Kong',country:'China',pop:.80},
+{code:'MLE',name:'Velana International Airport',city:'Malé',country:'Maldiven',pop:.79},
+{code:'CPT',name:'Cape Town International',city:'Kaapstad',country:'Zuid-Afrika',pop:.78},
+{code:'ORD',name:"O'Hare International Airport",city:'Chicago',country:'Verenigde Staten',pop:.77},
+{code:'FRA',name:'Frankfurt Airport',city:'Frankfurt',country:'Duitsland',pop:.76},
+{code:'MUC',name:'München Franz Josef Strauss',city:'München',country:'Duitsland',pop:.75},
+{code:'ZRH',name:'Zürich Airport',city:'Zürich',country:'Zwitserland',pop:.74},
+{code:'MAD',name:'Adolfo Suárez Madrid-Barajas',city:'Madrid',country:'Spanje',pop:.73},
+{code:'ATL',name:'Hartsfield-Jackson Atlanta',city:'Atlanta',country:'Verenigde Staten',pop:.72},
+{code:'DEN',name:'Denver International Airport',city:'Denver',country:'Verenigde Staten',pop:.71},
+{code:'SFO',name:'San Francisco International',city:'San Francisco',country:'Verenigde Staten',pop:.70},
+{code:'SEA',name:'Seattle-Tacoma International',city:'Seattle',country:'Verenigde Staten',pop:.69},
+{code:'YYZ',name:'Toronto Pearson International',city:'Toronto',country:'Canada',pop:.68},
+{code:'PEK',name:'Beijing Capital International',city:'Peking',country:'China',pop:.67},
+{code:'PVG',name:'Shanghai Pudong International',city:'Shanghai',country:'China',pop:.66},
+{code:'ICN',name:'Incheon International Airport',city:'Seoul',country:'Zuid-Korea',pop:.65},
+{code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'Maleisië',pop:.64},
+{code:'BOM',name:'Chhatrapati Shivaji Maharaj',city:'Mumbai',country:'India',pop:.63},
+{code:'DEL',name:'Indira Gandhi International',city:'Delhi',country:'India',pop:.62},
+{code:'DPS',name:'Ngurah Rai International',city:'Bali',country:'Indonesië',pop:.61},
+{code:'AUH',name:'Abu Dhabi International',city:'Abu Dhabi',country:'VAE',pop:.60},
+{code:'CAN',name:'Guangzhou Baiyun International',city:'Guangzhou',country:'China',pop:.59},
+{code:'GRU',name:'São Paulo–Guarulhos International',city:'São Paulo',country:'Brazilië',pop:.58},
+{code:'EZE',name:'Ministro Pistarini International',city:'Buenos Aires',country:'Argentinië',pop:.57},
+{code:'MEX',name:'Mexico City International',city:'Mexico-Stad',country:'Mexico',pop:.56},
+{code:'JNB',name:'O.R. Tambo International',city:'Johannesburg',country:'Zuid-Afrika',pop:.55},
+{code:'CAI',name:'Cairo International Airport',city:'Caïro',country:'Egypte',pop:.54},
+{code:'LIS',name:'Humberto Delgado Airport',city:'Lissabon',country:'Portugal',pop:.53},
+{code:'VIE',name:'Vienna International Airport',city:'Wenen',country:'Oostenrijk',pop:.52},
+{code:'OSL',name:'Oslo Gardermoen Airport',city:'Oslo',country:'Noorwegen',pop:.51},
+{code:'CPH',name:'Copenhagen Kastrup Airport',city:'Kopenhagen',country:'Denemarken',pop:.50},
+{code:'ARN',name:'Stockholm Arlanda Airport',city:'Stockholm',country:'Zweden',pop:.49},
+{code:'HEL',name:'Helsinki-Vantaa Airport',city:'Helsinki',country:'Finland',pop:.48},
+{code:'BRU',name:'Brussels Airport Zaventem',city:'Brussel',country:'België',pop:.47},
+{code:'DUB',name:'Dublin Airport',city:'Dublin',country:'Ierland',pop:.46},
+{code:'ATH',name:'Athens International Airport',city:'Athene',country:'Griekenland',pop:.45},
+{code:'PMI',name:'Palma de Mallorca Airport',city:'Mallorca',country:'Spanje',pop:.44},
+{code:'AGP',name:'Málaga-Costa del Sol Airport',city:'Málaga',country:'Spanje',pop:.43},
+{code:'ALC',name:'Alicante-Elche Airport',city:'Alicante',country:'Spanje',pop:.42},
+{code:'TFS',name:'Tenerife South Airport',city:'Tenerife',country:'Spanje',pop:.41},
+{code:'MCT',name:'Muscat International Airport',city:'Muscat',country:'Oman',pop:.40},
+{code:'CMB',name:'Bandaranaike International',city:'Colombo',country:'Sri Lanka',pop:.39},
+{code:'PHX',name:'Phoenix Sky Harbor International',city:'Phoenix',country:'Verenigde Staten',pop:.38},
+{code:'BOS',name:'Boston Logan International',city:'Boston',country:'Verenigde Staten',pop:.37},
+{code:'IAD',name:'Washington Dulles International',city:'Washington D.C.',country:'Verenigde Staten',pop:.36},
+{code:'EWR',name:'Newark Liberty International',city:'Newark',country:'Verenigde Staten',pop:.35},
+{code:'LGA',name:'LaGuardia Airport',city:'New York',country:'Verenigde Staten',pop:.34},
+{code:'YVR',name:'Vancouver International Airport',city:'Vancouver',country:'Canada',pop:.33},
+{code:'AKL',name:'Auckland Airport',city:'Auckland',country:'Nieuw-Zeeland',pop:.32},
+{code:'MEL',name:'Melbourne Tullamarine Airport',city:'Melbourne',country:'Australië',pop:.31},
+{code:'PER',name:'Perth Airport',city:'Perth',country:'Australië',pop:.30},
+{code:'NBO',name:'Jomo Kenyatta International',city:'Nairobi',country:'Kenia',pop:.29},
+{code:'ADD',name:'Bole International Airport',city:'Addis Abeba',country:'Ethiopië',pop:.28},
+{code:'CMN',name:'Mohammed V International',city:'Casablanca',country:'Marokko',pop:.27},
+{code:'RAK',name:'Marrakech Menara Airport',city:'Marrakech',country:'Marokko',pop:.26},
+{code:'TUN',name:'Tunis-Carthage International',city:'Tunis',country:'Tunesië',pop:.25},
+{code:'MRU',name:'Sir Seewoosagur Ramgoolam',city:'Mauritius',country:'Mauritius',pop:.24},
+{code:'CUR',name:'Hato International Airport',city:'Curaçao',country:'Curaçao',pop:.23},
+{code:'SXM',name:'Princess Juliana International',city:'Sint Maarten',country:'Sint Maarten',pop:.22},
+{code:'BON',name:'Flamingo International Airport',city:'Bonaire',country:'Bonaire',pop:.21},
+{code:'AUA',name:'Queen Beatrix International',city:'Aruba',country:'Aruba',pop:.20},
+{code:'PUJ',name:'Punta Cana International',city:'Punta Cana',country:'Dominicaanse Republiek',pop:.19},
+{code:'CUN',name:'Cancún International Airport',city:'Cancún',country:'Mexico',pop:.18},
+{code:'GIG',name:'Rio de Janeiro–Galeão',city:'Rio de Janeiro',country:'Brazilië',pop:.17},
+{code:'SCL',name:'Arturo Merino Benítez',city:'Santiago',country:'Chili',pop:.16},
+{code:'LIM',name:'Jorge Chávez International',city:'Lima',country:'Peru',pop:.15},
+{code:'BOG',name:'El Dorado International',city:'Bogotá',country:'Colombia',pop:.14},
+{code:'PTY',name:'Tocumen International Airport',city:'Panama-Stad',country:'Panama',pop:.13}
 ];
 
 const AIRLINE_NAMES={EK:'Emirates',QR:'Qatar Airways',TK:'Turkish Airlines',SQ:'Singapore Airlines',TG:'Thai Airways',CX:'Cathay Pacific',LH:'Lufthansa',BA:'British Airways',AF:'Air France',KL:'KLM',NH:'ANA',JL:'Japan Airlines',DL:'Delta Air Lines',UA:'United Airlines',AA:'American Airlines',VS:'Virgin Atlantic',QF:'Qantas',SA:'South African Airways',PC:'Pegasus Airlines',AZ:'ITA Airways',VY:'Vueling',UL:'SriLankan Airlines'};
-    const CUSTOM_LOGOS={KL:'data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MzggMzcxLjAxIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzAwYTFlNDt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPktMTSBMb2dvIFZlY3RvcjwvdGl0bGU+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDg4LjE5LDMxNC41aDIwYy4xNyw2LjguMTUsMTMuNTguMTEsMjAuMzgsNi42OSwwLDEzLjQsMCwyMC4wOSwwLC4wNSw2LjY3LjA1LDEzLjM0LS4xNSwyMC02LjYzLDAtMTMuMjgsMC0xOS45MiwwLDAsNi41NywwLDEzLjE1LDAsMTkuNzMtNi42LjQyLTEzLjIuMzMtMTkuOC4yNywwLTYuNjcsMC0xMy4zNi0uMDctMjAuMDUtNi43MS4wOS0xMy40LjA1LTIwLjA5LjA3LS4xMS02LjY1LS4wOS0xMy4zMi0uMTEtMjAsNi43NSwwLDEzLjQ5LDAsMjAuMjIsMEM0ODguMzcsMzI4LjEsNDg5LDMyMS4yNiw0ODguMTksMzE0LjVabS0xMTUuOSw1Ni4zNGMyMC4xNi00Ljg1LDQyLjI5LDExLjkyLDQxLjg1LDMyLjksMS41NSwxOC4zNC0xNC40OSwzNS41My0zMi43NCwzNS44OEMzNjUuMDUsNDQxLDM0OS4wNSw0MjksMzQ1LjYsNDEzLDM0MC41NSwzOTQuNzQsMzUzLjc1LDM3NC4yOSwzNzIuMjksMzcwLjg0Wm04MC4xNSwwYzIwLjE0LTQuNzcsNDIuMzUsMTIsNDEuNzgsMzMsMS42MiwxOC44Ni0xNS41NSwzNi4zNC0zNC4zLDM1Ljg1LTE2LjU2LjcxLTMyLTEyLjI4LTM0LjYyLTI4LjU2QzQyMS42LDM5My4yMyw0MzQuNTIsMzc0LjE0LDQ1Mi40NCwzNzAuOFptODAuMTksMGMxOS41NC00LjY1LDQwLjg5LDExLDQxLjYzLDMxLjE5LDEuNTcsMTMuNzMtNi4yOSwyNy41My0xOC40OCwzMy43OC0xMi44Miw2LjkxLTI5Ljc5LDQuNDYtNDAuMjMtNS42My0xMS43Mi0xMS0xNC4xNi0zMC4zLTUuMzgtNDMuNzdBMzQuNDEsMzQuNDEsMCwwLDEsNTMyLjYzLDM3MC44NFptODAuMzEsMGMxNy41Mi0zLjkzLDM2LjUyLDgsNDAuNTQsMjUuNTRBMzQuNzksMzQuNzksMCwwLDEsNjAzLjEsNDM1LjVhMzQuNjMsMzQuNjMsMCwwLDEtMTcuODMtMzUuMjRDNTg2LjkzLDM4NS44OCw1OTguNjcsMzczLjM0LDYxMi45NCwzNzAuOFpNMzc4LjczLDQ5MC4xOGMtLjUyLTEzLjkyLS4yOC0yNy44OS0uMTMtNDEuODEsODAuMTUuMjMsMTYwLjMuMDUsMjQwLjQ1LjA5cTAsMjAuODEsMCw0MS41OEM1MzguOTQsNDkwLjEzLDQ1OC44Miw0ODkuODYsMzc4LjczLDQ5MC4xOFpNMTgxLDUyNS40OXEzMC4zNCwwLDYwLjcyLDBjMCwxOS4zNiwwLDM4Ljc0LDAsNTguMTEsMjAuMDctMTkuMjEsMzkuNjgtMzguODgsNTkuNzUtNTguMDlxMzAuNi0uMDksNjEuMTksMGMtMjMuNTEsMjMuOS00Ny42Niw0Ny4xNy03MSw3MS4yNCwyOS40MSwyOC41MSw1Ny44MSw1OC4wNyw4Ny40Niw4Ni4yNy4yNi01Mi41LDAtMTA1LC4xMS0xNTcuNTNxMzEtLjA2LDYyLjA3LDAsMCw1OS43NSwwLDExOS40OWMzMy4wNS0uMDksNjYuMDguMTEsOTkuMTEtLjExLjQ2LDEzLjUxLjA3LDI3LC4yMiw0MC41NHEtMTIwLjQ4LDAtMjQxLDBjLTE5LTE5LjIzLTM4LjI1LTM4LjItNTcuMzMtNTcuMzQtLjI4LDE5LjE1LDAsMzguMjktLjE3LDU3LjQ1LTIwLjM5LS4xNC00MC43OSwwLTYxLjE5LS4wOVptMzc2LjY2LDBjMzMuMzItLjExLDY2LjY0LjIyLDEwMC0uMTYsMTAuNTIsMjguNiwxOS43Myw1Ny42OSwyOS42Niw4Ni41MS44Mi0xLjI5LDItMi4zOSwyLjQxLTMuOSw5LjQ5LTI3LjUxLDE5LjIxLTU0Ljk0LDI4LjgtODIuNDNxNTAuMjUtLjA2LDEwMC41MSwwVjY4NS4zMmMtMjAuNTEuMjYtNDEsLjA5LTYxLjU0LjA5LDAtMzYuNzguMTgtNzMuNTktLjExLTExMC4zOS0yLjg2LDEuNi0zLjE1LDUuMjMtNC4zNyw4LTExLjkxLDM0LjE4LTI0LjEyLDY4LjI1LTM2LDEwMi40Mi0xOS4yOSwwLTM4LjU5LjI2LTU3Ljg2LS4xMi0xMi4wOS0zNC45NS0yNC41OS02OS43My0zNi43OS0xMDQuNjJhNi4xNCw2LjE0LDAsMCwwLTMuMjQtNC4yOGMtLjA2LDM2LjM1LDAsNzIuNzEsMCwxMDkuMDhxLTMwLjcsMC02MS40MSwwUTU1Ny43LDYwNS40OCw1NTcuNjYsNTI1LjQ5WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4MSAtMzE0LjUpIi8+PC9zdmc+',EK:'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjM2MiAyNTAwIgogICB2aWV3Qm94PSIwIDAgMjUwLjMxMzY0IDI2NC45MzgyMyIKICAgdmVyc2lvbj0iMS4xIgogICBpZD0ic3ZnNiIKICAgc29kaXBvZGk6ZG9jbmFtZT0iRW1pcmF0ZXMgYmFubmVyIGxvZ28uc3ZnIgogICB3aWR0aD0iMjUwLjMxMzY0IgogICBoZWlnaHQ9IjI2NC45MzgyMyIKICAgaW5rc2NhcGU6dmVyc2lvbj0iMS40ICg4NmE4YWQ3LCAyMDI0LTEwLTExKSIKICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiCiAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzNiIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgaWQ9Im5hbWVkdmlldzYiCiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjMDAwMDAwIgogICAgIGJvcmRlcm9wYWNpdHk9IjAuMjUiCiAgICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlY2hlY2tlcmJvYXJkPSIwIgogICAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIKICAgICBpbmtzY2FwZTp6b29tPSIwLjQ0MjkzMTY5IgogICAgIGlua3NjYXBlOmN4PSI1MjYuMDQwNDgiCiAgICAgaW5rc2NhcGU6Y3k9IjcyOC4xMDMyNCIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAwMSIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iLTkiCiAgICAgaW5rc2NhcGU6d2luZG93LXk9Ii05IgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ic3ZnNiIgLz4KICA8cGF0aAogICAgIGQ9Ik0gMCwwIEggMjUwLjMxMzY0IFYgMjY0LjkzODI0IEggMCBaIgogICAgIGZpbGw9IiNkNzFhMjEiCiAgICAgaWQ9InBhdGgxIgogICAgIHN0eWxlPSJzdHJva2Utd2lkdGg6MC4xMDU5NzUiIC8+CiAgPGcKICAgICBmaWxsPSIjZmZmZmZmIgogICAgIGlkPSJnNiIKICAgICB0cmFuc2Zvcm09InNjYWxlKDAuMTA1OTc1MjkpIj4KICAgIDxwYXRoCiAgICAgICBkPSJtIDEyODUuMSw2MTkuOSBjIC0xNC45LDE5LjIgLTIzLDQyLjkgLTIzLjEsNjcuMiB2IDIxMSBjIC0xLjEsMTYgLTcuMiwzMC44IC0xNy4xLDQzLjUgLTUuNSw1LjUgLTM4LDM0LjcgLTQwLjgsMzggbCAxOC4yLDAuNiBjIDYuMSwtNS41IDY4LjgsLTYxLjEgNzQuOSwtNjguOCAxOC4yLC0xOS44IDI4LjYsLTQ1LjcgMjguNiwtNzIuNyBWIDYzNS45IGMgLTAuNSwtMjAuNyA3LjIsLTQwLjcgMjEuNSwtNTUuNiA3LjcsLTguMyAzMS45LC0yOC42IDM2LjMsLTMzLjYgbCAtMTkuMywtMC42IGMgLTMuNyw1IC03Mi42LDY3LjIgLTc5LjIsNzMuOCB6IG0gLTE1NC44LDc2Ny4zIDc2LjYsNjYuNyBoIDUxLjIgYyA0OSwwIDk2LjQsLTE5LjMgMTMxLjEsLTU0IDMxLjQsLTMxLjQgNDMsLTczLjggNDMsLTExMy41IHYgLTEwOS42IGMgLTAuNiwtMjQuOCAtMTEsLTQ4LjUgLTI5LjcsLTY1IC0zLjMsLTMuMyAtMjUuOSwtMjQuOCAtMjUuOSwtMjQuOCB2IDg0LjMgYyAwLDAgMjQuOCwyNS4zIDI5LjIsMzAuMyAyMi42LDI0LjIgMjIuNiw2OC4zIC00OS42LDEzOC4zIC0xMi43LDEyLjEgLTQ4LjUsNDYuMyAtOTgsNDYuMyB6IgogICAgICAgaWQ9InBhdGgyIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gMTM0My41LDkzNy4yIGMgLTguMyw4LjggLTE2LjUsMzAuOCAtMTYuNSw1MC43IHYgNDEuMyBoIDQxLjkgYyAxNi41LDAgMzgsLTE0LjkgNDIuNCwtMjIuNiB2IC00MS4zIGMgNi4yLDkuMSAxMy44LDE3LjEgMjIuNiwyMy43IDQuNCwtNS41IDQzLC01MS44IDc0LjksLTUyLjMgNTMuNCwtMC42IDQxLjMsNjcuMiAxOS44LDg4LjcgLTcuMiw3LjIgLTM4LjYsMzUuOCAtNDguNSw0NS4yIC0yNS4zLDI0LjIgLTY4LjksMTIuNyAtNjguOSwtNDkuNiAwLDAgLTQ2LjMsNDQuMSAtNTMuNCw1MC4xIC03LjIsNi4xIC0zMC44LDMxLjQgLTMwLjgsMzEuNCBWIDEyMTIgYyAwLDUyLjMgLTE3LjEsNzAgLTMxLjQsODUuOSAtNS41LDYuMSAtNjQuNCw2MCAtNzIuNyw2Ni4xIGwgLTE5LjMsMC42IGMgMCwwIDM0LjcsLTMxLjQgNDEuMywtMzguNiA3LjcsLTguMyAxNy4xLC0yNC44IDE3LjEsLTUyLjMgMCwtNy4yIC0xLjEsLTE3MS45IC0xLjEsLTE3MS45IEggOTkyLjEgYyAtOTMuNiwwIC0xMTMuNSwtMTAzLjUgLTExNCwtMTMxLjYgViA4NjYuMSBjIDAsLTE3LjEgLTExLC00NS43IC0yOC4xLC01NC41IGggMjYuNCBjIDMuMywxLjEgMTkuOCw3LjcgMTkuOCw3MS42IDAsMCAtMS4xLDczLjggLTEuMSw3OC4yIDAsMzIuNSAyNS45LDY5LjQgNjIuOCw2OS40IGwgMzA0LC0wLjYgYyAwLC04LjMgOC4zLC0zOS4xIDIzLjEsLTU1LjYgOC4zLC05LjQgNzMuOCwtNjguOCA4MSwtNzQuOSBoIDE5LjMgYyAtMi44LDIuOCAtMzQuNywzMC44IC00MS4zLDM4LjYgeiBtIDk5LjcsNjIuMiBjIDcuOSwxMC43IDE2LjUsMjAuOSAyNS45LDMwLjMgMzMsMjYuNCA0OC41LC0yLjIgMjYuNCwtMzEuOSAtOC44LC0xMi4yIC00Mi40LC04LjkgLTUyLjMsMS42IHoiCiAgICAgICBpZD0icGF0aDMiIC8+CiAgICA8cGF0aAogICAgICAgZD0ibSAxMTE3LjEsMTE5NS41IGMgMCwxNC45IC00Ni44LDU0IC00OS42LDU2LjIgLTMuMywtMTYgLTE1LjQsLTMzLjEgLTUwLjEsLTY4LjMgbCA1MS4yLC01MS4yIGMgMzQuOCwzNC43IDQ4LjUsNDIuNCA0OC41LDYzLjMgeiBtIDg5LjMsLTU4OC44IGMgMTAuNSwxMC41IDMyLjUsMzggMTkuMyw1MS44IC0xMS42LDExLjYgLTI5LjcsMzAuMyAtMjkuNywzMC4zIC0xLjEsLTYuNiAtMTguMiwtMjMuMSAtMTguMiwtMjMuMSB2IDU1LjYgYyAtMC42LDIyLjYgLTguOCwyOC42IC04LjgsMjguNiAwLDAgNDEuMyw0MC43IDQxLjMsOTMuNiB2IDU0IGMgMC41LDEwLjIgLTMuMywyMC4yIC0xMC41LDI3LjUgLTMuOSw0LjQgLTQxLjksNDMgLTQ3LjksNDcuOSAtOC44LDcuNyAtMTkuOCwxMi4xIC0zMS40LDExLjYgSCA5NzcuOCBjIC0yMi42LDAgLTQ1LjcsLTE3LjYgLTQ1LjcsLTM1LjIgMCwtNC40IDAuNiwtNTIuOSAwLjYsLTUyLjkgNy4yLDguMyAxNC45LDE4LjIgMzIuNSwxOC4yIDE0LjMsMCAyOC42LC0xMSAzMi41LC0xNS40IDMuOSwtNC40IDEwOCwtMTEyLjQgMTA4LC0xMTIuNCAwLDAgLTQ4LjUsLTQ1LjIgLTgwLjQsLTY2LjYgLTE1LjQsLTEwLjUgLTM2LjQsMi44IC0zOS43LDE2LjUgLTkuOSw0MyAwLDEwOCAwLDEwOCBsIC0zOS4xLC0zOS4xIGMgLTE2LC0xNiAtMTUuNCwtNTEuOCAzLjgsLTcwLjUgMi44LC0zLjMgMzEuOSwtMzUuMyA2OC4zLC0zNS4zIGggNTYuNyBjIDM4LDAgNzkuOSwzOCA3OS45LDM4IDMuMywtMy45IDUuNSwtOC4zIDYuMSwtMTMuMiAwLC0xOS44IC0wLjYsLTcyLjEgLTAuNiwtNzIuMSAtMjguNiwtMjguNiAtMzIuNSwtNTguNCAtMTguNywtNzIuMiAyNS45LC0yNS45IDM1LjMsLTM0LjcgMzUuMywtMzQuNyAwLDAgLTEuMiwzMS4zIDI5LjEsNjEuMSB6IG0gLTE3OS4xLDI4Ni40IGMgLTE0LjMsMTQuOSAtMTYuNSwxOC4yIC0yOS43LDI2LjQgaCAxNjAuOCBjIDQzLjUsMCAzNC43LC0yNyAyNywtNDAuOCAtMTYsLTI4LjEgLTY2LjYsLTc5LjkgLTY2LjYsLTc5LjkgMCwwIC04OC43LDkxLjYgLTkxLjUsOTQuMyB6IgogICAgICAgaWQ9InBhdGg0IiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gODQzLjksMTAzOS42IGggLTI2LjQgYyAwLDAgMjguMSwxNS40IDI4LjEsNTUuNiB2IDEyOC4zIGMgMCw4My4yIDY4LjgsMTYwLjMgMTUyLjYsMTYwLjMgaCA3MCBjIDQxLjksMCA1Ni43LC05LjkgODIuMSwtMzIuNSA5LjQsLTguMyAyMS41LC0yMiAyNS45LC0yNyAxNC4zLC0xNi41IDMwLjMsLTI5LjcgMzAuMywtNzIuNyB2IC00MS45IGMgMCwtMzYuNCAtMjAuOSwtNTEuMiAtMzEuNCwtNjEuNyAtNi42LC02LjYgLTI0LjIsLTIzLjcgLTI0LjIsLTIzLjcgdiA4NS45IGMgMCwwIDE3LjYsMTguNyAyNS4zLDI0LjggMzYuMywyOC42IDcuNyw3OC4yIC0yNi40LDc4LjIgSCA5OTUuOSBjIC01Ni4yLDEuMSAtMTMyLjcsLTQ5IC0xMzIuNywtMTMzLjkgdiAtNjkuNCBjIDAuNSwtNzAuMyAtMTkuMywtNzAuMyAtMTkuMywtNzAuMyB6IgogICAgICAgaWQ9InBhdGg1IiAvPgogICAgPHBhdGgKICAgICAgIGQ9Im0gMTAxMi41LDExOTYuMSBjIDAsMTQuOSAtNDYuOCw1NCAtNDkuNiw1Ni4yIC0zLjMsLTE2IC0xNS40LC0zMy4xIC01MC4xLC02OC4zIGwgNTEuMiwtNTEuMiBjIDM0LjIsMzQuMSA0OC41LDQxLjggNDguNSw2My4zIHogbSAtNTM3LjEsNTcwIGggLTgyLjYgYyAtMjUuOSwwIC0yMy43LC0yMS41IC0yNi40LC0zOS43IHYgLTExNy45IGMgMCwwIDE4LjIsLTAuNiAzOC42LC0wLjYgMjIuNiwwIDUxLjIsLTMuMyA3OC44LDEyLjEgLTE0LjMsLTMwLjMgLTQ1LjMsLTQ5LjEgLTc4LjgsLTQ3LjkgaCAtMzggdiAtMzggYyAwLDAgMCwtMzMuMSAtOC4zLC00Mi40IGggNTQuNSBjIDQ2LjgsMCA4My4yLC0wLjYgMTIxLjIsMjQuMiAwLDAgLTcuMiwtNjIuMiAtOTgsLTYyLjIgSCAyNTkgYyAwLDAgMzAuOCwyNi40IDI5LjcsNzkuOSBsIDEuMSwyMTQuOCBjIDAsNTQgMjEuNSw1NS42IDIxLjUsNTUuNiBoIDE3NC42IGMgMzkuNywwIDUzLjQsLTI4LjEgNTMuNCwtNDMuNSBsIDAuNiwtMjAuNCBjIDAsMC4xIC0xMi43LDI2IC02NC41LDI2IHogTSA5NDAuMywxNzQ4IHYgLTE1MC40IGMgMCwtNTguNCAtNDcuNCwtNzMuOCAtODMuMiwtNzMuOCAtNDYuOCwwIC02MS4xLDM5LjEgLTY3LjIsNTIuOSAtMTAuNSwtMzYuMyAtNDcuNCwtNTIuOSAtNzcuMSwtNTIuOSAtNTYuNywwIC03MS4xLDU0IC03MS4xLDU0IDAsMCAtMS4xLC01Mi4zIC00Ni44LC01Mi4zIGggLTQ0LjYgYyAwLDAgMjUuOSwxMC41IDI1LjksNTUuNiBWIDE3NDggYyAwLDU1LjEgMjIsNTYuMiAyMiw1Ni4yIEggNjcyIEMgNjU0LjQsMTc5MSA2NDMuOSwxNzcwIDY0My45LDE3NDcuNSB2IC0xNDguMiBjIDEuMSwtNi42IDEyLjEsLTI4LjYgNDMuNSwtMjguNiAxOC4yLDAgMzgsMTguNyAzNy41LDM5LjcgViAxNzQ4IGMgMCw1NS42IDIyLDU2LjIgMjIsNTYuMiBoIDczLjggYyAtMTcuNiwtMTMuOCAtMjguMSwtMzQuMiAtMjguMSwtNTYuNyB2IC0xNDguMiBjIDcuMiwtMjEuNyAzMC42LC0zMy41IDUyLjMsLTI2LjQgMTYuNSw1LjUgMjguMSwyMC40IDI4LjYsMzggViAxNzQ4IGMgMC42LDU2LjIgMjIsNTUuNiAyMiw1NS42IGggNzMuOCBjIC0xNy43LC0xMyAtMjguNSwtMzMuNiAtMjksLTU1LjYgeiBtIDEyOC45LDAgYyAwLDIyLjEgMTAuNCw0Mi45IDI4LjEsNTYuMiBoIC03My44IGMgMCwwIC0yMi42LDAuNiAtMjIuNiwtNTUuNiB2IC0xNjggYyAwLC00NC4xIC0yNS4zLC01NS42IC0yNS4zLC01NS42IGggNDQuNiBjIDE2LDAgNDguNSwwIDQ4LjUsNjIuMiB2IDE1OS43IHogbSAyMjYuOSwtMjAxLjYgYyAwLDAgLTcuMiwtMTkuOCAtMzcuNSwtMTkuOCAtNDYuMywwIC01Ny4zLDU1LjEgLTU3LjMsNTUuMSAtMy45LC00My41IC0xNS40LC01Ni4yIC00Ny45LC01Ni4yIGggLTQ0LjYgYyAwLDAgMjUuOSwxMC41IDI1LjksNTUuNiBWIDE3NDggYyAwLDU1LjEgMjIsNTYuMiAyMiw1Ni4yIGggNzMuOCBjIC0xNy43LC0xMy4zIC0yOC4xLC0zNC4xIC0yOC4xLC01Ni4yIHYgLTEzNy4xIGMgMS43LC0xMS42IDguMywtMjIgMTguMiwtMjguMSAyNC44LC0xNi41IDU3LjMsLTExLjYgNzYuNiwxMSB6IG0gMzQzLjIsOS45IGMgMTUuNCwwIDMwLjMsMy44IDQzLjUsMTEgdiAtNDEuOSBoIC02MS43IHYgLTYzLjkgYyAtMTMuMiwyMC45IC0zMC4zLDM5LjcgLTQ5LjYsNTUuNiAtMjAuOSwxNy4xIC02NSwzOC42IC02NSwzOC42IGwgNDYuOCwwLjYgdiAxOTMuOSBjIDAsNTQgMjIuNiw1NCAyMi42LDU0IGggNzMuMyBjIC0xNy42LC0xMi43IC0yOC4xLC0zMyAtMjguNiwtNTQuNSB2IC0xOTMuMyB6IG0gMjIzLjYsODQuMyBjIC00MS4zLDQzIC03My44LDM2LjMgLTk5LjcsNjguMyAwLDAgNC40LDQzIDM2LjksNTcuOCAxMSw1IDU2LjcsMjEuNSA4NS45LC0yOS4yIHYgNDUuMiBjIDAsMCAtMTguNywyMiAtNzguOCwyMiAtNzIuMiwwIC0xMjEuNywtNTYuNyAtMTIxLjcsLTEzMy44IDAsLTc2IDQwLjIsLTE0NiAxMTYuOCwtMTQ2LjUgNzQuNCwtMS4yIDExNS4xLDU5LjQgNjAuNiwxMTYuMiB6IG0gLTQ1LjIsLTE3LjcgYyAxMi4xLC0yMi42IDIyLC03OS45IC0xOS44LC03Ni42IC00OC41LDMuOSAtMzkuMSwxMzIuMiAtMzkuMSwxMzIuMiAxNiwtMTcuNiA0MC4yLC0yMS40IDU4LjksLTU1LjYgeiBtIC03ODIuNiwtMTIwIGMgMTguNywtMC42IDMzLC0xNiAzMywtMzQuMiAtMC42LC0xOC43IC0xNiwtMzMuMSAtMzQuMiwtMzMuMSAtMTguMiwwLjYgLTMzLDE1LjQgLTMzLDMzLjYgMCwxOC44IDE1LjQsMzMuNiAzNC4yLDMzLjcgeiBtIDMzNy42LDI2OS4zIGMgLTE2LjUsMCAtMjguNiwtMTcuNiAtMjguNiwtMzUuMyAwLC02OS40IDU2LjcsLTc5LjMgNzIuMiwtOTcuNSB2IDExNy4zIGMgLTcuMiw1LjYgLTEzLjksMTUuNSAtNDMuNiwxNS41IHogbSA0My41LC0xNTkuNyBjIC0xNy4xLDI5LjggLTE1MC40LDM2LjQgLTEzMCwxMzkuNCA4LjMsNDAuOCAzNS4zLDUyLjkgNjkuNCw1Mi45IDMzLjEsMCA1My40LC0xNy4xIDYxLjcsLTMzLjYgNSwzMC44IDIwLjksMzMgMjAuOSwzMyBoIDczLjggYyAtMTcuNiwtMTMuMiAtMjguNiwtMzMuNiAtMjguNiwtNTUuNiB2IC0xNTcgYyAwLC0zNy41IC00MS4zLC02Ni42IC00NS40LC02Ni42IC0yNC41LC0wLjYgLTQ4LjYsNi42IC02OC44LDIwLjQgdiA0OC41IGMgMCwwIDE1LjQsLTM4LjYgNTMuNCwtMzguNiAzNy41LDAgNDAuMiwxOC43IDQwLjIsMjguMSAwLjYsOS44IC0xLjEsMjAuMyAtNi42LDI5LjEgeiBtIDYwOS44LDExNS42IGMgMC42LDE5LjggLTE3LjEsNDUuNyAtNTQuNSw0NS43IC0zOC42LDAgLTU0LC0zOS4xIC01NCwtMzkuMSB2IDQ5LjYgYyAyMC45LDEzLjIgNDUuMiwxOS44IDcwLDE5LjggNTAuMSwwIDEwMS4zLC0zOCAxMDAuMiwtOTEuNCAtMC41LC0xNy41IC02LjUsLTM0LjUgLTE3LjEsLTQ4LjUgLTE3LjEsLTIyLjYgLTQ3LjksLTM4LjYgLTcyLjIsLTUzLjQgLTEzLjgsLTguMyAtMjAuOSwtMjMuNyAtMjAuOSwtMjguNiAtMC42LC05LjQgNC40LC0yOC4xIDQxLjMsLTI4LjEgMzYuNCwwIDUyLjMsMzguNiA1Mi4zLDM4LjYgdiAtNDYuOCBjIC0yMC40LC0xNC4zIC00NS4yLC0yMiAtNzAuNSwtMjIgLTQ0LjEsMCAtODQuMywyOS4yIC04My4yLDY2LjYgMC42LDMzLjEgMTQuMyw1NCA0MS4zLDc0LjQgMTIuMSw4LjcgMjQuOCwxNi42IDM4LDIzLjcgMjEsMTEuNCAyOC43LDI1LjggMjkuMywzOS41IHoiCiAgICAgICBpZD0icGF0aDYiIC8+CiAgPC9nPgo8L3N2Zz4K',EY:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNCIgZmlsbD0iIzFhMWEyZSIvPgo8dGV4dCB4PSI1MCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCdUaW1lcyBOZXcgUm9tYW4nLHNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjQzVBNDRFIiBsZXR0ZXItc3BhY2luZz0iMC41IiBkaXJlY3Rpb249InJ0bCI+2KfZhNin2KrYrdin2K88L3RleHQ+Cjx0ZXh0IHg9IjUwIiB5PSI2OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IidBcmlhbCBCbGFjaycsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNyIgZmlsbD0iI0M1QTQ0RSIgbGV0dGVyLXNwYWNpbmc9IjQiPkVUSUhBRDwvdGV4dD4KPGxpbmUgeDE9IjIwIiB5MT0iNzQiIHgyPSI4MCIgeTI9Ijc0IiBzdHJva2U9IiNDNUE0NEUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjYiLz4KPC9zdmc+Cg==',AF:'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDMycHQiIGhlaWdodD0iNDYuNnB0IiB2aWV3Qm94PSIwIDAgNDMyIDQ2LjYiIHZlcnNpb249IjEuMSI+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAxIj4KICA8cGF0aCBkPSJNIDMyOSA1IEwgMzc3IDUgTCAzNzcgMzcgTCAzMjkgMzcgWiBNIDMyOSA1ICIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAyIj4KICA8cGF0aCBkPSJNIDM1Ni42MDE1NjMgNS4xMDE1NjMgQyAzNjMuMjM4MjgxIDUuMTAxNTYzIDM2OS44NzEwOTQgNS4xMDE1NjMgMzc2LjUwNzgxMyA1LjEwMTU2MyBDIDM3MC41NTQ2ODggMTMuMTkxNDA2IDM2NC45MjE4NzUgMjMuMDc4MTI1IDM1OC4yNzM0MzggMzEuNDA2MjUgQyAzNTYuMDYyNSAzNC4xNzk2ODggMzUzLjUwNzgxMyAzNi41ODU5MzggMzQ5LjQyMTg3NSAzNi42NTIzNDQgQyAzNDMuMTQwNjI1IDM2Ljc0NjA5NCAzMzUuNTM5MDYzIDM2Ljk0MTQwNiAzMjkuMTYwMTU2IDM2Ljk0MTQwNiBDIDMyOS4yMjY1NjMgMzYuMDQ2ODc1IDMzMC41MjczNDQgMzYuMTI1IDMzMC45OTIxODggMzYgQyAzMzQuODcxMDk0IDM0Ljk4MDQ2OSAzMzcuNDgwNDY5IDMyLjQyMTg3NSAzMzkuNzYxNzE5IDI5LjE3OTY4OCBDIDM0NS4yODEyNSAyMS4zMjQyMTkgMzUxLjE4NzUgMTIuNjM2NzE5IDM1Ni42MDE1NjMgNS4xMDE1NjMgIi8+CjwvY2xpcFBhdGg+CjxjbGlwUGF0aCBpZD0iY2xpcDMiPgogIDxwYXRoIGQ9Ik0gMzU2LjYwMTU2MyA1LjEwMTU2MyBDIDM2My4yMzgyODEgNS4xMDE1NjMgMzY5Ljg3MTA5NCA1LjEwMTU2MyAzNzYuNTA3ODEzIDUuMTAxNTYzIEMgMzcwLjU1NDY4OCAxMy4xOTE0MDYgMzY0LjkyMTg3NSAyMy4wNzgxMjUgMzU4LjI3MzQzOCAzMS40MDYyNSBDIDM1Ni4wNjI1IDM0LjE3OTY4OCAzNTMuNTA3ODEzIDM2LjU4NTkzOCAzNDkuNDIxODc1IDM2LjY1MjM0NCBDIDM0My4xNDA2MjUgMzYuNzQ2MDk0IDMzNS41MzkwNjMgMzYuOTQxNDA2IDMyOS4xNjAxNTYgMzYuOTQxNDA2IEMgMzI5LjIyNjU2MyAzNi4wNDY4NzUgMzMwLjUyNzM0NCAzNi4xMjUgMzMwLjk5MjE4OCAzNiBDIDMzNC44NzEwOTQgMzQuOTgwNDY5IDMzNy40ODA0NjkgMzIuNDIxODc1IDMzOS43NjE3MTkgMjkuMTc5Njg4IEMgMzQ1LjI4MTI1IDIxLjMyNDIxOSAzNTEuMTg3NSAxMi42MzY3MTkgMzU2LjYwMTU2MyA1LjEwMTU2MyAiLz4KPC9jbGlwUGF0aD4KPGNsaXBQYXRoIGlkPSJjbGlwNCI+CiAgPHBhdGggZD0iTSAzMjkuMTAxNTYzIDQuOTQxNDA2IEwgMzI4Ljk5MjE4OCAzNyBMIDM3Ni41IDM3LjE2MDE1NiBMIDM3Ni42MDkzNzUgNS4xMDE1NjMgWiBNIDMyOS4xMDE1NjMgNC44Mzk4NDQgTCAzMjkuMTAxNTYzIDQuOTQxNDA2IEwgMzc2LjYwOTM3NSA1LjEwMTU2MyBMIDM3Ni42MDkzNzUgNSBaIE0gMzI5LjEwMTU2MyA0LjgzOTg0NCAiLz4KPC9jbGlwUGF0aD4KPGltYWdlIGlkPSJpbWFnZTUiIHdpZHRoPSIyMzciIGhlaWdodD0iMTYwIiB4bGluazpocmVmPSJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQU8wQUFBQ2dDQUlBQUFCdjZYeHFBQUFBQm1KTFIwUUEvd0QvQVArZ3ZhZVRBQUFDeDBsRVFWUjRuTzNiUVhhYlVCQkUwWkRETGpMSjNyUFJESktSSTl1eGhFVC94NzBMc0pGcGlpNnd0bDgvZm42RHhlMW5sd0FkMjNtL2VqL3hkOE5SdnA5OUFIQUFlVXlCUEtaQUhsTWdqeW1ZK056TkxZV3ZzbGRRTURHUHAzR3B6eWVQS1pESFM1SStiOGhqQ3VReHh6ZzNFT1Z4MHVYTzZuN0J6MHlQUEtiQWUya0s1SEhYbFU3dGZxbFBTOWU0NTI0dUsrNWdyNkJnWEI0UHBGS2ZUeDVUSUkvWEkzcitKWThwa01jYzRQUTBsTWNVZUM5TmdUeW13SDU4TmMzZzJyZm9CK05TN01jVXpOb3IzQnE0ajU1SHdhdzhIc2gxdmdSNVRJRThYb3pjdVVrZVgxam8zUHQrSGdjNGZZamtNUVhlZzFBZ2p5bVF4eFRJWXdya01RV0Qzb080TTV4cTdUKy8veittWUZBZUQrUVNYNFdlUjRFOFhvemN1VWtlVXlDUGVkU0VLSlRIRkhnUFFvRThwa0FlVXlDUEtmQzhndmV0RTNKVHZwODM0eWhZbGIyQ0FudkZ1MXpoQzVESGZHcUJHZG1YT0VyK2NLcmVJNDhwc0IvemtDRTVLSThwOEY2YUFubE1nVHltUUI1VElJOHBtUExjelcyQlI5Z3JLSmlTeDlPNHZOY2lqeW1ReDh1UU9CK1F4eFRJWSs2M2JWTmljSjl6S0hBMzcwRW9NTWNVbUdNSzlEd09jSHJQOHR5TkFuc0ZCZWFZQW5OTWdaN0hrYzZxVzNvZUJmWUtDc3d4QmVhWUFqMlA0NzIrZE9sNUZOZ3JLRERIRkpoakN2UThudWhsN1V2UG80QmVRWUU1cHNBY1U2RG44UXJQcm1GNkhnWDJDZ3JNTVFYbW1BSTlqNWQ2VWgvVDh5aXdWMUJnamlrd3h4VG9lWnpnOEZhbTUxRmdyNkRBSEZOZ2ppblE4empUZGxEbDI0LzZRWEFpZXdVRjVwZ0NjMHlCbnNjSUQ3WTA3L01vc0ZkUVlJNHBNTWNVNkhuTWNsOWgwL01vc0ZkUVlJNHBNTWNVNkhsTTlOWGFwdWRSWUsrZ3dCeFRZSTRwMFBNWTdULzdtNTVIZ2IyQ0FuTk1nVG1tUU05akRSOFhPVDJQQW5zRkJlYVlBbk5NZ1o3SFltNDJPajJQQW5zRkJlYVlBbk5NZ1o3SGt0NzBPajJQQW5zRkJlYVlBbk5NZ1o3MzE3WnBDZ3Y3RGRqbEExTU9vQnVsQUFBQUFFbEZUa1N1UW1DQyIvPgo8Y2xpcFBhdGggaWQ9ImNsaXA1Ij4KICA8cGF0aCBkPSJNIDM5NyAxMCBMIDQzMiAxMCBMIDQzMiA0Ni42MDE1NjMgTCAzOTcgNDYuNjAxNTYzIFogTSAzOTcgMTAgIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPGcgaWQ9InN1cmZhY2UxIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAxKSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAyKSIgY2xpcC1ydWxlPSJldmVub2RkIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAzKSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXA0KSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPHVzZSB4bGluazpocmVmPSIjaW1hZ2U1IiB0cmFuc2Zvcm09Im1hdHJpeCgwLjIsMCwwLC0wLjIsMzI5LjEsMzcpIi8+CjwvZz4KPC9nPgo8L2c+CjwvZz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gOTYuNDg4MjgxIDM2LjA5Mzc1IEwgODYuMTY3OTY5IDI1Ljc3MzQzOCBDIDg2Ljk4ODI4MSAyNS41MzEyNSA4Ny44MDA3ODEgMjUuMjIyNjU2IDg4LjYwMTU2MyAyNC44MzIwMzEgQyA5MC4wMTk1MzEgMjQuMTQwNjI1IDkxLjA2MjUgMjMuMzkwNjI1IDkyLjIxNDg0NCAyMS42Njc5NjkgQyA5My4wNTQ2ODggMjAuNDA2MjUgOTMuNDg0Mzc1IDE4LjY5MTQwNiA5My40ODQzNzUgMTYuOTE0MDYzIEMgOTMuNDg0Mzc1IDE0LjYxMzI4MSA5Mi42ODc1IDEyLjczNDM3NSA5MS4wOTM3NSAxMS4yODEyNSBDIDg5LjUgOS44MjQyMTkgODcuNTE5NTMxIDguODgyODEzIDg1LjE1NjI1IDguNDQ1MzEzIEMgODMuNjIxMDk0IDguMTU2MjUgODAuMzIwMzEzIDguMDExNzE5IDc1LjI1NzgxMyA4LjAxMTcxOSBMIDYxLjg5ODQzOCA4LjAxMTcxOSBMIDYxLjg5ODQzOCAzNi45NTMxMjUgTCA3MC4yMjI2NTYgMzYuOTUzMTI1IEwgNzAuMjIyNjU2IDI2LjYxNzE4OCBMIDc1LjM4NjcxOSAyNi42MTcxODggTCA4MC4xODM1OTQgMzEuNTM5MDYzIEwgODIuNjkxNDA2IDM0LjExMzI4MSBMIDgyLjY5NTMxMyAzNC4xMTMyODEgTCA4NC42MDkzNzUgMzYuMDgyMDMxIEMgODUuMDcwMzEzIDM2LjU1NDY4OCA4NS45ODQzNzUgMzYuOTQxNDA2IDg2LjY0NDUzMSAzNi45NDE0MDYgTCA5Ny4zMzU5MzggMzYuOTQxNDA2IFogTSA3MC4yMjI2NTYgMTMuNDg4MjgxIEwgNzQuMjQ2MDk0IDEzLjQ4ODI4MSBDIDc3LjI0NjA5NCAxMy40ODgyODEgNzkuMjQyMTg4IDEzLjU1NDY4OCA4MC4yMzQzNzUgMTMuNjg3NSBDIDgxLjU4NTkzOCAxMy44NTU0NjkgODIuNzAzMTI1IDE0LjI4NTE1NiA4My41ODIwMzEgMTQuOTY4NzUgQyA4NC40NjQ4NDQgMTUuNjUyMzQ0IDg0LjY3MTg3NSAxNi4yNjU2MjUgODQuNjcxODc1IDE3LjMyMDMxMyBDIDg0LjY3MTg3NSAxOC4xNzU3ODEgODQuNTg5ODQ0IDE4LjYwMTU2MyA4My45NjA5MzggMTkuMjQ2MDk0IEMgODMuMzM1OTM4IDE5Ljg5MDYyNSA4Mi40Njg3NSAyMC4zNjMyODEgODEuMzU5Mzc1IDIwLjY2Nzk2OSBDIDgwLjI1MzkwNiAyMC45Njg3NSA3OC4wNTg1OTQgMjEuMTIxMDk0IDc0Ljc4MTI1IDIxLjEyMTA5NCBMIDcwLjIyMjY1NiAyMS4xMjEwOTQgTCA3MC4yMjI2NTYgMTMuNDg4MjgxICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDcuMDk5OTE1JSwxMS4zOTk4NDElLDI1LjQ5ODk2MiUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA1My41ODk4NDQgMzYuOTc2NTYzIEwgNDQuODUxNTYzIDM2Ljk3NjU2MyBMIDQ0Ljg1MTU2MyA3LjY1MjM0NCBMIDUzLjU4OTg0NCA3LjY1MjM0NCBMIDUzLjU4OTg0NCAzNi45NzY1NjMgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoNy4wOTk5MTUlLDExLjM5OTg0MSUsMjUuNDk4OTYyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEyOC43NSAyNy43NTc4MTMgTCAxMjguNzUgMjEuMjQ2MDk0IEwgMTA5LjQwMjM0NCAyMS4yNDYwOTQgTCAxMDkuNDAyMzQ0IDE0LjAzMTI1IEwgMTI5LjM0NzY1NiAxNC4wMzEyNSBMIDEyOS4zNDc2NTYgNy43NDYwOTQgTCAxMDEuMDUwNzgxIDcuNzQ2MDk0IEwgMTAxLjA1MDc4MSAzNi45NDE0MDYgTCAxMDkuMzIwMzEzIDM2Ljk0MTQwNiBMIDEwOS4zMjAzMTMgMjcuNzU3ODEzIEwgMTI4Ljc1IDI3Ljc1NzgxMyAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMTY5LjI3MzQzOCAzNS45OTYwOTQgTCAxNTguOTUzMTI1IDI1LjY3NTc4MSBDIDE1OS43Njk1MzEgMjUuNDMzNTk0IDE2MC41ODIwMzEgMjUuMTI1IDE2MS4zODY3MTkgMjQuNzM0Mzc1IEMgMTYyLjgwNDY4OCAyNC4wNDI5NjkgMTYzLjg0NzY1NiAyMy4yOTI5NjkgMTY0Ljk5NjA5NCAyMS41NzAzMTMgQyAxNjUuODM5ODQ0IDIwLjMwODU5NCAxNjYuMjY5NTMxIDE4LjU5NzY1NiAxNjYuMjY5NTMxIDE2LjgyMDMxMyBDIDE2Ni4yNjk1MzEgMTQuNTE1NjI1IDE2NS40Njg3NSAxMi42MzY3MTkgMTYzLjg3ODkwNiAxMS4xODM1OTQgQyAxNjIuMjgxMjUgOS43MzA0NjkgMTYwLjMwNDY4OCA4Ljc4NTE1NiAxNTcuOTQxNDA2IDguMzUxNTYzIEMgMTU2LjQwMjM0NCA4LjA1ODU5NCAxNTMuMTA1NDY5IDcuOTE0MDYzIDE0OC4wMzkwNjMgNy45MTQwNjMgTCAxMzQuNjgzNTk0IDcuOTE0MDYzIEwgMTM0LjY4MzU5NCAzNi44NTkzNzUgTCAxNDMuMDA3ODEzIDM2Ljg1OTM3NSBMIDE0My4wMDc4MTMgMjYuNTE5NTMxIEwgMTQ4LjE3MTg3NSAyNi41MTk1MzEgTCAxNTIuOTY4NzUgMzEuNDQxNDA2IEwgMTU1LjQ3NjU2MyAzNC4wMTk1MzEgTCAxNTcuMzk0NTMxIDM1Ljk4NDM3NSBDIDE1Ny44NTU0NjkgMzYuNDU3MDMxIDE1OC43Njk1MzEgMzYuODQzNzUgMTU5LjQyNTc4MSAzNi44NDM3NSBMIDE3MC4xMjEwOTQgMzYuODQzNzUgWiBNIDE0My4wMDc4MTMgMTMuMzkwNjI1IEwgMTQ3LjAyNzM0NCAxMy4zOTA2MjUgQyAxNTAuMDI3MzQ0IDEzLjM5MDYyNSAxNTIuMDI3MzQ0IDEzLjQ1NzAzMSAxNTMuMDE5NTMxIDEzLjU4OTg0NCBDIDE1NC4zNzEwOTQgMTMuNzYxNzE5IDE1NS40ODQzNzUgMTQuMTg3NSAxNTYuMzY3MTg4IDE0Ljg3MTA5NCBDIDE1Ny4yNDYwOTQgMTUuNTU4NTk0IDE1Ny40NTcwMzEgMTYuMTY3OTY5IDE1Ny40NTcwMzEgMTcuMjIyNjU2IEMgMTU3LjQ1NzAzMSAxOC4wNzgxMjUgMTU3LjM3NSAxOC41MDM5MDYgMTU2Ljc0NjA5NCAxOS4xNDg0MzggQyAxNTYuMTE3MTg4IDE5Ljc5Mjk2OSAxNTUuMjUzOTA2IDIwLjI2OTUzMSAxNTQuMTQ0NTMxIDIwLjU3MDMxMyBDIDE1My4wMzkwNjMgMjAuODc1IDE1MC44NDM3NSAyMS4wMjM0MzggMTQ3LjU2MjUgMjEuMDIzNDM4IEwgMTQzLjAwNzgxMyAyMS4wMjM0MzggTCAxNDMuMDA3ODEzIDEzLjM5MDYyNSAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMzEuNzAzMTI1IDM2Ljk0MTQwNiBMIDQyLjE0NDUzMSAzNi45NDE0MDYgTCAyMy42Nzk2ODggNy44NDc2NTYgTCAxNi41MjczNDQgNy44NDc2NTYgTCAwIDM3LjAzOTA2MyBMIDguMjE0ODQ0IDM3LjAzOTA2MyBMIDExLjc0NjA5NCAzMC4zNjcxODggTCAyNy45NDE0MDYgMzAuMzY3MTg4IFogTSAxNC44NjcxODggMjQuNDcyNjU2IEwgMTkuNTIzNDM4IDE1LjY3NTc4MSBMIDI0LjU2MjUgMjQuNDcyNjU2IFogTSAxNC44NjcxODggMjQuNDcyNjU2ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDcuMDk5OTE1JSwxMS4zOTk4NDElLDI1LjQ5ODk2MiUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAyMDIuMzc4OTA2IDM2Ljg0Mzc1IEwgMjEyLjY0ODQzOCAzNi44NDM3NSBMIDE5NC40ODQzNzUgNy43NSBMIDE4Ny40NDUzMTMgNy43NSBMIDE3MS4xODM1OTQgMzYuOTQxNDA2IEwgMTc5LjI2NTYyNSAzNi45NDE0MDYgTCAxODIuNzQyMTg4IDMwLjI2OTUzMSBMIDE5OC42NzU3ODEgMzAuMjY5NTMxIFogTSAxODUuODEyNSAyNC4zNzUgTCAxOTAuMzk0NTMxIDE1LjU3ODEyNSBMIDE5NS4zNTE1NjMgMjQuMzc1IFogTSAxODUuODEyNSAyNC4zNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoNy4wOTk5MTUlLDExLjM5OTg0MSUsMjUuNDk4OTYyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDIxMy45MzM1OTQgNy43NDYwOTQgTCAyMTMuOTMzNTk0IDM2Ljk3NjU2MyBMIDIyMC44OTQ1MzEgMzYuOTc2NTYzIEwgMjIwLjg5NDUzMSAxOS43MTQ4NDQgTCAyNDEuMjYxNzE5IDM2Ljk0MTQwNiBMIDI0Ny4xOTkyMTkgMzYuOTQxNDA2IEwgMjQ3LjE5OTIxOSA3Ljc0NjA5NCBMIDI0MC4xMDE1NjMgNy43NDYwOTQgTCAyNDAuMTAxNTYzIDI0LjcyNjU2MyBMIDIxOS41IDcuNzQ2MDk0IEwgMjEzLjkzMzU5NCA3Ljc0NjA5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMjk5LjY0MDYyNSAxOS4yNTM5MDYgTCAyOTkuNjQwNjI1IDEzLjg1NTQ2OSBMIDMyMC40NDE0MDYgMTMuODU1NDY5IEwgMzIwLjQ0MTQwNiA3Ljc1IEwgMjkwLjk2MDkzOCA3Ljc1IEwgMjkwLjk2MDkzOCAzNi45NDE0MDYgTCAzMjAuNDQxNDA2IDM2Ljk0MTQwNiBMIDMyMC40NDE0MDYgMzAuODUxNTYzIEwgMjk5LjY0MDYyNSAzMC44NTE1NjMgTCAyOTkuNjQwNjI1IDI1LjQ1NzAzMSBMIDMyMC40NDE0MDYgMjUuNDU3MDMxIEwgMzIwLjQ0MTQwNiAxOS4yNTM5MDYgTCAyOTkuNjQwNjI1IDE5LjI1MzkwNiAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYig3LjA5OTkxNSUsMTEuMzk5ODQxJSwyNS40OTg5NjIlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMjczLjU0Njg3NSAzMC44NTE1NjMgQyAyNjMuNjg3NSAzMS4zMzU5MzggMjU5Ljk0NTMxMyAyNi41NzgxMjUgMjYwLjAxMTcxOSAyMi4xNjQwNjMgQyAyNjAuMDY2NDA2IDE4LjQwMjM0NCAyNjIuOTE3OTY5IDEzLjg0NzY1NiAyNzIuMTkxNDA2IDEzLjkzNzUgQyAyNzYuOTA2MjUgMTMuOTgwNDY5IDI4MS45Njg3NSAxNS4yMzA0NjkgMjg1LjcyMjY1NiAxNi45MTc5NjkgTCAyODUuNzIyNjU2IDkuODQzNzUgQyAyODIuMTc5Njg4IDguMjU3ODEzIDI3Ny43MzA0NjkgNy4zMzk4NDQgMjcyLjU3ODEyNSA3LjI2NTYyNSBDIDI1OC45NDkyMTkgNy4wNzQyMTkgMjUwLjYyMTA5NCAxMy43MjY1NjMgMjUwLjUzOTA2MyAyMi4wNTQ2ODggQyAyNTAuNDQxNDA2IDMxLjgxNjQwNiAyNjAuMTk1MzEzIDM3LjQyNTc4MSAyNzIuNTc4MTI1IDM3LjQyNTc4MSBDIDI3Ny40NzY1NjMgMzcuNDI1NzgxIDI4Mi4wMjM0MzggMzYuMzYzMjgxIDI4NS43MjI2NTYgMzQuNTcwMzEzIEwgMjg1LjcyMjY1NiAyNy41NDI5NjkgQyAyODIuNDg4MjgxIDI5LjIzODI4MSAyNzguMTcxODc1IDMwLjYyNSAyNzMuNTQ2ODc1IDMwLjg1MTU2MyAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQyMS45ODA0NjkgMi4yODkwNjMgTCA0MjEuNzIyNjU2IDIuMTcxODc1IEwgNDIxLjc4NTE1NiAyLjAzMTI1IEwgNDIyLjQ4NDM3NSAyLjM0NzY1NiBMIDQyMi40MjE4NzUgMi40ODgyODEgTCA0MjIuMTY0MDYzIDIuMzcxMDk0IEwgNDIxLjgyMDMxMyAzLjEzMjgxMyBMIDQyMS42MzY3MTkgMy4wNTA3ODEgTCA0MjEuOTgwNDY5IDIuMjg5MDYzICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNDIyLjYyMTA5NCAyLjQwMjM0NCBMIDQyMi45MDYyNSAyLjU0Mjk2OSBMIDQyMi43ODkwNjMgMy4zMjAzMTMgTCA0MjIuNzkyOTY5IDMuMzI0MjE5IEwgNDIzLjMzNTkzOCAyLjc1IEwgNDIzLjYyMTA5NCAyLjg5MDYyNSBMIDQyMy4xODM1OTQgMy43ODEyNSBMIDQyMy4wMTU2MjUgMy42OTkyMTkgTCA0MjMuMzcxMDk0IDIuOTYwOTM4IEwgNDIyLjc3MzQzOCAzLjU3ODEyNSBMIDQyMi42MDE1NjMgMy40OTYwOTQgTCA0MjIuNzE4NzUgMi42NDQ1MzEgTCA0MjIuNzE0ODQ0IDIuNjQ0NTMxIEwgNDIyLjM1OTM3NSAzLjM3ODkwNiBMIDQyMi4xODc1IDMuMjkyOTY5IEwgNDIyLjYyMTA5NCAyLjQwMjM0NCAiLz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXA1KSIgY2xpcC1ydWxlPSJub256ZXJvIj4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQyNC43MzQzNzUgMTAuMTEzMjgxIEwgNDI0LjcxNDg0NCAxMC4xMzY3MTkgQyA0MjguMTA1NDY5IDEzLjU0Mjk2OSA0MzAuMzM1OTM4IDE4LjEzNjcxOSA0MzAuNjk1MzEzIDIzLjMwNDY4OCBDIDQzMS40OTYwOTQgMzQuNzI2NTYzIDQyMi44ODY3MTkgNDQuNjI4OTA2IDQxMS40NjQ4NDQgNDUuNDI5Njg4IEMgNDA2LjA5NzY1NiA0NS44MDQ2ODggNDAxLjA2NjQwNiA0NC4xMDE1NjMgMzk3LjE1NjI1IDQxLjAwMzkwNiBMIDM5Ny4xMzI4MTMgNDEuMDI3MzQ0IEMgNDAxLjE5MTQwNiA0NC44MTI1IDQwNi43NDYwOTQgNDYuOTY0ODQ0IDQxMi43MTg3NSA0Ni41NTA3ODEgQyA0MjQuMTM2NzE5IDQ1Ljc1IDQzMi43NDYwOTQgMzUuODQzNzUgNDMxLjk0OTIxOSAyNC40MjU3ODEgQyA0MzEuNTQ2ODc1IDE4LjY1MjM0NCA0MjguODEyNSAxMy41OTc2NTYgNDI0LjczNDM3NSAxMC4xMTMyODEgIi8+CjwvZz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDM4Ny45OTYwOTQgMzMuNjgzNTk0IEMgMzg3LjMzNTkzOCAzNC4wNDY4NzUgMzg3LjE4NzUgMzQuNjAxNTYzIDM4Ny41MjczNDQgMzUuNDU3MDMxIEMgMzg3LjgzOTg0NCAzNi4yMzQzNzUgMzg4LjMyODEyNSAzNi41NzQyMTkgMzg4Ljg0NzY1NiAzNi4zNjMyODEgQyAzODkuMjY1NjI1IDM2LjE5OTIxOSAzODkuMzM5ODQ0IDM1LjgzNTkzOCAzODkuMTY0MDYzIDM0Ljg5ODQzOCBMIDM4OS4wODk4NDQgMzQuNTM5MDYzIEMgMzg4LjkxNzk2OSAzMy42MTcxODggMzg4Ljg5MDYyNSAzMy4yMTg3NSAzODkgMzIuODI0MjE5IEMgMzg5LjEwOTM3NSAzMi4zODI4MTMgMzg5LjM2MzI4MSAzMi4wODk4NDQgMzg5Ljc1IDMxLjkzMzU5NCBDIDM5MC42OTE0MDYgMzEuNTU4NTk0IDM5MS41NzgxMjUgMzIuMTM2NzE5IDM5Mi4xMDU0NjkgMzMuNDU3MDMxIEMgMzkyLjY3NTc4MSAzNC44ODI4MTMgMzkyLjM2NzE4OCAzNS45NTcwMzEgMzkxLjI1NzgxMyAzNi40MTc5NjkgTCAzOTAuOTgwNDY5IDM1LjcyMjY1NiBDIDM5MS43NTM5MDYgMzUuMzg2NzE5IDM5MS45NDUzMTMgMzQuNjYwMTU2IDM5MS41MzUxNTYgMzMuNjI4OTA2IEMgMzkxLjE5NTMxMyAzMi43ODUxNTYgMzkwLjY1NjI1IDMyLjQxMDE1NiAzOTAuMDg5ODQ0IDMyLjYzNjcxOSBDIDM4OS42MzY3MTkgMzIuODE2NDA2IDM4OS41MjczNDQgMzMuMjM4MjgxIDM4OS42OTUzMTMgMzQuMTk5MjE5IEwgMzg5Ljc2MTcxOSAzNC42MDE1NjMgTCAzODkuODI0MjE5IDM0Ljk1NzAzMSBDIDM4OS45NDUzMTMgMzUuNjY3OTY5IDM4OS45NjA5MzggMzUuOTIxODc1IDM4OS44OTA2MjUgMzYuMjIyNjU2IEMgMzg5LjgwMDc4MSAzNi42MDE1NjMgMzg5LjU1NDY4OCAzNi44Nzg5MDYgMzg5LjE2Nzk2OSAzNy4wMzUxNTYgQyAzODguMjg5MDYzIDM3LjM4NjcxOSAzODcuNDQxNDA2IDM2Ljg2NzE4OCAzODYuOTY4NzUgMzUuNjc5Njg4IEMgMzg2LjQ1MzEyNSAzNC4zOTA2MjUgMzg2LjczMDQ2OSAzMy40Mzc1IDM4Ny43MTg3NSAzMi45OTIxODggTCAzODcuOTk2MDk0IDMzLjY4MzU5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDM4Ny40MDYyNSAyNi4xOTkyMTkgTCAzOTAuNTUwNzgxIDIzLjU0Njg3NSBMIDM5MC41NzQyMTkgMjQuNTI3MzQ0IEwgMzg3LjkxMDE1NiAyNi43MzQzNzUgTCAzODguNzczNDM4IDI3LjY4NzUgTCAzOTAuNjQ0NTMxIDI3LjY0NDUzMSBMIDM5MC42NjAxNTYgMjguNDE0MDYzIEwgMzg1LjMxNjQwNiAyOC41MzEyNSBMIDM4NS4yOTY4NzUgMjcuNzY1NjI1IEwgMzg3LjQwMjM0NCAyNy43MTg3NSBMIDM4Ny42OTE0MDYgMjcuNzE4NzUgTCAzODcuOTY0ODQ0IDI3LjcxNDg0NCBMIDM4Ny43ODEyNSAyNy41MjM0MzggTCAzODcuNjAxNTYzIDI3LjMzMjAzMSBMIDM4NS4yMzA0NjkgMjQuNzgxMjUgTCAzODUuMjEwOTM4IDIzLjc2NTYyNSBMIDM4Ny40MDYyNSAyNi4xOTkyMTkgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAzODkuNzczNDM4IDE3LjkyMTg3NSBMIDM5MS44MzU5MzggMTguNjQ0NTMxIEwgMzkxLjU3ODEyNSAxOS4zNjcxODggTCAzODkuNTE5NTMxIDE4LjY0NDUzMSBMIDM4NS44MjgxMjUgMTkuNzU3ODEzIEwgMzg2LjEzNjcxOSAxOC44NzUgTCAzODguNDI5Njg4IDE4LjIzNDM3NSBMIDM4OC43MTQ4NDQgMTguMTU2MjUgQyAzODguODI4MTI1IDE4LjEyMTA5NCAzODguODk4NDM4IDE4LjEwOTM3NSAzODkuMTAxNTYzIDE4LjA3MDMxMyBDIDM4OC45MjE4NzUgMTcuODU1NDY5IDM4OC44Nzg5MDYgMTcuODA0Njg4IDM4OC42OTE0MDYgMTcuNTM5MDYzIEwgMzg3LjI3NzM0NCAxNS42MjUgTCAzODcuNTcwMzEzIDE0Ljc4NTE1NiBMIDM4OS43NzM0MzggMTcuOTIxODc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMzkzLjM5MDYyNSA4LjEwOTM3NSBMIDM5Mi4yNjE3MTkgOS40ODgyODEgTCAzOTUuNjMyODEzIDEyLjI1IEwgMzk0LjgyNDIxOSAxMy4yNDIxODggTCAzOTEuNDQ5MjE5IDEwLjQ4MDQ2OSBMIDM5MC4zMjQyMTkgMTEuODUxNTYzIEwgMzg5LjU2MjUgMTEuMjI2NTYzIEwgMzkyLjYyODkwNiA3LjQ4NDM3NSBMIDM5My4zOTA2MjUgOC4xMDkzNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0MDAuNjA1NDY5IDMuMDQyOTY5IEwgMzk3LjkwNjI1IDQuNjE3MTg4IEwgMzk4LjQ4NDM3NSA1LjYwMTU2MyBMIDQwMC45NjA5MzggNC4xNTYyNSBMIDQwMS40MjE4NzUgNC45NDUzMTMgTCAzOTguOTQ1MzEzIDYuMzk0NTMxIEwgMzk5LjYwOTM3NSA3LjUzMTI1IEwgNDAyLjM2MzI4MSA1LjkyMTg3NSBMIDQwMi44NTkzNzUgNi43NzM0MzggTCAzOTkuMDAzOTA2IDkuMDI3MzQ0IEwgMzk2LjMwNDY4OCA0LjQxNDA2MyBMIDQwMC4xMDkzNzUgMi4xODc1IEwgNDAwLjYwNTQ2OSAzLjA0Mjk2OSAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOnJnYigxNC40OTg5MDElLDE5LjU5OTkxNSUsMzUuNjk5NDYzJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDQxMC45NTMxMjUgNS4xMTcxODggTCA0MDkuNTU0Njg4IDUuMjA3MDMxIEwgNDA4Ljg2MzI4MSA0LjA1NDY4OCBMIDQwNi43MTA5MzggNC4zOTQ1MzEgTCA0MDYuNDA2MjUgNS43MTQ4NDQgTCA0MDUuMDc0MjE5IDYuMDU0Njg4IEwgNDA2LjQ4MDQ2OSAwLjIxNDg0NCBMIDQwNy43OTY4NzUgMC4wMDM5MDYyNSBaIE0gNDA3Ljg5ODQzOCAyLjM2MzI4MSBDIDQwNy42MDU0NjkgMS44NzEwOTQgNDA3LjQ4ODI4MSAxLjY1NjI1IDQwNy4zMjAzMTMgMS4yNzM0MzggQyA0MDcuMjczNDM4IDEuNjU2MjUgNDA3LjIyMjY1NiAxLjk0MTQwNiA0MDcuMDkzNzUgMi40ODgyODEgTCA0MDYuODcxMDk0IDMuNTA3ODEzIEwgNDA4LjQyNTc4MSAzLjI2MTcxOSBMIDQwNy44OTg0MzggMi4zNjMyODEgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTQuNDk4OTAxJSwxOS41OTk5MTUlLDM1LjY5OTQ2MyUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0MTkuNTM5MDYzIDYuODI0MTI1IEwgNDE4LjQxNDA2MyA2LjM5ODQzOCBMIDQxOC44NDM3NSA0LjgxMjUgQyA0MTguODkwNjI1IDQuNjI1IDQxOC45NjA5MzggNC4zNjcxODggNDE5LjA1NDY4OCA0LjA0Mjk2OSBDIDQxOS4xNDA2MjUgMy43MTA5MzggNDE5LjIxODc1IDMuNDQ5MjE5IDQxOS4yNzczNDQgMy4yNTc4MTMgQyA0MTkuMzQzNzUgMy4wNDI5NjkgNDE5LjQxNDA2MyAyLjgyMDMxMyA0MTkuNDg0Mzc1IDIuNTg5ODQ0IEwgNDE5LjYxMzI4MSAyLjIwNzAzMSBDIDQxOS4yOTY4NzUgMi43NDYwOTQgNDE5LjE3MTg3NSAyLjkzNzUgNDE4Ljg4MjgxMyAzLjM3ODkwNiBDIDQxOC43NjE3MTkgMy41NzAzMTMgNDE4LjY0NDUzMSAzLjczMDQ2OSA0MTguNTU0Njg4IDMuODYzMjgxIEwgNDE3LjAzNTE1NiA1Ljk4ODI4MSBMIDQxNi4wNjI1IDUuNzMwNDY5IEwgNDE1Ljc1NzgxMyAzLjE3NTc4MSBDIDQxNS43MzgyODEgMy4wNDY4NzUgNDE1LjcyMjY1NiAyLjg1OTM3NSA0MTUuNzAzMTI1IDIuNjA5Mzc1IEMgNDE1LjY4NzUgMi4yNjk1MzEgNDE1LjY3MTg3NSAyLjAxOTUzMSA0MTUuNjY0MDYzIDEuODM5ODQ0IEMgNDE1LjY1NjI1IDEuNjk5MjE5IDQxNS42NTYyNSAxLjQ4NDM3NSA0MTUuNjYwMTU2IDEuMTk1MzEzIEwgNDE1LjUyNzM0NCAxLjgzOTg0NCBDIDQxNS4zNjcxODggMi41NDI5NjkgNDE1LjI5Njg3NSAyLjg0NzY1NiA0MTUuMDg1OTM4IDMuNjkxNDA2IEwgNDE0LjY0MDYyNSA1LjQxMDE1NiBMIDQxMy40NTcwMzEgNS4yMjY1NjMgTCA0MTQuNzk2ODc1IC0wLjAwMzkwNjI1IEwgNDE2LjU5Mzc1IDAuMzQzNzUgTCA0MTYuODQ3NjU2IDIuODE2NDA2IEMgNDE2LjkxNDA2MyAzLjM5ODQzOCA0MTYuOTIxODc1IDMuODgyODEzIDQxNi44OTg0MzggNC41NzQyMTkgQyA0MTcuMTAxNTYzIDQuMTc5Njg4IDQxNy4xNzE4NzUgNC4wNDY4NzUgNDE3LjQwNjI1IDMuNjg3NSBDIDQxNy41NTg1OTQgMy40NDUzMTMgNDE3LjY5NTMxMyAzLjIzODI4MSA0MTcuODE2NDA2IDMuMDU0Njg4IEwgNDE5LjIyNjU2MyAxLjAzNTE1NiBMIDQyMC45Mjk2ODggMS42MTMyODEgTCA0MTkuNTM5MDYzIDYuODI4MTI1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpldmVub2RkO2ZpbGw6cmdiKDE0LjQ5ODkwMSUsMTkuNTk5OTE1JSwzNS42OTk0NjMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNDA5LjMyNDIxOSAxNy4xMjUgQyA0MDguNjcxODc1IDE3LjY5NTMxMyA0MDcuMzkwNjI1IDE4LjkyNTc4MSA0MDYuMTQ4NDM4IDIwLjExNzE4OCBMIDQwNC43NDIxODggMjEuNDY0ODQ0IEMgNDAzLjU5Mzc1IDIxLjI1MzkwNiA0MDIuNDYwOTM4IDIxLjE1NjI1IDQwMS4yOTY4NzUgMjEuMTU2MjUgQyAzOTguNjkxNDA2IDIxLjE1NjI1IDM5Ni4zMDQ2ODggMjEuODc1IDM5NS4yMTg3NSAyMi45ODQzNzUgQyAzOTQuODA0Njg4IDIzLjQwNjI1IDM5NC41OTc2NTYgMjMuODcxMDk0IDM5NC42MDU0NjkgMjQuMzU1NDY5IEMgMzk0LjYzMjgxMyAyNS42MTMyODEgMzk2LjA3NDIxOSAyNi4yNSAzOTYuNTE1NjI1IDI2LjQxNDA2MyBDIDM5OC44MjgxMjUgMjcuMjc3MzQ0IDQwMC43Njk1MzEgMjcuMDI3MzQ0IDQwMi44MDg1OTQgMjUuNjAxNTYzIEMgNDAzLjkzNzUgMjQuODEyNSA0MDUuMjg5MDYzIDIzLjU0Njg3NSA0MDYuMzQ3NjU2IDIyLjUzNTE1NiBDIDQwNy4xNzE4NzUgMjIuNzIyNjU2IDQwOC4xMDE1NjMgMjIuOTY0ODQ0IDQwOS4xMDU0NjkgMjMuMjYxNzE5IEwgNDEwLjAzMTI1IDIzLjUzMTI1IEMgNDA4LjgzNTkzOCAyNC43MTA5MzggNDA3LjYwMTU2MyAyNS45NTMxMjUgNDA2LjQ2MDkzOCAyNi45NjA5MzggTCA0MDYuMzcxMDk0IDI3LjAzOTA2MyBDIDQwNC43ODUxNTYgMjguNDQxNDA2IDQwMy42MzI4MTMgMjkuNDUzMTI1IDQwMS45NzY1NjMgMjkuODIwMzEzIEMgNDAwLjgwODU5NCAzMC4wODIwMzEgMzk5Ljk4MDQ2OSAyOS44MzIwMzEgMzk5LjcwNzAzMSAyOS42Njc5NjkgQyAzOTkuNjgzNTk0IDI5LjY3MTg3NSAzOTkuNjQ0NTMxIDI5LjcxODc1IDM5OS42NDQ1MzEgMjkuNzE4NzUgQyA0MDAuNjA1NDY5IDMwLjUxMTcxOSA0MDEuNTE1NjI1IDMwLjk1NzAzMSA0MDMuMDc4MTI1IDMwLjgyNDIxOSBDIDQwNC41NjY0MDYgMzAuNjk1MzEzIDQwNi4yODUxNTYgMjkuNzUzOTA2IDQwOC4wNDY4NzUgMjguMTA5Mzc1IEwgNDEwLjQyMTg3NSAyNS43NzczNDQgTCA0MTIuMDg1OTM4IDI0LjEyNSBDIDQxMi4wODU5MzggMjQuMTM2NzE5IDQxNS40NDkyMTkgMjUuMTEzMjgxIDQxNS40NDkyMTkgMjUuMTEzMjgxIEMgNDE1LjQ3NjU2MyAyNS4xMjEwOTQgNDE1LjUxMTcxOSAyNS4xMjg5MDYgNDE1LjUxMTcxOSAyNS4xMjg5MDYgQyA0MTUuNDc2NTYzIDI1LjEzMjgxMyA0MTMuNDI5Njg4IDI3LjE1MjM0NCA0MTMuNDI5Njg4IDI3LjE1MjM0NCBMIDQxMS42NDA2MjUgMjguOTMzNTk0IEMgNDA5LjgwODU5NCAzMC43MTQ4NDQgNDA4LjgxMjUgMzEuNjM2NzE5IDQwNy43NDIxODggMzIuMzk0NTMxIEMgNDA1Ljk3MjY1NiAzMy42NDg0MzggNDA0LjQ2NDg0NCAzNC4zMDA3ODEgNDAzLjEyNSAzNC4zOTA2MjUgQyA0MDIuNDM3NSAzNC40Mzc1IDQwMS40Mzc1IDM0LjM4NjcxOSA0MDAuNjA1NDY5IDMzLjg5ODQzOCBDIDQwMC41NzAzMTMgMzMuODkwNjI1IDQwMC41MTk1MzEgMzMuOTM3NSA0MDAuNTE5NTMxIDMzLjkzNzUgQyA0MDEuNDIxODc1IDM0LjcxNDg0NCA0MDIuNTMxMjUgMzUuNjM2NzE5IDQwNC40Mzc1IDM1LjU4NTkzOCBDIDQwNi41OTM3NSAzNS41MjM0MzggNDA4LjUwMzkwNiAzNC40ODQzNzUgNDExLjQ3NjU2MyAzMS43NTM5MDYgQyA0MTIuODM1OTM4IDMwLjUwNzgxMyA0MTQuMTc5Njg4IDI5LjExNzE4OCA0MTUuMzcxMDk0IDI3Ljg4NjcxOSBMIDQxNy41NzgxMjUgMjUuNjQ4NDM4IEMgNDE5LjAzNTE1NiAyNS45NzI2NTYgNDIwLjMzNTkzOCAyNi4xMDE1NjMgNDIxLjc3MzQzOCAyNi4wNzQyMTkgQyA0MjMuODY3MTg4IDI2LjAzMTI1IDQyNS42NTYyNSAyNS4wMjczNDQgNDI1LjY3OTY4OCAyMy44ODI4MTMgQyA0MjUuNjk5MjE5IDIzLjAzNTE1NiA0MjUuMDAzOTA2IDIyLjU4NTkzOCA0MjQuNTg1OTM4IDIyLjMxNjQwNiBDIDQyNC4yNDIxODggMjIuMDg5ODQ0IDQyMy4zMDQ2ODggMjEuNTcwMzEzIDQyMi4wMDc4MTMgMjEuNTcwMzEzIEMgNDIwLjQ0MTQwNiAyMS41NzAzMTMgNDE4LjgwMDc4MSAyMi4yNjU2MjUgNDE3LjE0MDYyNSAyMy42Mjg5MDYgTCA0MTYuMDM1MTU2IDI0LjYwNTQ2OSBDIDQxNi4wNDY4NzUgMjQuNjAxNTYzIDQxNS42Mjg5MDYgMjQuNDkyMTg4IDQxNS42Mjg5MDYgMjQuNDkyMTg4IEwgNDEyLjU1MDc4MSAyMy42MzI4MTMgQyA0MTMuNDYwOTM4IDIyLjc4NTE1NiA0MTQuMjM0Mzc1IDIyLjA1ODU5NCA0MTQuOTI5Njg4IDIxLjQzNzUgQyA0MTYuNjEzMjgxIDE5Ljk0MTQwNiA0MTguNDc2NTYzIDE5LjMyODEyNSA0MTkuNTYyNSAxOS4yNTc4MTMgQyA0MjAuMzU1NDY5IDE5LjIwNzAzMSA0MjEuNzM4MjgxIDE5LjI3MzQzOCA0MjIuMzA4NTk0IDE5LjY3NTc4MSBDIDQyMi4zMzU5MzggMTkuNjcxODc1IDQyMi4zNzEwOTQgMTkuNjEzMjgxIDQyMi4zNzEwOTQgMTkuNjEzMjgxIEMgNDIwLjg1OTM3NSAxOC4zMjAzMTMgNDE5LjU0Njg3NSAxOC4xNDg0MzggNDE4LjQ2NDg0NCAxOC4xNDg0MzggQyA0MTcuNDAyMzQ0IDE4LjE0ODQzOCA0MTUuNjkxNDA2IDE4LjQ4ODI4MSA0MTMuNjAxNTYzIDIwLjEwOTM3NSBDIDQxMi43NDYwOTQgMjAuNzY5NTMxIDQxMS42NDA2MjUgMjEuODc1IDQxMC40ODA0NjkgMjMuMDQyOTY5IEMgNDEwLjQ4MDQ2OSAyMy4wMzUxNTYgNDA4LjkyNTc4MSAyMi41NjI1IDQwOC45MjU3ODEgMjIuNTYyNSBMIDQwOC41NDY4NzUgMjIuNDQ1MzEzIEMgNDA4LjU0Njg3NSAyMi40NDUzMTMgNDA2LjkxNDA2MyAyMS45NDkyMTkgNDA2LjkxNDA2MyAyMS45NDkyMTkgQyA0MDYuOTQ5MjE5IDIxLjk0OTIxOSA0MDcuODQ3NjU2IDIxLjA3MDMxMyA0MDcuODQ3NjU2IDIxLjA3MDMxMyBDIDQwOC45NDkyMTkgMTkuOTg4MjgxIDQwOS45ODgyODEgMTguOTY4NzUgNDEwLjgwMDc4MSAxOC4yODUxNTYgQyA0MTMuNzUzOTA2IDE1LjgwNDY4OCA0MTUuNjA5Mzc1IDE1LjQ4MDQ2OSA0MTYuOTAyMzQ0IDE1LjQ3MjY1NiBDIDQxOC4zMTY0MDYgMTUuNDY4NzUgNDE5LjQ0MTQwNiAxNS43NTc4MTMgNDIwLjI0MjE4OCAxNi4zMzk4NDQgQyA0MjAuMjY1NjI1IDE2LjMzNTkzOCA0MjAuMzA0Njg4IDE2LjI4MTI1IDQyMC4zMDQ2ODggMTYuMjgxMjUgQyA0MTguNjQ0NTMxIDE0Ljc4NTE1NiA0MTcuNDUzMTI1IDE0LjMwNDY4OCA0MTUuMzk0NTMxIDE0LjI4OTA2MyBDIDQxMy41ODk4NDQgMTQuMjczNDM4IDQxMS40MzM1OTQgMTUuMjgxMjUgNDA5LjMyNDIxOSAxNy4xMjUgWiBNIDM5Ny43MjY1NjMgMjUuOTcyNjU2IEMgMzk2Ljc2OTUzMSAyNS45MDYyNSAzOTYuMzA0Njg4IDI1LjUxOTUzMSAzOTYuMzA0Njg4IDI0Ljc4NTE1NiBDIDM5Ni4zMDQ2ODggMjQuNjg3NSAzOTYuMzY3MTg4IDIyLjM0NzY1NiA0MDEuNzI2NTYzIDIyLjA3ODEyNSBDIDQwMi4zMzk4NDQgMjIuMDQ2ODc1IDQwMy4wMTk1MzEgMjIuMDI3MzQ0IDQwNC4wNTg1OTQgMjIuMTQ4NDM4IEMgNDA0LjAxOTUzMSAyMi4xNDg0MzggNDAzLjQ1MzEyNSAyMi42Njc5NjkgNDAzLjQ1MzEyNSAyMi42Njc5NjkgTCA0MDMuMTIxMDk0IDIyLjk2ODc1IEMgNDAxLjgyNDIxOSAyNC4xNDA2MjUgMzk5LjY2NDA2MyAyNi4xMDE1NjMgMzk3LjcyNjU2MyAyNS45NzI2NTYgWiBNIDQxOS40MTc5NjkgMjQuMDcwMzEzIEMgNDIwLjk2MDkzOCAyMy4wMzUxNTYgNDIyLjI0MjE4OCAyMi40NzY1NjMgNDIzLjAzOTA2MyAyMi41MDc4MTMgQyA0MjMuNTExNzE5IDIyLjUyMzQzOCA0MjQuMDc4MTI1IDIyLjY2Nzk2OSA0MjQuMDc4MTI1IDIzLjI1IEMgNDI0LjA3ODEyNSAyMy44NDc2NTYgNDIzLjUwNzgxMyAyNC4zNTE1NjMgNDIyLjM5MDYyNSAyNC43NSBDIDQyMS40MTAxNTYgMjUuMDk3NjU2IDQxOS45MDYyNSAyNS4xODc1IDQxOC4yNjU2MjUgMjUuMDAzOTA2IEMgNDE4LjcxODc1IDI0LjU5Mzc1IDQxOS4wOTc2NTYgMjQuMjg5MDYzIDQxOS40MTc5NjkgMjQuMDcwMzEzICIvPgo8L2c+Cjwvc3ZnPgo='};
 
-
-
-// ========== STATE ==========
-let trip='oneway', step=1, selOrig=null, selDest=null;
+let trip='retour', step=1, selOrig=null, selDest=null;
 let outFlights=[], retFlights=[], selOut=null, selRet=null, selOutCabin='', selRetCabin='';
 let activeDD=null;
 
-// ========== AIRPORT AUTOCOMPLETE ==========
 function openAP(input, which) {
   const dd = document.getElementById(which==='orig'?'ddOrig':'ddDest');
   activeDD = which;
   const q = input.value.trim();
   renderAP(dd, q, which);
   dd.classList.add('show');
-  // Close other dropdown
   const other = which==='orig'?'ddDest':'ddOrig';
   document.getElementById(other).classList.remove('show');
 }
@@ -362,50 +685,31 @@ function filterAP(input, which) {
 
 function renderAP(dd, query, which) {
   let filtered;
-  if (!query) {
-    // Show popular airports
-    filtered = AIRPORTS.slice(0, 10);
-  } else {
+  if (!query) { filtered = AIRPORTS.slice(0, 10); } else {
     const q = query.toLowerCase();
-    filtered = AIRPORTS.filter(a =>
-      a.code.toLowerCase().includes(q) ||
-      a.name.toLowerCase().includes(q) ||
-      a.city.toLowerCase().includes(q) ||
-      a.country.toLowerCase().includes(q)
-    ).slice(0, 10);
+    filtered = AIRPORTS.filter(a => a.code.toLowerCase().includes(q) || a.name.toLowerCase().includes(q) || a.city.toLowerCase().includes(q) || a.country.toLowerCase().includes(q)).slice(0, 10);
   }
-
   dd.innerHTML = filtered.map((a, i) => `
     <div class="ap-item${i===0?' active':''}" onmousedown="selectAP('${which}','${a.code}','${a.city} (${a.code})')">
       <div class="ap-icon">✈</div>
-      <div class="ap-info">
-        <div class="ap-name">${a.name}</div>
-        <div class="ap-city">${a.city}, ${a.country}</div>
-      </div>
+      <div class="ap-info"><div class="ap-name">${a.name}</div><div class="ap-city">${a.city}, ${a.country}</div></div>
       <div class="ap-code">${a.code}</div>
-    </div>
-  `).join('');
-
-  if (filtered.length === 0) {
-    dd.innerHTML = '<div style="padding:16px;text-align:center;color:var(--txt4);font-size:13px">No airports found</div>';
-  }
+    </div>`).join('');
+  if (filtered.length === 0) { dd.innerHTML = '<div style="padding:16px;text-align:center;color:var(--light);font-size:13px">Geen luchthavens gevonden</div>'; }
 }
 
 function selectAP(which, code, label) {
   const input = document.getElementById(which==='orig'?'iOrig':'iDest');
   input.value = label;
-  if (which === 'orig') selOrig = code;
-  else selDest = code;
+  if (which === 'orig') selOrig = code; else selDest = code;
   document.getElementById(which==='orig'?'ddOrig':'ddDest').classList.remove('show');
 }
 
-// Close dropdowns on outside click
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('#origWrap')) document.getElementById('ddOrig').classList.remove('show');
-  if (!e.target.closest('#destWrap')) document.getElementById('ddDest').classList.remove('show');
+  if (!e.target.closest('#iOrig') && !e.target.closest('#ddOrig')) document.getElementById('ddOrig').classList.remove('show');
+  if (!e.target.closest('#iDest') && !e.target.closest('#ddDest')) document.getElementById('ddDest').classList.remove('show');
 });
 
-// Keyboard nav in dropdowns
 document.addEventListener('keydown', function(e) {
   if (!activeDD) return;
   const dd = document.getElementById(activeDD==='orig'?'ddOrig':'ddDest');
@@ -422,58 +726,47 @@ document.addEventListener('keydown', function(e) {
   if (items[idx]) { items[idx].classList.add('active'); items[idx].scrollIntoView({block:'nearest'}); }
 });
 
-// ========== TRIP TOGGLE ==========
 function setTrip(t, btn) {
   trip = t;
-  document.querySelectorAll('.trip-tog button').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('retFld').classList.toggle('hidden', t === 'oneway');
+  document.querySelectorAll('.search-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('retFld').classList.toggle('hidden', t === 'enkel');
+  document.getElementById('searchRow').className = 'search-row ' + (t === 'enkel' ? 'row-oneway' : 'row-roundtrip');
 }
 
-// ========== SEARCH ==========
 async function doSearch() {
-  const o = selOrig;
-  const d = selDest;
+  const o = selOrig; const d = selDest;
   const dep = document.getElementById('iDep').value;
   const ret = document.getElementById('iRet').value;
-
-  if (!o || !d) { alert('Please select departure and destination airports'); return; }
-  if (!dep) { alert('Please select a departure date'); return; }
-  if (trip === 'roundtrip' && !ret) { alert('Please select a return date'); return; }
-
+  if (!o || !d) { alert('Selecteer vertrek- en bestemmingsluchthaven'); return; }
+  if (!dep) { alert('Kies een heenreisdatum'); return; }
+  if (trip === 'retour' && !ret) { alert('Kies een terugreisdatum'); return; }
   document.getElementById('results').classList.remove('hidden');
   document.getElementById('summaryWrap').classList.add('hidden');
-  document.getElementById('flightList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching available flights...</p></div>';
-
-  step = 1; selOut = null; selRet = null;
-  updateSteps();
-  document.getElementById('resTitle').innerHTML = `Flights <em>${o} → ${d}</em>`;
+  document.getElementById('flightList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Beschikbare vluchten zoeken...</p></div>';
+  step = 1; selOut = null; selRet = null; updateSteps();
+  document.getElementById('resTitle').innerHTML = `Vluchten <em>${o} → ${d}</em>`;
   document.getElementById('resCnt').textContent = '';
-
   try {
     const r = await fetch(`/api/search?origin=${o}&destination=${d}&date=${dep}`);
     const data = await r.json();
     outFlights = data.flights || [];
-    document.getElementById('resCnt').textContent = `${outFlights.length} flights found`;
+    document.getElementById('resCnt').textContent = `${outFlights.length} vluchten gevonden`;
     renderFlights(outFlights, 'out');
-
-    if (trip === 'roundtrip') {
+    if (trip === 'retour') {
       const r2 = await fetch(`/api/search?origin=${d}&destination=${o}&date=${ret}`);
       const data2 = await r2.json();
       retFlights = data2.flights || [];
     }
   } catch (e) {
-    document.getElementById('flightList').innerHTML = `<div class="err-msg"><h3>Something went wrong</h3><p>${e.message}</p></div>`;
+    document.getElementById('flightList').innerHTML = `<div class="err-msg"><h3>Er ging iets mis</h3><p>${e.message}</p></div>`;
   }
-
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ========== RENDER ==========
 function renderFlights(flights, dir) {
   const el = document.getElementById('flightList');
-  if (!flights.length) { el.innerHTML = '<div class="err-msg"><h3>No flights found</h3><p>Try a different date or route.</p></div>'; return; }
-
+  if (!flights.length) { el.innerHTML = '<div class="err-msg"><h3>Geen vluchten gevonden</h3><p>Probeer een andere datum of route.</p></div>'; return; }
   el.innerHTML = flights.map(f => {
     const al = AIRLINE_NAMES[f.airline] || f.airline;
     const logoUrl = CUSTOM_LOGOS[f.airline] || `https://pics.avs.io/60/60/${f.airline}.png`;
@@ -483,72 +776,55 @@ function renderFlights(flights, dir) {
       {key:'first', label:'First Class', avail:f.availability.first, price:f.prices.first}
     ];
     const stopsText = f.direct ? 'Direct' : (f.stops === 1 ? '1 Stop' : (f.stops || 1) + ' Stops');
-    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', day:'numeric', month:'long', year:'numeric'}) : '';
-    // Build segments HTML
+    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('nl-NL', {weekday:'short', day:'numeric', month:'long', year:'numeric'}) : '';
     let segHtml = '';
     if (f.segments && f.segments.length > 0) {
-      segHtml = `<div class="f-segments">${f.segments.map(s => `<div class="f-seg">
-        <div class="f-seg-times"><span class="f-seg-time">${s.depTime || '--:--'}</span><span class="f-seg-arrow">→</span><span class="f-seg-time">${s.arrTime || '--:--'}</span></div>
-        <div class="f-seg-detail"><div class="f-seg-route">${s.origin} → ${s.destination} <span style="color:var(--txt4);font-weight:400">${s.flightNo}</span></div>
-        <div class="f-seg-info">${s.duration ? s.duration : ''}${s.aircraft ? ' · ' + s.aircraft : ''}</div></div>
-      </div>`).join('')}</div>`;
+      segHtml = `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${f.segments.map(s => `<div style="font-size:12px;color:var(--light);margin-bottom:8px"><strong>${s.depTime || '--:--'}</strong> ${s.origin} → ${s.destination} <span style="color:var(--border)">${s.flightNo}</span></div>`).join('')}</div>`;
     }
-    return `<div class="f-card">
-      ${dateStr ? `<div class="f-date">${dateStr}</div>` : ''}
-      <div class="f-top">
-        <div class="f-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
-        <div class="f-airline"><div class="f-airline-name">${al}</div><div class="f-flight-no">${f.flightNo}</div></div>
-        <span class="f-badge ${f.direct?'direct':'stop'}">${stopsText}</span>
-        <span class="f-seats">${f.remainingSeats} ${f.remainingSeats===1?'seat':'seats'} left</span>
+    return `<div class="flight-card">
+      <div class="fc-top">
+        ${f.prices.first ? '<div class="fc-bar first"></div>' : ''}
+        <div class="fc-al">
+          <div class="fc-al-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
+          <div><div class="fc-al-name">${al}</div><div class="fc-al-name-small">${f.flightNo}</div></div>
+          <div class="fc-badges">
+            <span class="fc-badge ${f.direct?'direct':'stop'}">${stopsText}</span>
+            <span class="fc-seats">${f.remainingSeats} stoelen</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:24px;margin:12px 0">
+          <div class="fc-end"><div class="fc-time">${f.depTime || '--:--'}</div><div class="fc-city">${f.origin}</div></div>
+          <div class="fc-mid"><div class="fc-duration">${f.duration || ''}</div><div class="fc-line"></div></div>
+          <div class="fc-end"><div class="fc-time">${f.arrTime || '--:--'}</div><div class="fc-city">${f.destination}</div></div>
+        </div>
+        ${dateStr ? `<div style="font-size:11px;color:var(--light);margin:8px 0">${dateStr}</div>` : ''}
+        ${f.program ? `<div style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(212,168,67,0.1);color:var(--gold);display:inline-block;margin-bottom:12px">${f.program}</div>` : ''}
       </div>
-      <div class="f-mid">
-        <div class="f-time"><div class="f-time-val">${f.depTime || '--:--'}</div><div class="f-time-code">${f.origin}</div></div>
-        <div class="f-route-line"><div class="f-dur">${f.duration ? (Number(f.duration) > 0 && !f.duration.toString().includes("h") ? Math.floor(Number(f.duration)/60) + "h " + String(Number(f.duration)%60).padStart(2,"0") + "m" : f.duration) : ""}${!f.direct && f.segments && f.segments.length > 1 ? " · via " + f.segments.slice(0,-1).map(s => s.destination).join(", ") : ""}</div><div class="f-line"></div></div>
-        <div class="f-time"><div class="f-time-val">${f.arrTime || '--:--'}</div><div class="f-time-code">${f.destination}</div></div>
+      <div class="fc-price-block">
+        <div class="fc-price-label">Selecteer Cabine</div>
+        <div class="fc-cabins">
+          ${cabins.map(c => c.avail && c.price ? `<button class="fc-cabin-btn" onclick="pickFlight('${dir}','${f.id}','${c.key}',${c.price})"><div class="fc-cabin-name">${c.label}</div><div class="fc-cabin-price">€${c.price.toLocaleString()}</div></button>` : `<div class="fc-cabin-btn na"><div class="fc-cabin-name">${c.label}</div><div class="fc-cabin-na">${c.avail ? 'Op aanvraag' : 'N/A'}</div></div>`).join('')}
+        </div>
       </div>
-      <div class="f-prices">
-        ${cabins.map(c => c.avail && c.price
-          ? `<div class="f-price-btn" onclick="pickFlight('${dir}','${f.id}','${c.key}',${c.price})"><div class="f-price-cabin">${c.label}</div><div class="f-price-val">€${c.price.toLocaleString()}</div></div>`
-          : `<div class="f-price-btn na"><div class="f-price-cabin">${c.label}</div><div class="f-price-na">${c.avail ? 'On request' : 'Not available'}</div></div>`
-        ).join('')}
-      </div>
+      ${segHtml}
     </div>`;
   }).join('');
 }
 
 function pickFlight(dir, id, cabin, price) {
   if (dir === 'out') {
-    selOut = outFlights.find(f => f.id === id);
-    selOutCabin = cabin;
-    selOut._price = price;
-    step = 2;
-    if (trip === 'roundtrip') {
-      updateSteps();
-      document.getElementById('resTitle').innerHTML = `Return flights <em>${selOut.destination} → ${selOut.origin}</em>`;
-      document.getElementById('resCnt').textContent = `${retFlights.length} flights found`;
-      renderFlights(retFlights, 'ret');
-      document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-    } else {
-      showSummary();
-    }
+    selOut = outFlights.find(f => f.id === id); selOutCabin = cabin; selOut._price = price; step = 2;
+    if (trip === 'retour') { updateSteps(); document.getElementById('resTitle').innerHTML = `Retourvluchten <em>${selOut.destination} → ${selOut.origin}</em>`; document.getElementById('resCnt').textContent = `${retFlights.length} vluchten gevonden`; renderFlights(retFlights, 'ret'); document.getElementById('flightList').scrollIntoView({behavior:'smooth',block:'start'}); }
+    else { showSummary(); }
   } else {
-    selRet = retFlights.find(f => f.id === id);
-    selRetCabin = cabin;
-    selRet._price = price;
-    step = 3;
-    showSummary();
+    selRet = retFlights.find(f => f.id === id); selRetCabin = cabin; selRet._price = price; step = 3; showSummary();
   }
 }
 
 function updateSteps() {
   const s = document.getElementById('stepsBar');
-  const steps = [
-    {n:1, label:'Outbound'},
-    {n:2, label:'Return'},
-    {n:3, label:'Summary'}
-  ];
-  if (trip==='oneway') steps.splice(1,1);
-    steps.forEach((s,i) => s.n = i+1);
+  const steps = [{n:1, label:'Heenvlucht'},{n:2, label:'Retourvlucht'},{n:3, label:'Overzicht'}];
+  if (trip==='enkel') steps.splice(1,1);
   s.innerHTML = '<div class="steps">' + steps.map((st,i) => {
     const cls = step > st.n ? 'done' : step === st.n ? 'on' : '';
     return `${i>0?'<div class="stp-line"></div>':''}<div class="stp ${cls}"><div class="stp-num">${step > st.n ? '✓' : st.n}</div>${st.label}</div>`;
@@ -558,84 +834,25 @@ function updateSteps() {
 function showSummary() {
   document.getElementById('results').classList.add('hidden');
   document.getElementById('summaryWrap').classList.remove('hidden');
-  step = trip === 'oneway' ? 2 : 3;
-  updateSteps();
   const cabinLabel = {business:'Business Class',first:'First Class',premiumEconomy:'Premium Economy'};
-  function fmtDur(d) {
-    if (!d) return '';
-    if (typeof d === 'number' || (typeof d === 'string' && !d.includes('h'))) {
-      const m = Number(d); return Math.floor(m/60) + 'h ' + String(m%60).padStart(2,'0') + 'm';
-    }
-    return d;
-  }
-  function flightCard(f, cabin, dirLabel) {
-    const al = AIRLINE_NAMES[f.airline] || f.airline;
-    const logoUrl = 'https://pics.avs.io/60/60/' + f.airline + '.png';
-    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) : '';
-    const dur = fmtDur(f.duration);
-    const stopsText = f.direct ? 'Direct flight' : (f.stops === 1 ? '1 stop' : (f.stops || 1) + ' stops');
-    const layover = !f.direct && f.segments && f.segments.length > 1 ? ' via ' + f.segments.slice(0,-1).map(s => s.destination).join(', ') : '';
-    let aircraft = '';
-    if (f.segments && f.segments.length > 0) {
-      const types = [...new Set(f.segments.map(s => s.aircraft).filter(Boolean))];
-      if (types.length) aircraft = types.join(', ');
-    }
-    let segHtml = '';
-    if (f.segments && f.segments.length > 1) {
-      segHtml = '<div style="margin-top:14px;background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:14px 16px">';
-      segHtml += '<div style="font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Flight segments</div>';
-      f.segments.forEach((s, i) => {
-        if (i > 0) segHtml += '<div style="padding:6px 0 6px 16px;font-size:11px;color:var(--gold);border-left:2px dashed var(--brd);margin-left:6px">Layover in ' + s.origin + '</div>';
-        segHtml += '<div style="display:flex;align-items:center;gap:14px;padding:8px 0;' + (i > 0 ? 'border-top:1px solid var(--brd);' : '') + '">';
-        segHtml += '<div style="min-width:110px"><span style="font-size:14px;font-weight:600">' + (s.depTime||'') + '</span> <span style="color:var(--txt4);font-size:11px">&rarr;</span> <span style="font-size:14px;font-weight:600">' + (s.arrTime||'') + '</span></div>';
-        segHtml += '<div style="flex:1"><div style="font-size:13px;font-weight:500">' + s.origin + ' &rarr; ' + s.destination + ' <span style="color:var(--txt4);font-weight:400;font-size:12px">' + (s.flightNo||'') + '</span></div>';
-        segHtml += '<div style="font-size:12px;color:var(--txt3);margin-top:2px">' + [s.duration||'', s.aircraft||''].filter(Boolean).join(' &middot; ') + '</div></div></div>';
-      });
-      segHtml += '</div>';
-    }
-    return '<div style="padding:20px;background:var(--bg);border-radius:12px;margin-bottom:12px">'
-      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
-      + '<div style="font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px">' + dirLabel + '</div>'
-      + '<div style="font-size:22px;font-weight:600;color:var(--gold)">&euro;' + f._price.toLocaleString() + '</div></div>'
-      + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
-      + '<div style="width:44px;height:44px;border-radius:10px;background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center">'
-      + '<img src="' + logoUrl + '" alt="' + al + '" style="width:36px;height:36px;object-fit:contain" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + f.airline + '\'">'
-      + '</div><div><div style="font-size:16px;font-weight:500">' + al + '</div>'
-      + '<div style="font-size:12px;color:var(--txt3)">' + f.flightNo + '</div></div></div>'
-      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-bottom:16px;padding:14px;background:var(--card);border-radius:10px;border:1px solid var(--brd)">'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Route</div><div style="font-size:14px;font-weight:500">' + f.origin + ' &rarr; ' + f.destination + '</div></div>'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Date</div><div style="font-size:14px">' + dateStr + '</div></div>'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Time</div><div style="font-size:14px;font-weight:500">' + (f.depTime||'') + ' &ndash; ' + (f.arrTime||'') + '</div></div>'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Duration</div><div style="font-size:14px">' + dur + '</div></div>'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Cabin</div><div style="font-size:14px">' + cabinLabel[cabin] + '</div></div>'
-      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Stops</div><div style="font-size:14px">' + stopsText + layover + '</div></div>'
-      + (aircraft ? '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Aircraft</div><div style="font-size:14px">' + aircraft + '</div></div>' : '')
-      + '</div>'
-      + segHtml
-      + '</div>';
-  }
-  let total = selOut._price;
-  let html = '<div class="sum-title">Your selection</div>';
-  html += flightCard(selOut, selOutCabin, 'Outbound');
-  if (selRet) { total += selRet._price; html += flightCard(selRet, selRetCabin, 'Return'); }
-  html += '<div class="sum-total"><div class="sum-total-label">Total per person</div><div class="sum-total-val">&euro;' + total.toLocaleString() + '</div></div>';
   const alOut = AIRLINE_NAMES[selOut.airline] || selOut.airline;
-  let msg = 'Hello! I would like to book the following flight(s) via Elysian Flights:\n\n';
-  msg += 'OUTBOUND: ' + selOut.origin + ' > ' + selOut.destination + '\n';
-  msg += alOut + ' ' + selOut.flightNo + ' | ' + selOut.date + ' | ' + selOut.depTime + '-' + selOut.arrTime + '\n';
-  msg += 'Cabin: ' + cabinLabel[selOutCabin] + ' | Price: EUR' + selOut._price.toLocaleString() + '\n';
+  let total = selOut._price;
+  let html = `<div class="sum-title">Uw Selectie</div>
+    <div class="sum-flight"><div class="sum-dir">Heen</div><div class="sum-detail"><div class="sum-route">${selOut.origin} → ${selOut.destination}</div><div class="sum-info">${alOut} ${selOut.flightNo} · ${selOut.depTime} - ${selOut.arrTime} · ${cabinLabel[selOutCabin]}</div></div><div class="sum-price">€${selOut._price.toLocaleString()}</div></div>`;
   if (selRet) {
-    const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline;
-    msg += '\nRETURN: ' + selRet.origin + ' > ' + selRet.destination + '\n';
-    msg += alRet + ' ' + selRet.flightNo + ' | ' + selRet.date + ' | ' + selRet.depTime + '-' + selRet.arrTime + '\n';
-    msg += 'Cabin: ' + cabinLabel[selRetCabin] + ' | Price: EUR' + selRet._price.toLocaleString() + '\n';
+    const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline; total += selRet._price;
+    html += `<div class="sum-flight"><div class="sum-dir">Terug</div><div class="sum-detail"><div class="sum-route">${selRet.origin} → ${selRet.destination}</div><div class="sum-info">${alRet} ${selRet.flightNo} · ${selRet.depTime} - ${selRet.arrTime} · ${cabinLabel[selRetCabin]}</div></div><div class="sum-price">€${selRet._price.toLocaleString()}</div></div>`;
   }
-  msg += '\nTotal: EUR' + total.toLocaleString() + '\n\nI would like to receive a confirmation. Thank you!';
-  const waUrl = 'https://wa.me/31639027470?text=' + encodeURIComponent(msg);
-  html += '<button class="btn-wa" onclick="window.open(\'' + waUrl + '\',\'_blank\')">';
-  html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.61.609l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.227-2.01a.5.5 0 00-.395-.084l-3.16 1.06 1.06-3.16a.5.5 0 00-.084-.396A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>';
-  html += ' Book via WhatsApp</button>';
-  html += '<button class="btn-back" onclick="backToSearch()">&#8592; Back to search results</button>';
+  html += `<div class="sum-total"><div class="sum-total-label">Totaal per Persoon</div><div class="sum-total-val">€${total.toLocaleString()}</div></div>`;
+  let msg = `Hallo! Ik wil graag de volgende vlucht(en) boeken via Élysian Flights:\n\n`;
+  msg += `✈ HEEN: ${selOut.origin} → ${selOut.destination}\n`;
+  msg += `${alOut} ${selOut.flightNo} | ${selOut.date} | ${selOut.depTime}-${selOut.arrTime}\n`;
+  msg += `Cabine: ${cabinLabel[selOutCabin]} | Prijs: €${selOut._price.toLocaleString()}\n`;
+  if (selRet) { const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline; msg += `\n✈ TERUG: ${selRet.origin} → ${selRet.destination}\n`; msg += `${alRet} ${selRet.flightNo} | ${selRet.date} | ${selRet.depTime}-${selRet.arrTime}\n`; msg += `Cabine: ${cabinLabel[selRetCabin]} | Prijs: €${selRet._price.toLocaleString()}\n`; }
+  msg += `\nTotaal: €${total.toLocaleString()}\n\nGraag ontvang ik een bevestiging. Bedankt!`;
+  const waUrl = `https://wa.me/31639027470?text=${encodeURIComponent(msg)}`;
+  html += `<button class="btn-wa" onclick="window.open('${waUrl}','_blank')"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg> Boek via WhatsApp</button>
+    <button class="btn-back" onclick="backToSearch()">← Terug naar Zoeken</button>`;
   document.getElementById('summaryContent').innerHTML = html;
   document.getElementById('summaryWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -643,42 +860,33 @@ function showSummary() {
 function backToSearch() {
   document.getElementById('summaryWrap').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
-  step = 1; selOut = null; selRet = null;
-  updateSteps();
-  document.getElementById('resTitle').innerHTML = `Flights <em>${selOrig} → ${selDest}</em>`;
-  document.getElementById('resCnt').textContent = `${outFlights.length} flights found`;
+  step = 1; selOut = null; selRet = null; updateSteps();
+  document.getElementById('resTitle').innerHTML = `Vluchten <em>${selOrig} → ${selDest}</em>`;
+  document.getElementById('resCnt').textContent = `${outFlights.length} vluchten gevonden`;
   renderFlights(outFlights, 'out');
 }
 
-// Set default date to tomorrow
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 7);
+const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 7);
 document.getElementById('iDep').value = tomorrow.toISOString().slice(0,10);
-if (trip === 'roundtrip') {
-  const ret = new Date(tomorrow);
-  ret.setDate(ret.getDate() + 7);
-  document.getElementById('iRet').value = ret.toISOString().slice(0,10);
-}
+if (trip === 'retour') { const ret = new Date(tomorrow); ret.setDate(ret.getDate() + 7); document.getElementById('iRet').value = ret.toISOString().slice(0,10); }
 </script>
+
 <script>
-// === Custom Calendar Datepicker ===
 const calState={dep:{month:null,year:null},ret:{month:null,year:null}};
-const MONTHS_NL=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const DAYS_NL=['Mo','Tu','We','Th','Fr','Sa','Su'];
+const MONTHS_NL=['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const MONTHS_SHORT=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const DAYS_NL=['Ma','Di','Wo','Do','Vr','Za','Zo'];
 
 function initCalDate(w){const n=new Date();if(!calState[w].month&&calState[w].month!==0){calState[w].month=n.getMonth();calState[w].year=n.getFullYear();}}
-
 function toggleCal(w){
   const dd=document.getElementById(w==='dep'?'calDep':'calRet');
   const ds=document.getElementById(w==='dep'?'iDepDisplay':'iRetDisplay');
   const isOpen=dd.classList.contains('show');
   document.querySelectorAll('.cal-dropdown').forEach(d=>d.classList.remove('show'));
-  document.querySelectorAll('.date-display').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.cal-toggle-btn').forEach(d=>d.classList.remove('active'));
   document.querySelectorAll('.ap-dropdown').forEach(d=>d.classList.remove('show'));
   if(!isOpen){initCalDate(w);renderCal(w);dd.classList.add('show');ds.classList.add('active');}
 }
-
 function renderCal(w){
   const st=calState[w];
   const dd=document.getElementById(w==='dep'?'calDep':'calRet');
@@ -706,11 +914,10 @@ function renderCal(w){
     else{h+='<div class="'+c+'">'+d+'</div>';}
   }
   h+='</div>';
-  h+='<button type="button" class="cal-today-btn" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Today</button>';
+  h+='<button type="button" class="cal-today-btn" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Vandaag</button>';
   dd.innerHTML=h;
 }
-</script>
-<script>
+
 function navCal(w,dir){
   const st=calState[w];st.month+=dir;
   if(st.month<0){st.month=11;st.year--;}
@@ -726,7 +933,7 @@ function pickDate(w,dateStr){
   const p=dateStr.split('-');
   const d=parseInt(p[2]),m=parseInt(p[1])-1,y=parseInt(p[0]);
   const fmt=d+' '+MONTHS_SHORT[m]+' '+y;
-  ds.innerHTML='<span class="dd-text">'+fmt+'</span><span class="dd-icon">&#9662;</span>';
+  ds.innerHTML='<span class="cal-toggle-btn-text"><span class="cal-toggle-btn-date">'+fmt+'</span></span><span class="cal-toggle-btn-icon">📅</span>';
   ds.classList.remove('active');dd.classList.remove('show');
   if(w==='dep'){
     const ri=document.getElementById('iRet');
@@ -738,9 +945,9 @@ function pickDate(w,dateStr){
 function fmtISO(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 
 document.addEventListener('click',function(e){
-  if(!e.target.closest('.fld')&&!e.target.closest('.cal-dropdown')){
+  if(!e.target.closest('.sfield')&&!e.target.closest('.cal-dropdown')){
     document.querySelectorAll('.cal-dropdown').forEach(d=>d.classList.remove('show'));
-    document.querySelectorAll('.date-display').forEach(d=>d.classList.remove('active'));
+    document.querySelectorAll('.cal-toggle-btn').forEach(d=>d.classList.remove('active'));
   }
 });
 
@@ -752,5 +959,6 @@ document.addEventListener('click',function(e){
   pickDate('ret',fmtISO(ret));
 })();
 </script>
+
 </body>
 </html>
