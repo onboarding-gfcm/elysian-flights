@@ -3,33 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Élysian Flights - Premium Flight Booking Concierge</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <title>Élysian Flights — Premium Award Flight Concierge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #f5f5f7;
-      --text-dark: #1a1a1a;
-      --text-light: #666;
-      --primary-blue: #4A90D9;
-      --light-blue: #E8F0FE;
-      --gold: #B8945F;
       --white: #ffffff;
-      --border: #e0e0e0;
-      --shadow: 0 2px 8px rgba(0,0,0,0.08);
-      --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+      --off-white: #fafafa;
+      --cream: #f7f5f2;
+      --midnight: #0c1b2a;
+      --navy: #1a2744;
+      --gold: #c4a265;
+      --gold-light: #d4b978;
+      --gold-dark: #a88a4e;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --border: #e8e8e8;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 20px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,0.1);
+      --radius: 16px;
+      --radius-sm: 8px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-dark);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     /* HEADER */
@@ -38,150 +45,279 @@
       top: 0;
       left: 0;
       right: 0;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      padding: 0 3rem;
+      height: 72px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
-      box-shadow: var(--shadow);
+      transition: all 0.3s;
     }
 
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--midnight);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--text-dark);
       letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      color: var(--gold);
     }
 
     nav {
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       align-items: center;
-      margin: 0 auto;
     }
 
     nav a {
       text-decoration: none;
-      color: var(--text-dark);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
       font-weight: 500;
-      font-size: 0.95rem;
+      letter-spacing: 0.3px;
       transition: color 0.3s;
     }
 
-    nav a:hover {
-      color: var(--primary-blue);
-    }
+    nav a:hover { color: var(--text); }
 
-    .btn-contact {
-      background: var(--gold);
-      color: var(--white);
+    .nav-cta {
+      background: var(--midnight);
+      color: var(--white) !important;
+      padding: 0.6rem 1.4rem;
+      border-radius: 100px;
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      transition: all 0.3s !important;
       border: none;
-      padding: 0.7rem 1.5rem;
-      border-radius: 6px;
-      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
-      font-size: 0.95rem;
     }
 
-    .btn-contact:hover {
-      background: #a0803f;
+    .nav-cta:hover {
+      background: var(--navy) !important;
+      transform: translateY(-1px);
     }
 
-    /* MAIN CONTENT */
-    main {
-      margin-top: 70px;
-    }
-
-    section {
-      padding: 4rem 2rem;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* HERO SECTION */
+    /* HERO */
     .hero {
-      background: linear-gradient(135deg, var(--light-blue) 0%, var(--white) 100%);
-      padding: 6rem 2rem !important;
-      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      overflow: hidden;
     }
 
-    .hero-subtitle {
-      color: var(--primary-blue);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 1px;
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 55%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--white) 0%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding: 0 3rem;
+      padding-top: 72px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 0.5rem;
+    }
+
+    .hero-badge::before {
+      content: '✦';
+      font-size: 0.7rem;
     }
 
     .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      line-height: 1.1;
-      color: var(--text-dark);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4.2rem;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--midnight);
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
     }
 
-    .hero h1 strong {
-      color: var(--primary-blue);
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
     }
 
     .hero-text {
       font-size: 1.1rem;
-      color: var(--text-light);
-      margin-bottom: 3rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
     }
 
-    /* SEARCH FORM */
-    .search-form-card {
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .hero-stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--midnight);
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      font-weight: 500;
+    }
+
+    /* SEARCH SECTION */
+    .search-section {
+      padding: 5rem 3rem;
       background: var(--white);
-      border-radius: 12px;
+      position: relative;
+    }
+
+    .search-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--midnight);
+      line-height: 1.1;
+    }
+
+    .search-card {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 2.5rem;
       box-shadow: var(--shadow-lg);
-      max-width: 900px;
-      margin: 0 auto;
     }
 
     .trip-toggle {
       display: flex;
-      gap: 0.5rem;
+      background: var(--off-white);
+      border-radius: 100px;
+      padding: 4px;
       margin-bottom: 2rem;
+      max-width: 280px;
     }
 
     .trip-btn {
       flex: 1;
-      padding: 0.75rem;
-      border: 2px solid var(--border);
-      background: var(--white);
-      border-radius: 8px;
+      padding: 0.65rem 1.2rem;
+      border: none;
+      background: transparent;
+      border-radius: 100px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
       transition: all 0.3s;
-      color: var(--text-dark);
+      font-family: 'Inter', sans-serif;
     }
 
     .trip-btn.active {
-      border-color: var(--primary-blue);
-      background: var(--light-blue);
-      color: var(--primary-blue);
+      background: var(--midnight);
+      color: var(--white);
+      box-shadow: var(--shadow-sm);
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr auto;
-      gap: 1.5rem;
+      gap: 1rem;
       align-items: flex-end;
-      margin-bottom: 1.5rem;
     }
 
     .form-group {
@@ -190,40 +326,68 @@
 
     .form-group label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
+      font-size: 0.72rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
     }
 
     .form-group input {
       width: 100%;
-      padding: 0.85rem;
-      background: #f0f0f2;
-      border: 1px solid #d0d0d2;
-      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      background: var(--off-white);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text);
       transition: all 0.3s;
       cursor: pointer;
     }
 
     .form-group input:focus {
       outline: none;
+      border-color: var(--gold);
       background: var(--white);
-      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(196,162,101,0.1);
     }
 
-    #retFld {
-      display: none;
+    .form-group input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
     }
 
-    #retFld.show {
-      display: block;
+    #retFld { display: none; }
+    #retFld.show { display: block; }
+
+    .btn-search {
+      background: var(--gold);
+      color: var(--white);
+      border: none;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
     }
 
+    .btn-search:hover {
+      background: var(--gold-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(196,162,101,0.3);
+    }
+
+    /* DROPDOWNS */
     .ap-dropdown {
       position: absolute;
       top: 100%;
@@ -231,8 +395,8 @@
       right: 0;
       background: var(--white);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
+      border-radius: 12px;
+      box-shadow: var(--shadow-xl);
       margin-top: 0.5rem;
       max-height: 300px;
       overflow-y: auto;
@@ -240,58 +404,52 @@
       display: none;
     }
 
-    .ap-dropdown.active {
-      display: block;
-    }
+    .ap-dropdown.active { display: block; }
 
     .ap-item {
-      padding: 0.75rem 1rem;
+      padding: 0.8rem 1rem;
       cursor: pointer;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
+      border-bottom: 1px solid var(--off-white);
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      transition: background 0.2s;
     }
 
-    .ap-item:hover {
-      background: var(--light-blue);
-    }
+    .ap-item:last-child { border-bottom: none; }
+    .ap-item:hover { background: var(--cream); }
 
-    .ap-item-icon {
-      font-size: 1.2rem;
-      width: 30px;
-    }
+    .ap-item-icon { font-size: 1.1rem; width: 28px; text-align: center; }
 
-    .ap-item-text {
-      flex: 1;
-    }
+    .ap-item-text { flex: 1; }
 
     .ap-item-name {
       font-weight: 600;
-      color: var(--text-dark);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      color: var(--text);
     }
 
     .ap-item-city {
-      font-size: 0.85rem;
-      color: var(--text-light);
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
 
     .ap-item-code {
       font-weight: 700;
-      color: var(--primary-blue);
-      font-size: 0.9rem;
+      color: var(--gold-dark);
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
     }
 
+    /* CALENDAR */
     .cal-dropdown {
       position: absolute;
       top: 100%;
       left: 0;
       background: var(--white);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
+      border-radius: 12px;
+      box-shadow: var(--shadow-xl);
       margin-top: 0.5rem;
       padding: 1.5rem;
       display: none;
@@ -299,9 +457,7 @@
       min-width: 320px;
     }
 
-    .cal-dropdown.active {
-      display: block;
-    }
+    .cal-dropdown.active { display: block; }
 
     .cal-header {
       display: flex;
@@ -311,60 +467,54 @@
     }
 
     .cal-header button {
-      background: var(--light-blue);
+      background: var(--off-white);
       border: none;
       padding: 0.4rem 0.8rem;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      color: var(--primary-blue);
+      color: var(--text);
       transition: background 0.2s;
     }
 
-    .cal-header button:hover {
-      background: #d6e3fc;
-    }
+    .cal-header button:hover { background: var(--cream); }
 
     .cal-month {
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       text-align: center;
     }
 
     .cal-days {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
+      gap: 0.4rem;
       margin-bottom: 1rem;
     }
 
     .cal-day-header {
       text-align: center;
       font-weight: 600;
-      color: var(--text-light);
-      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
       padding: 0.5rem 0;
     }
 
     .cal-day {
       text-align: center;
       padding: 0.5rem;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       transition: all 0.2s;
     }
 
-    .cal-day:not(.empty):not(.disabled) {
-      background: var(--light-blue);
-    }
-
     .cal-day:not(.empty):not(.disabled):hover {
-      background: #d6e3fc;
+      background: var(--cream);
     }
 
     .cal-day.disabled {
-      color: #ccc;
+      color: #ddd;
       cursor: not-allowed;
     }
 
@@ -375,255 +525,328 @@
     }
 
     .cal-today {
-      background: var(--light-blue);
+      background: var(--off-white);
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      color: var(--primary-blue);
+      color: var(--text);
       width: 100%;
       transition: background 0.2s;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
 
-    .cal-today:hover {
-      background: #d6e3fc;
-    }
+    .cal-today:hover { background: var(--cream); }
 
     .date-display {
       cursor: pointer;
-      color: var(--text-dark);
+      color: var(--text);
+      padding: 0.85rem 1rem;
+      background: var(--off-white);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-weight: 500;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .date-display:hover {
+      border-color: var(--border);
     }
 
     .date-display:empty::before {
       content: 'Select date';
-      color: var(--text-light);
-    }
-
-    .btn-search {
-      background: var(--primary-blue);
-      color: var(--white);
-      border: none;
-      padding: 0.85rem 1.5rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-      font-size: 1rem;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-search:hover {
-      background: #3a7bc8;
-    }
-
-    /* PARTNER PROGRAMS */
-    .partner-section {
-      background: var(--white);
-    }
-
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
-    }
-
-    .section-subtitle {
-      text-align: center;
-      color: var(--text-light);
-      font-size: 1.05rem;
-      margin-bottom: 3rem;
-    }
-
-    .partner-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .partner-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      transition: all 0.3s;
-      box-shadow: var(--shadow);
-    }
-
-    .partner-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-4px);
-    }
-
-    .partner-logo {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .partner-name {
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
-    }
-
-    .partner-airlines {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .partner-points {
-      background: var(--light-blue);
-      color: var(--primary-blue);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    /* HOW IT WORKS */
-    .how-section {
-      background: var(--white);
-    }
-
-    .how-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-
-    .how-card {
-      text-align: center;
-    }
-
-    .how-icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .how-title {
-      font-weight: 700;
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
-      color: var(--text-dark);
-    }
-
-    .how-desc {
-      color: var(--text-light);
-      font-size: 0.95rem;
-      line-height: 1.6;
+      color: var(--text-muted);
+      font-weight: 400;
     }
 
     /* DESTINATIONS */
-    .dest-section {
+    .destinations {
+      padding: 6rem 3rem;
       background: var(--white);
     }
 
     .dest-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 3rem auto 0;
     }
 
     .dest-card {
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: all 0.3s;
       position: relative;
-      height: 300px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 420px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
     }
 
     .dest-card:hover {
-      box-shadow: var(--shadow-lg);
       transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
     }
 
-    .dest-card-bg {
+    .dest-card img {
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: flex-end;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
     }
 
-    .dest-1 { background: linear-gradient(135deg, #ffa500 0%, #ff6b6b 100%); }
-    .dest-2 { background: linear-gradient(135deg, #4A90D9 0%, #357abd 100%); }
-    .dest-3 { background: linear-gradient(135deg, #B8945F 0%, #8a6a40 100%); }
-    .dest-4 { background: linear-gradient(135deg, #50c878 0%, #2d8659 100%); }
+    .dest-card:hover img {
+      transform: scale(1.05);
+    }
 
-    .dest-text {
+    .dest-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
       color: var(--white);
     }
 
     .dest-city {
-      font-size: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
       font-weight: 700;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
-    .dest-code {
-      font-size: 0.9rem;
-      font-weight: 600;
-      opacity: 0.9;
-    }
-
-    .dest-tagline {
+    .dest-country {
       font-size: 0.85rem;
-      opacity: 0.8;
+      opacity: 0.85;
+      font-weight: 400;
+    }
+
+    .dest-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* PROGRAMS */
+    .programs {
+      padding: 6rem 3rem;
+      background: var(--cream);
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 3rem auto 0;
+    }
+
+    .program-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .program-card:hover {
+      border-color: var(--gold);
+      box-shadow: var(--shadow);
+      transform: translateY(-4px);
+    }
+
+    .program-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--cream);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.8rem;
+    }
+
+    .program-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .program-airlines {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .program-badge {
+      display: inline-block;
+      background: var(--midnight);
+      color: var(--gold-light);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* HOW IT WORKS */
+    .how-section {
+      padding: 6rem 3rem;
+      background: var(--white);
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1000px;
+      margin: 3rem auto 0;
+    }
+
+    .how-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .how-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .how-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .how-desc {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    /* LUXURY BANNER */
+    .luxury-banner {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+    }
+
+    .luxury-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .luxury-banner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(12,27,42,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+    }
+
+    .luxury-banner-content h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .luxury-banner-content p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gold);
+      color: var(--white);
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(196,162,101,0.4);
     }
 
     /* FAQ */
     .faq-section {
+      padding: 6rem 3rem;
       background: var(--white);
+    }
+
+    .faq-container {
+      max-width: 700px;
+      margin: 3rem auto 0;
     }
 
     .faq-item {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      overflow: hidden;
+      border-bottom: 1px solid var(--border);
     }
 
     .faq-question {
-      padding: 1.5rem;
-      background: var(--white);
+      padding: 1.5rem 0;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-      color: var(--text-dark);
-      transition: background 0.3s;
+      font-size: 1rem;
+      color: var(--text);
+      transition: color 0.3s;
     }
 
-    .faq-question:hover {
-      background: var(--light-blue);
-    }
+    .faq-question:hover { color: var(--gold-dark); }
 
     .faq-toggle {
       font-size: 1.5rem;
       transition: transform 0.3s;
+      color: var(--text-muted);
     }
 
-    .faq-toggle.open {
-      transform: rotate(180deg);
-    }
+    .faq-toggle.open { transform: rotate(45deg); }
 
     .faq-answer {
       max-height: 0;
@@ -637,90 +860,80 @@
     }
 
     .faq-answer-content {
-      padding: 1.5rem;
-      background: var(--bg-main);
-      color: var(--text-light);
+      padding-bottom: 1.5rem;
+      color: var(--text-secondary);
       line-height: 1.8;
-    }
-
-    /* RESULTS SECTION */
-    #results {
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    #results.hidden {
-      display: none;
-    }
-
-    .results-header {
-      margin-bottom: 2rem;
-    }
-
-    .results-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-
-    .results-count {
-      color: var(--text-light);
       font-size: 0.95rem;
     }
 
-    .steps-bar {
+    /* RESULTS */
+    #results { min-height: 100vh; padding: 2rem 3rem; }
+    #results.hidden { display: none; }
+
+    .results-header { margin-bottom: 2rem; }
+
+    .results-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--midnight);
+    }
+
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    #stepsBar {
       background: var(--white);
       padding: 1.5rem;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       margin-bottom: 2rem;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .step {
-      flex: 1;
-      text-align: center;
-      position: relative;
-    }
+    .step { flex: 1; text-align: center; }
 
     .step-number {
       display: inline-block;
-      width: 40px;
-      height: 40px;
-      background: var(--light-blue);
-      color: var(--primary-blue);
+      width: 36px;
+      height: 36px;
+      background: var(--off-white);
+      color: var(--text-muted);
       border-radius: 50%;
-      line-height: 40px;
+      line-height: 36px;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
     }
 
     .step.active .step-number {
-      background: var(--primary-blue);
+      background: var(--gold);
       color: var(--white);
     }
 
     .step-label {
-      font-size: 0.8rem;
-      color: var(--text-light);
+      font-size: 0.75rem;
+      color: var(--text-muted);
       font-weight: 500;
     }
 
     .flight-card {
       background: var(--white);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 2rem;
       margin-bottom: 1.5rem;
-      box-shadow: var(--shadow);
       transition: all 0.3s;
     }
 
     .flight-card:hover {
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow);
+      border-color: var(--gold);
     }
 
     .flight-header {
@@ -734,18 +947,18 @@
 
     .badge {
       display: inline-block;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .badge-qantas { background: #fffacd; color: #8b7500; }
-    .badge-flying-blue { background: #e3f2fd; color: #1976d2; }
-    .badge-virgin { background: #ffebee; color: #c62828; }
-    .badge-aa { background: #e8f5e9; color: #2e7d32; }
+    .badge-qantas { background: #fef3cd; color: #856404; }
+    .badge-flying-blue { background: #dbeafe; color: #1e40af; }
+    .badge-virgin { background: #fce4ec; color: #c62828; }
+    .badge-aa { background: #d1fae5; color: #065f46; }
 
     .flight-route {
       display: flex;
@@ -755,419 +968,470 @@
       font-weight: 600;
     }
 
-    .flight-time {
-      font-size: 1.3rem;
-      color: var(--text-dark);
-    }
-
-    .flight-arrow {
-      color: var(--text-light);
-      font-size: 1rem;
-    }
-
-    .flight-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin: 1rem 0;
-      font-size: 0.9rem;
-      color: var(--text-light);
-    }
+    .flight-time { font-size: 1.3rem; color: var(--text); }
+    .flight-arrow { color: var(--text-muted); }
 
     .flight-cabin {
       display: inline-block;
-      background: var(--light-blue);
-      color: var(--primary-blue);
+      background: var(--cream);
+      color: var(--gold-dark);
       padding: 0.3rem 0.8rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
       font-weight: 600;
       margin-right: 0.5rem;
       margin-bottom: 0.5rem;
     }
 
     .flight-cost {
-      font-size: 1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
       font-weight: 700;
-      color: var(--primary-blue);
+      color: var(--midnight);
       margin: 1rem 0;
     }
 
     .btn-whatsapp {
-      background: #25d366;
+      background: var(--midnight);
       color: var(--white);
       border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 100px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
-      font-size: 0.9rem;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
     }
 
     .btn-whatsapp:hover {
-      background: #20ba5e;
+      background: var(--navy);
+      transform: translateY(-1px);
     }
 
     .loading, .no-results {
       text-align: center;
       padding: 3rem;
-      color: var(--text-light);
-      font-size: 1.1rem;
+      color: var(--text-muted);
     }
 
     /* FOOTER */
     footer {
-      background: var(--text-dark);
+      background: var(--midnight);
       color: var(--white);
-      padding: 2rem;
-      text-align: center;
+      padding: 4rem 3rem;
     }
 
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-brand {
+      max-width: 300px;
     }
 
     .footer-logo {
-      font-size: 1.3rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .footer-tagline {
-      color: #999;
-      font-size: 0.9rem;
       margin-bottom: 1rem;
     }
 
-    .footer-copy {
-      color: #666;
-      font-size: 0.85rem;
+    .footer-logo span { color: var(--gold); }
+
+    .footer-desc {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-col a {
+      display: block;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.88rem;
+      margin-bottom: 0.75rem;
+      transition: color 0.3s;
+    }
+
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.82rem;
     }
 
     /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-bg { width: 45%; }
+      .hero h1 { font-size: 3.2rem; }
+      .dest-grid { grid-template-columns: repeat(2, 1fr); }
+      .programs-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-content { grid-template-columns: 1fr 1fr; }
+    }
+
     @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
-      }
+      header { padding: 0 1.5rem; }
+      nav { gap: 1rem; }
+      nav a:not(.nav-cta) { display: none; }
 
-      nav {
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+      .hero { min-height: auto; padding: 120px 0 60px; }
+      .hero-bg { display: none; }
+      .hero-content { max-width: 100%; padding: 0 1.5rem; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero-stats { gap: 2rem; }
 
-      nav a {
-        font-size: 0.85rem;
-      }
+      .search-section, .destinations, .programs, .how-section, .faq-section { padding: 4rem 1.5rem; }
 
-      .hero h1 {
-        font-size: 2.2rem;
-      }
+      .form-row { grid-template-columns: 1fr; }
+      .search-card { padding: 1.5rem; }
 
-      .form-row {
-        grid-template-columns: 1fr;
-      }
+      .dest-grid, .programs-grid { grid-template-columns: 1fr; }
+      .dest-card { height: 300px; }
+      .how-grid { grid-template-columns: 1fr; gap: 2rem; }
 
-      .search-form-card {
-        padding: 1.5rem;
-      }
+      .section-title { font-size: 2rem; }
+      .luxury-banner { height: 400px; }
+      .luxury-banner-content h2 { font-size: 2.2rem; }
 
-      .section-title {
-        font-size: 1.8rem;
-      }
+      #results { padding: 2rem 1.5rem; }
+      #stepsBar { flex-direction: column; gap: 1rem; }
+      .flight-header { flex-direction: column; }
 
-      .partner-grid,
-      .how-grid,
-      .dest-grid {
-        grid-template-columns: 1fr;
-      }
+      .footer-content { grid-template-columns: 1fr; gap: 2rem; }
 
-      .flight-details {
-        grid-template-columns: 1fr;
-      }
-
-      .flight-header {
-        flex-direction: column;
-      }
-
-      .steps-bar {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      main {
-        margin-top: 120px;
-      }
+      main { margin-top: 0; }
     }
   </style>
 </head>
 <body>
   <!-- HEADER -->
   <header>
-    <div class="logo">✈ Élysian Flights</div>
+    <a href="#" class="logo">
+      <div class="logo-icon">É</div>
+      <div class="logo-text">Élysian <span>Flights</span></div>
+    </a>
     <nav>
       <a href="#flights">Flights</a>
       <a href="#destinations">Destinations</a>
-      <a href="#airlines">Airlines</a>
+      <a href="#airlines">Programs</a>
       <a href="#faq">FAQ</a>
+      <a href="#" class="nav-cta">Book Now</a>
     </nav>
-    <button class="btn-contact">Contact Us</button>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main>
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-subtitle">Premium Travel Concierge</div>
-        <h1>Fly <strong>Business & First Class</strong> at the Best Price</h1>
-        <p class="hero-text">We find and book premium award flights worldwide. Select your flight, we handle the rest.</p>
-
-        <!-- SEARCH FORM -->
-        <div class="search-form-card">
-          <div class="trip-toggle">
-            <button class="trip-btn active" onclick="setTrip('enkel', this)">One Way</button>
-            <button class="trip-btn" onclick="setTrip('retour', this)">Round Trip</button>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group" id="origWrap">
-              <label>From</label>
-              <input type="text" id="iOrig" placeholder="City or airport" onfocus="openAP(this, 'orig')" oninput="filterAP(this, 'orig')">
-              <div class="ap-dropdown" id="ddOrig"></div>
-            </div>
-
-            <div class="form-group">
-              <label>To</label>
-              <input type="text" id="iDest" placeholder="City or airport" onfocus="openAP(this, 'dest')" oninput="filterAP(this, 'dest')">
-              <div class="ap-dropdown" id="ddDest"></div>
-            </div>
-
-            <div class="form-group">
-              <label>Departure</label>
-              <div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"></div>
-              <input type="hidden" id="iDep">
-              <div class="cal-dropdown" id="calDep"></div>
-            </div>
-
-            <div class="form-group" id="retFld">
-              <label>Return</label>
-              <div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"></div>
-              <input type="hidden" id="iRet">
-              <div class="cal-dropdown" id="calRet"></div>
-            </div>
-
-            <button class="btn-search" id="btnSearch" onclick="doSearch()">🔍</button>
-          </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1540339832862-474599807836?w=1200&q=80" alt="Luxury first class cabin">
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">Premium Concierge Service</div>
+      <h1>Travel in <em>Luxury</em> for a Fraction of the Price</h1>
+      <p class="hero-text">We search across the world's top airline loyalty programs to find you Business & First Class award flights — saving you up to 80% on premium travel.</p>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-number">4</div>
+          <div class="hero-stat-label">Loyalty Programs</div>
+        </div>
+        <div>
+          <div class="hero-stat-number">80%</div>
+          <div class="hero-stat-label">Average Savings</div>
+        </div>
+        <div>
+          <div class="hero-stat-number">15+</div>
+          <div class="hero-stat-label">Destinations</div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- PARTNER PROGRAMS -->
-    <section class="partner-section" id="airlines">
-      <div class="container">
-        <h2 class="section-title">Our Partner Programs</h2>
-        <p class="section-subtitle">Search across 4 loyalty programs to find the best award flights</p>
+  <!-- SEARCH -->
+  <section class="search-section" id="flights">
+    <div class="section-header">
+      <div class="section-label">Search Flights</div>
+      <h2 class="section-title">Find Your Perfect Flight</h2>
+    </div>
+    <div class="search-card">
+      <div class="trip-toggle">
+        <button class="trip-btn active" onclick="setTrip('enkel', this)">One Way</button>
+        <button class="trip-btn" onclick="setTrip('retour', this)">Round Trip</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group" id="origWrap">
+          <label>From</label>
+          <input type="text" id="iOrig" placeholder="City or airport" onfocus="openAP(this, 'orig')" oninput="filterAP(this, 'orig')">
+          <div class="ap-dropdown" id="ddOrig"></div>
+        </div>
+        <div class="form-group">
+          <label>To</label>
+          <input type="text" id="iDest" placeholder="City or airport" onfocus="openAP(this, 'dest')" oninput="filterAP(this, 'dest')">
+          <div class="ap-dropdown" id="ddDest"></div>
+        </div>
+        <div class="form-group">
+          <label>Departure</label>
+          <div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"></div>
+          <input type="hidden" id="iDep">
+          <div class="cal-dropdown" id="calDep"></div>
+        </div>
+        <div class="form-group" id="retFld">
+          <label>Return</label>
+          <div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"></div>
+          <input type="hidden" id="iRet">
+          <div class="cal-dropdown" id="calRet"></div>
+        </div>
+        <button class="btn-search" id="btnSearch" onclick="doSearch()">Search →</button>
+      </div>
+    </div>
+  </section>
 
-        <div class="partner-grid">
-          <div class="partner-card">
-            <div class="partner-logo">✈️</div>
-            <div class="partner-name">Qantas</div>
-            <div class="partner-airlines">Emirates flights</div>
-            <div class="partner-points">Max 280K points</div>
-          </div>
-          <div class="partner-card">
-            <div class="partner-logo">🌍</div>
-            <div class="partner-name">Flying Blue</div>
-            <div class="partner-airlines">Etihad, KLM, Air France</div>
-            <div class="partner-points">Max 300K points</div>
-          </div>
-          <div class="partner-card">
-            <div class="partner-logo">🎫</div>
-            <div class="partner-name">Virgin Atlantic</div>
-            <div class="partner-airlines">KLM, Air France</div>
-            <div class="partner-points">Max 250K points</div>
-          </div>
-          <div class="partner-card">
-            <div class="partner-logo">🪶</div>
-            <div class="partner-name">American Airlines</div>
-            <div class="partner-airlines">Etihad, oneworld alliance</div>
-            <div class="partner-points">Max 320K points</div>
-          </div>
+  <!-- DESTINATIONS -->
+  <section class="destinations" id="destinations">
+    <div class="section-header">
+      <div class="section-label">Popular Routes</div>
+      <h2 class="section-title">Where Will You Go?</h2>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dubai skyline">
+        <div class="dest-overlay">
+          <div class="dest-city">Dubai</div>
+          <div class="dest-country">United Arab Emirates</div>
+          <div class="dest-tag">From 55K points</div>
         </div>
       </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="how-section">
-      <div class="container">
-        <h2 class="section-title">How It Works</h2>
-
-        <div class="how-grid">
-          <div class="how-card">
-            <div class="how-icon">🔍</div>
-            <div class="how-title">Search Flights</div>
-            <p class="how-desc">Enter your route and date to find available award flights across all programs</p>
-          </div>
-          <div class="how-card">
-            <div class="how-icon">✓</div>
-            <div class="how-title">Compare & Select</div>
-            <p class="how-desc">Compare Business and First Class options from multiple loyalty programs</p>
-          </div>
-          <div class="how-card">
-            <div class="how-icon">💬</div>
-            <div class="how-title">We Book For You</div>
-            <p class="how-desc">Contact us via WhatsApp and we'll handle the entire booking process</p>
-          </div>
+      <div class="dest-card">
+        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80" alt="London skyline">
+        <div class="dest-overlay">
+          <div class="dest-city">London</div>
+          <div class="dest-country">United Kingdom</div>
+          <div class="dest-tag">From 42K points</div>
         </div>
       </div>
-    </section>
-
-    <!-- DESTINATIONS -->
-    <section class="dest-section" id="destinations">
-      <div class="container">
-        <h2 class="section-title">Popular Destinations</h2>
-
-        <div class="dest-grid">
-          <div class="dest-card">
-            <div class="dest-card-bg dest-1">
-              <div class="dest-text">
-                <div class="dest-city">Dubai</div>
-                <div class="dest-code">DXB</div>
-                <div class="dest-tagline">Gateway to luxury</div>
-              </div>
-            </div>
-          </div>
-          <div class="dest-card">
-            <div class="dest-card-bg dest-2">
-              <div class="dest-text">
-                <div class="dest-city">London</div>
-                <div class="dest-code">LHR</div>
-                <div class="dest-tagline">Classic elegance</div>
-              </div>
-            </div>
-          </div>
-          <div class="dest-card">
-            <div class="dest-card-bg dest-3">
-              <div class="dest-text">
-                <div class="dest-city">Paris</div>
-                <div class="dest-code">CDG</div>
-                <div class="dest-tagline">City of lights</div>
-              </div>
-            </div>
-          </div>
-          <div class="dest-card">
-            <div class="dest-card-bg dest-4">
-              <div class="dest-text">
-                <div class="dest-city">Amsterdam</div>
-                <div class="dest-code">AMS</div>
-                <div class="dest-tagline">European charm</div>
-              </div>
-            </div>
-          </div>
+      <div class="dest-card">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="Paris Eiffel Tower">
+        <div class="dest-overlay">
+          <div class="dest-city">Paris</div>
+          <div class="dest-country">France</div>
+          <div class="dest-tag">From 38K points</div>
         </div>
       </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section" id="faq">
-      <div class="container">
-        <h2 class="section-title">Frequently Asked Questions</h2>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFAQ(this)">
-            <span>How does Élysian Flights work?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <div class="faq-answer-content">
-              We search award availability across multiple airline loyalty programs to find Business and First Class flights at a fraction of the retail price. Once you find a flight, contact us and we'll handle the booking.
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFAQ(this)">
-            <span>What are award flights?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <div class="faq-answer-content">
-              Award flights are booked using airline miles or points instead of cash. This can save you up to 80% compared to retail business class fares.
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFAQ(this)">
-            <span>Which airlines do you cover?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <div class="faq-answer-content">
-              We search Emirates, Etihad, KLM, and Air France through Qantas, Flying Blue, Virgin Atlantic, and American Airlines loyalty programs.
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFAQ(this)">
-            <span>How do I book a flight?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <div class="faq-answer-content">
-              Simply search for your route, find a flight you like, and contact us via WhatsApp. We'll guide you through the entire booking process.
-            </div>
-          </div>
+      <div class="dest-card">
+        <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&q=80" alt="Maldives beach">
+        <div class="dest-overlay">
+          <div class="dest-city">Maldives</div>
+          <div class="dest-country">Island Paradise</div>
+          <div class="dest-tag">From 72K points</div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- RESULTS SECTION (HIDDEN BY DEFAULT) -->
-    <section id="results" class="hidden">
-      <div class="container">
-        <div id="stepsBar" class="steps-bar">
-          <div class="step active">
-            <div class="step-number">1</div>
-            <div class="step-label">Search</div>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-label">Compare</div>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-label">Book</div>
-          </div>
-        </div>
-
-        <div class="results-header">
-          <h2 class="results-title" id="resTitle">Available Flights</h2>
-          <p class="results-count"><span id="resCnt">0</span> flights found</p>
-        </div>
-
-        <div id="fList"></div>
-        <div id="summary" class="hidden"></div>
+  <!-- PROGRAMS -->
+  <section class="programs" id="airlines">
+    <div class="section-header">
+      <div class="section-label">Our Partners</div>
+      <h2 class="section-title">Loyalty Programs We Search</h2>
+    </div>
+    <div class="programs-grid">
+      <div class="program-card">
+        <div class="program-icon">✈️</div>
+        <div class="program-name">Qantas</div>
+        <div class="program-airlines">Emirates flights worldwide</div>
+        <div class="program-badge">Max 280K pts</div>
       </div>
-    </section>
-  </main>
+      <div class="program-card">
+        <div class="program-icon">🌍</div>
+        <div class="program-name">Flying Blue</div>
+        <div class="program-airlines">Etihad · KLM · Air France</div>
+        <div class="program-badge">Max 300K pts</div>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🎫</div>
+        <div class="program-name">Virgin Atlantic</div>
+        <div class="program-airlines">KLM · Air France</div>
+        <div class="program-badge">Max 250K pts</div>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🦅</div>
+        <div class="program-name">American Airlines</div>
+        <div class="program-airlines">Etihad · oneworld alliance</div>
+        <div class="program-badge">Max 320K pts</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-header">
+      <div class="section-label">Simple Process</div>
+      <h2 class="section-title">How It Works</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-number">01</div>
+        <div class="how-title">Search Flights</div>
+        <p class="how-desc">Enter your route and travel dates. We instantly search across all four loyalty programs for available award seats.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">02</div>
+        <div class="how-title">Compare Options</div>
+        <p class="how-desc">Browse Business and First Class options side by side. See points required, cabin class, and flight details at a glance.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">03</div>
+        <div class="how-title">We Book For You</div>
+        <p class="how-desc">Found your flight? Contact us via WhatsApp and our team handles the entire booking process from start to finish.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LUXURY BANNER -->
+  <div class="luxury-banner">
+    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=1400&q=80" alt="Business class interior">
+    <div class="luxury-banner-overlay">
+      <div class="luxury-banner-content">
+        <h2>Experience the Extraordinary</h2>
+        <p>Lie-flat seats, gourmet dining, exclusive lounges — all at a fraction of the retail price through award bookings.</p>
+        <a href="#flights" class="btn-gold">Search Flights →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq-section" id="faq">
+    <div class="section-header">
+      <div class="section-label">Questions</div>
+      <h2 class="section-title">Frequently Asked</h2>
+    </div>
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How does Élysian Flights work?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">We search award availability across multiple airline loyalty programs to find Business and First Class flights at a fraction of the retail price. Once you find a flight, contact us and we'll handle the booking.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What are award flights?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">Award flights are booked using airline miles or points instead of cash. This can save you up to 80% compared to retail business class fares. We find the best redemption options across multiple programs.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Which airlines do you cover?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">We search Emirates, Etihad, KLM, and Air France through Qantas, Flying Blue, Virgin Atlantic, and American Airlines loyalty programs. This gives us access to a wide range of premium cabin availability worldwide.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How do I book a flight?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">Simply search for your route, find a flight you like, and contact us via WhatsApp. We'll guide you through the entire booking process and ensure you get the best deal.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Do I need my own miles or points?</span>
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">No, you don't need existing miles. We handle the points acquisition and booking on your behalf. You simply pay our fee and we take care of everything else to get you in that premium cabin.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS (HIDDEN) -->
+  <section id="results" class="hidden">
+    <div style="max-width:1200px; margin:0 auto;">
+      <div id="stepsBar">
+        <div class="step active">
+          <div class="step-number">1</div>
+          <div class="step-label">Search</div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-label">Compare</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-label">Book</div>
+        </div>
+      </div>
+      <div class="results-header">
+        <h2 class="results-title" id="resTitle">Available Flights</h2>
+        <p class="results-count"><span id="resCnt">0</span> flights found</p>
+      </div>
+      <div id="fList"></div>
+      <div id="summary" class="hidden"></div>
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="footer-content">
-      <div class="footer-logo">✈ Élysian Flights</div>
-      <p class="footer-tagline">Premium Travel Concierge</p>
-      <p class="footer-copy">© 2026 Élysian Flights. All rights reserved.</p>
+      <div class="footer-brand">
+        <div class="footer-logo">Élysian <span>Flights</span></div>
+        <p class="footer-desc">Your premium travel concierge. We find and book the world's best Business & First Class award flights so you can travel in luxury.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#flights">Search Flights</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#airlines">Programs</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Programs</h4>
+        <a href="#">Qantas</a>
+        <a href="#">Flying Blue</a>
+        <a href="#">Virgin Atlantic</a>
+        <a href="#">American Airlines</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="#">WhatsApp</a>
+        <a href="#">Email Us</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Élysian Flights. All rights reserved. Premium travel, simplified.
     </div>
   </footer>
 
   <script>
-    // AIRPORT DATA
+    // AIRPORTS
     const AIRPORTS = [
       {code:'AMS',name:'Amsterdam Schiphol',city:'Amsterdam',country:'Netherlands'},
       {code:'DXB',name:'Dubai International',city:'Dubai',country:'UAE'},
@@ -1186,7 +1450,6 @@
       {code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'Malaysia'}
     ];
 
-    // TRIP MODE
     let tripMode = 'enkel';
 
     function setTrip(mode, btn) {
@@ -1194,14 +1457,9 @@
       document.querySelectorAll('.trip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const retFld = document.getElementById('retFld');
-      if (mode === 'retour') {
-        retFld.classList.add('show');
-      } else {
-        retFld.classList.remove('show');
-      }
+      if (mode === 'retour') { retFld.classList.add('show'); } else { retFld.classList.remove('show'); }
     }
 
-    // AIRPORT AUTOCOMPLETE
     function openAP(input, type) {
       const dd = type === 'orig' ? document.getElementById('ddOrig') : document.getElementById('ddDest');
       dd.classList.add('active');
@@ -1212,9 +1470,7 @@
       const val = input.value.toLowerCase();
       const dd = type === 'orig' ? document.getElementById('ddOrig') : document.getElementById('ddDest');
       const filtered = val ? AIRPORTS.filter(a =>
-        a.name.toLowerCase().includes(val) ||
-        a.city.toLowerCase().includes(val) ||
-        a.code.toLowerCase().includes(val)
+        a.name.toLowerCase().includes(val) || a.city.toLowerCase().includes(val) || a.code.toLowerCase().includes(val)
       ) : AIRPORTS;
 
       dd.innerHTML = filtered.map(a => `
@@ -1241,8 +1497,6 @@
       if (!e.target.closest('.form-group')) {
         document.getElementById('ddOrig').classList.remove('active');
         document.getElementById('ddDest').classList.remove('active');
-      }
-      if (!e.target.closest('.form-group')) {
         document.getElementById('calDep').classList.remove('active');
         document.getElementById('calRet').classList.remove('active');
       }
@@ -1254,18 +1508,14 @@
     function toggleCal(which) {
       const cal = document.getElementById('cal' + (which === 'dep' ? 'Dep' : 'Ret'));
       cal.classList.toggle('active');
-      if (cal.classList.contains('active')) {
-        renderCal(which);
-      }
+      if (cal.classList.contains('active')) renderCal(which);
     }
 
-    function fmtISO(d) {
-      return d.toISOString().split('T')[0];
-    }
+    function fmtISO(d) { return d.toISOString().split('T')[0]; }
 
     function renderCal(which) {
-      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      const dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const dayNames = ['Mo','Tu','We','Th','Fr','Sa','Su'];
 
       if (!calState[which]) {
         const today = new Date();
@@ -1276,7 +1526,6 @@
       const year = cal.getFullYear();
       const month = cal.getMonth();
       const first = new Date(year, month, 1);
-      const last = new Date(year, month + 1, 0);
       const start = new Date(first);
       start.setDate(start.getDate() - first.getDay() + 1);
 
@@ -1292,9 +1541,7 @@
         <div class="cal-days">
       `;
 
-      dayNames.forEach(d => {
-        html += `<div class="cal-day-header">${d}</div>`;
-      });
+      dayNames.forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
 
       const today = new Date();
       today.setHours(0,0,0,0);
@@ -1313,7 +1560,6 @@
 
         const clickable = !isOtherMonth && !isPast;
         const onclick = clickable ? `onclick="pickDate('${which}', '${fmtISO(d)}')"` : '';
-
         html += `<div class="${cls}" ${onclick}>${d.getDate()}</div>`;
       }
 
@@ -1346,10 +1592,7 @@
       const dest = document.getElementById('iDest').dataset.code;
       const date = document.getElementById('iDep').value;
 
-      if (!origin || !dest) {
-        alert('Please select origin and destination');
-        return;
-      }
+      if (!origin || !dest) { alert('Please select origin and destination'); return; }
 
       document.getElementById('results').classList.remove('hidden');
       document.getElementById('fList').innerHTML = '<div class="loading">Searching flights...</div>';
@@ -1388,25 +1631,25 @@
             <div class="flight-header">
               <span class="badge ${badgeClass}">${f.program}</span>
               <div style="text-align: right;">
-                <div style="font-weight: 700; color: var(--text-dark);">${f.airline} ${f.flightNumber}</div>
+                <div style="font-weight: 700; color: var(--text);">${f.airline} ${f.flightNumber}</div>
               </div>
             </div>
             <div class="flight-route">
               <div class="flight-time">${f.departure}</div>
               <div class="flight-arrow">→</div>
               <div class="flight-time">${f.arrival}</div>
-              <div style="color: var(--text-light); margin-left: auto;">${f.duration}</div>
+              <div style="color: var(--text-muted); margin-left: auto;">${f.duration}</div>
             </div>
-            <div style="color: var(--text-light); font-size: 0.95rem; margin: 0.5rem 0;">
-              ${f.origin} to ${f.destination} • ${f.stops} stops
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin: 0.5rem 0;">
+              ${f.origin} to ${f.destination} · ${f.stops} stops
             </div>
             <div>
               <span class="flight-cabin">${f.cabin1}</span>
               ${f.cabin2 ? `<span class="flight-cabin">${f.cabin2}</span>` : ''}
             </div>
             <div class="flight-cost">${f.points} points</div>
-            ${f.segments ? `<div style="font-size: 0.85rem; color: var(--text-light); margin: 0.5rem 0;">${f.segments}</div>` : ''}
-            <button class="btn-whatsapp" onclick="alert('WhatsApp contact: Contact us to complete booking')">✓ Contact via WhatsApp</button>
+            ${f.segments ? `<div style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;">${f.segments}</div>` : ''}
+            <button class="btn-whatsapp" onclick="alert('WhatsApp contact: Contact us to complete booking')">✓ Book via WhatsApp</button>
           </div>
         `;
       }).join('');
@@ -1422,7 +1665,7 @@
       toggle.classList.toggle('open');
     }
 
-    // INIT - Set default dates
+    // INIT
     window.addEventListener('load', () => {
       const today = new Date();
       const dep = new Date(today);
@@ -1430,17 +1673,12 @@
       const ret = new Date(dep);
       ret.setDate(ret.getDate() + 7);
 
-      const depInput = document.getElementById('iDep');
-      const retInput = document.getElementById('iRet');
-      const depDisplay = document.getElementById('iDepDisplay');
-      const retDisplay = document.getElementById('iRetDisplay');
-
-      depInput.value = fmtISO(dep);
-      retInput.value = fmtISO(ret);
+      document.getElementById('iDep').value = fmtISO(dep);
+      document.getElementById('iRet').value = fmtISO(ret);
 
       const opts = { weekday: 'short', month: 'short', day: 'numeric' };
-      depDisplay.textContent = dep.toLocaleDateString('en-US', opts);
-      retDisplay.textContent = ret.toLocaleDateString('en-US', opts);
+      document.getElementById('iDepDisplay').textContent = dep.toLocaleDateString('en-US', opts);
+      document.getElementById('iRetDisplay').textContent = ret.toLocaleDateString('en-US', opts);
     });
   </script>
 </body>
