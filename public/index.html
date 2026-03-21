@@ -163,9 +163,9 @@ nav {
 .fc-end { text-align: center; }
 .fc-time { font-size: 22px; font-weight: 700; color: var(--black); letter-spacing: -0.5px; }
 .fc-city { font-size: 12px; color: var(--light); margin-top: 4px; font-weight: 600; }
-.fc-mid { display: flex; align-items: center; gap: 16px; justify-content: space-between; margin: 16px 0; }
+.fc-mid { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
 .fc-duration { font-size: 12px; color: var(--light); text-align: center; }
-.fc-line { flex: 1; height: 1px; background: var(--border); position: relative; }
+.fc-line { width: 100%; height: 1px; background: var(--border); position: relative; }
 .fc-line::after { content: '✈'; position: absolute; left: 50%; top: -8px; transform: translateX(-50%); font-size: 14px; color: var(--gold); }
 .fc-price-block { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .fc-price-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--light); margin-bottom: 8px; }
@@ -328,7 +328,7 @@ footer {
         <button class="search-tab" onclick="setTrip('retour', this)">Retour</button>
       </div>
     </div>
-    <div class="search-row row-roundtrip" id="searchRow">
+    <div class="search-row row-oneway" id="searchRow">
       <div class="sfield">
         <label>Van</label>
         <div class="airport-picker">
@@ -353,7 +353,7 @@ footer {
         <input type="hidden" id="iDep">
         <div class="cal-dropdown" id="calDep"></div>
       </div>
-      <div class="sfield" id="retFld">
+      <div class="sfield hidden" id="retFld">
         <label>Terug</label>
         <button class="cal-toggle-btn" id="iRetDisplay" onclick="toggleCal('ret')">
           <span class="cal-toggle-btn-text"><span class="cal-toggle-btn-date" id="retDateDisplay">14 Apr 2025</span></span>
@@ -783,7 +783,7 @@ function renderFlights(flights, dir) {
     }
     return `<div class="flight-card">
       <div class="fc-top">
-        ${f.prices.first ? '<div class="fc-bar first"></div>' : ''}
+        
         <div class="fc-al">
           <div class="fc-al-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
           <div><div class="fc-al-name">${al}</div><div class="fc-al-name-small">${f.flightNo}</div></div>
@@ -798,7 +798,7 @@ function renderFlights(flights, dir) {
           <div class="fc-end"><div class="fc-time">${f.arrTime || '--:--'}</div><div class="fc-city">${f.destination}</div></div>
         </div>
         ${dateStr ? `<div style="font-size:11px;color:var(--light);margin:8px 0">${dateStr}</div>` : ''}
-        ${f.program ? `<div style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(212,168,67,0.1);color:var(--gold);display:inline-block;margin-bottom:12px">${f.program}</div>` : ''}
+        
       </div>
       <div class="fc-price-block">
         <div class="fc-price-label">Selecteer Cabine</div>
