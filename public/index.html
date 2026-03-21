@@ -210,8 +210,8 @@
   <div class="search-w" id="search-section">
     <div class="search-card">
       <div class="trip-tog">
-        <button class="on" onclick="setTrip('retour',this)">Retour</button>
-        <button onclick="setTrip('enkel',this)">Enkele reis</button>
+        <button class="on" onclick="setTrip('enkel',this)">Enkele reis</button>
+        <button onclick="setTrip('retour',this)">Retour</button>
       </div>
       <div class="s-row">
         <div class="fld" id="origWrap">
@@ -225,7 +225,7 @@
           <div class="ap-dropdown" id="ddDest"></div>
         </div>
         <div class="fld"><label>Heen</label><div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iDep"><div class="cal-dropdown" id="calDep"></div></div>
-        <div class="fld" id="retFld"><label>Terug</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
+        <div class="fld hidden" id="retFld"><label>Terug</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
         <button class="btn-s" id="btnSearch" onclick="doSearch()">Zoeken</button>
       </div>
     </div>
@@ -660,9 +660,9 @@ function renderCal(w){
   const last=new Date(st.year,st.month+1,0);
   let dow=first.getDay();dow=dow===0?6:dow-1;
   let h='<div class="cal-hdr">';
-  h+='<button class="cal-nav" onclick="navCal(\''+w+'\', -1)">&lsaquo;</button>';
+  h+='<button type="button" class="cal-nav" onclick="event.stopPropagation();navCal(\''+w+'\', -1)">&lsaquo;</button>';
   h+='<span class="cal-title">'+MONTHS_NL[st.month]+' '+st.year+'</span>';
-  h+='<button class="cal-nav" onclick="navCal(\''+w+'\', 1)">&rsaquo;</button>';
+  h+='<button type="button" class="cal-nav" onclick="event.stopPropagation();navCal(\''+w+'\', 1)">&rsaquo;</button>';
   h+='</div><div class="cal-grid">';
   DAYS_NL.forEach(d=>{h+='<div class="cal-dow">'+d+'</div>';});
   for(let i=0;i<dow;i++)h+='<div class="cal-day empty"></div>';
@@ -673,11 +673,11 @@ function renderCal(w){
     if(dt.getTime()===today.getTime())c+=' today';
     if(sd&&dt.getTime()===sd.getTime())c+=' selected';
     const ds=st.year+'-'+String(st.month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    if(dt>=today){h+='<div class="'+c+'" onclick="pickDate(\''+w+'\',\''+ds+'\')">'+d+'</div>';}
+    if(dt>=today){h+='<div class="'+c+'" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+ds+'\')">'+d+'</div>';}
     else{h+='<div class="'+c+'">'+d+'</div>';}
   }
   h+='</div>';
-  h+='<button class="cal-today-btn" onclick="pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Vandaag</button>';
+  h+='<button type="button" class="cal-today-btn" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Vandaag</button>';
   dd.innerHTML=h;
 }
 </script>
@@ -709,7 +709,7 @@ function pickDate(w,dateStr){
 function fmtISO(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 
 document.addEventListener('click',function(e){
-  if(!e.target.closest('.fld')){
+  if(!e.target.closest('.fld')&&!e.target.closest('.cal-dropdown')){
     document.querySelectorAll('.cal-dropdown').forEach(d=>d.classList.remove('show'));
     document.querySelectorAll('.date-display').forEach(d=>d.classList.remove('active'));
   }
