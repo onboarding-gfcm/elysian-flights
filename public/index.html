@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -198,35 +198,35 @@
 <body>
   <header><div class="h-in">
     <div class="logo"><div class="logo-icon">✈</div> <b>Élysian</b> Flights</div>
-    <nav><a href="#search-section">Zoeken</a><a href="#contact">Contact</a></nav>
+    <nav><a href="#search-section">Search</a><a href="#contact">Contact</a></nav>
   </div></header>
 
   <section class="hero">
     <div class="hero-tag">Premium Travel Concierge</div>
-    <h1>Vlieg <em>Business &amp; First Class</em><br>voor de beste prijs</h1>
-    <p>Wij boeken de beste premium vluchten wereldwijd tegen scherpe tarieven. Selecteer uw vlucht, wij regelen de rest.</p>
+    <h1>Fly <em>Business &amp; First Class</em><br>at the best price</h1>
+    <p>We book the best premium flights worldwide at competitive rates. Select your flight, we handle the rest.</p>
   </section>
 
   <div class="search-w" id="search-section">
     <div class="search-card">
       <div class="trip-tog">
-        <button class="on" onclick="setTrip('enkel',this)">Enkele reis</button>
-        <button onclick="setTrip('retour',this)">Retour</button>
+        <button class="on" onclick="setTrip('oneway',this)">One way</button>
+        <button onclick="setTrip('roundtrip',this)">Round trip</button>
       </div>
       <div class="s-row">
         <div class="fld" id="origWrap">
-          <label>Van</label>
-          <input id="iOrig" autocomplete="off" placeholder="Stad of luchthaven" value="" onfocus="openAP(this,'orig')" oninput="filterAP(this,'orig')">
+          <label>From</label>
+          <input id="iOrig" autocomplete="off" placeholder="City or airport" value="" onfocus="openAP(this,'orig')" oninput="filterAP(this,'orig')">
           <div class="ap-dropdown" id="ddOrig"></div>
         </div>
         <div class="fld" id="destWrap">
-          <label>Naar</label>
-          <input id="iDest" autocomplete="off" placeholder="Stad of luchthaven" value="" onfocus="openAP(this,'dest')" oninput="filterAP(this,'dest')">
+          <label>To</label>
+          <input id="iDest" autocomplete="off" placeholder="City or airport" value="" onfocus="openAP(this,'dest')" oninput="filterAP(this,'dest')">
           <div class="ap-dropdown" id="ddDest"></div>
         </div>
-        <div class="fld"><label>Heen</label><div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iDep"><div class="cal-dropdown" id="calDep"></div></div>
-        <div class="fld hidden" id="retFld"><label>Terug</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
-        <button class="btn-s" id="btnSearch" onclick="doSearch()">Zoeken</button>
+        <div class="fld"><label>Departure</label><div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"><span class="dd-placeholder">Pick date</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iDep"><div class="cal-dropdown" id="calDep"></div></div>
+        <div class="fld hidden" id="retFld"><label>Return</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Pick date</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
+        <button class="btn-s" id="btnSearch" onclick="doSearch()">Search</button>
       </div>
     </div>
   </div>
@@ -246,96 +246,96 @@
 <script>
 // ========== AIRPORT DATABASE ==========
 const AIRPORTS=[
-  {code:'AMS',name:'Amsterdam Airport Schiphol',city:'Amsterdam',country:'Nederland',pop:1},
-  {code:'DXB',name:'Dubai International Airport',city:'Dubai',country:'VAE',pop:.95},
-  {code:'LHR',name:'London Heathrow Airport',city:'Londen',country:'Verenigd Koninkrijk',pop:.94},
-  {code:'CDG',name:'Paris Charles de Gaulle',city:'Parijs',country:'Frankrijk',pop:.93},
-  {code:'JFK',name:'John F. Kennedy International',city:'New York',country:'Verenigde Staten',pop:.92},
+  {code:'AMS',name:'Amsterdam Airport Schiphol',city:'Amsterdam',country:'Netherlands',pop:1},
+  {code:'DXB',name:'Dubai International Airport',city:'Dubai',country:'UAE',pop:.95},
+  {code:'LHR',name:'London Heathrow Airport',city:'London',country:'United Kingdom',pop:.94},
+  {code:'CDG',name:'Paris Charles de Gaulle',city:'Paris',country:'France',pop:.93},
+  {code:'JFK',name:'John F. Kennedy International',city:'New York',country:'United States',pop:.92},
   {code:'SIN',name:'Singapore Changi Airport',city:'Singapore',country:'Singapore',pop:.91},
   {code:'BKK',name:'Suvarnabhumi Airport',city:'Bangkok',country:'Thailand',pop:.90},
-  {code:'NRT',name:'Narita International Airport',city:'Tokio',country:'Japan',pop:.89},
-  {code:'HND',name:'Tokyo Haneda Airport',city:'Tokio',country:'Japan',pop:.88},
+  {code:'NRT',name:'Narita International Airport',city:'Tokyo',country:'Japan',pop:.89},
+  {code:'HND',name:'Tokyo Haneda Airport',city:'Tokyo',country:'Japan',pop:.88},
   {code:'DOH',name:'Hamad International Airport',city:'Doha',country:'Qatar',pop:.87},
-  {code:'IST',name:'Istanbul Airport',city:'Istanbul',country:'Turkije',pop:.86},
-  {code:'FCO',name:'Leonardo da Vinci-Fiumicino',city:'Rome',country:'Italië',pop:.85},
-  {code:'BCN',name:'Barcelona-El Prat Airport',city:'Barcelona',country:'Spanje',pop:.84},
-  {code:'LAX',name:'Los Angeles International',city:'Los Angeles',country:'Verenigde Staten',pop:.83},
-  {code:'MIA',name:'Miami International Airport',city:'Miami',country:'Verenigde Staten',pop:.82},
-  {code:'SYD',name:'Sydney Kingsford Smith',city:'Sydney',country:'Australië',pop:.81},
+  {code:'IST',name:'Istanbul Airport',city:'Istanbul',country:'Turkey',pop:.86},
+  {code:'FCO',name:'Leonardo da Vinci-Fiumicino',city:'Rome',country:'Italy',pop:.85},
+  {code:'BCN',name:'Barcelona-El Prat Airport',city:'Barcelona',country:'Spain',pop:.84},
+  {code:'LAX',name:'Los Angeles International',city:'Los Angeles',country:'United States',pop:.83},
+  {code:'MIA',name:'Miami International Airport',city:'Miami',country:'United States',pop:.82},
+  {code:'SYD',name:'Sydney Kingsford Smith',city:'Sydney',country:'Australia',pop:.81},
   {code:'HKG',name:'Hong Kong International',city:'Hong Kong',country:'China',pop:.80},
-  {code:'MLE',name:'Velana International Airport',city:'Malé',country:'Maldiven',pop:.79},
-  {code:'CPT',name:'Cape Town International',city:'Kaapstad',country:'Zuid-Afrika',pop:.78},
-  {code:'ORD',name:"O'Hare International Airport",city:'Chicago',country:'Verenigde Staten',pop:.77},
-  {code:'FRA',name:'Frankfurt Airport',city:'Frankfurt',country:'Duitsland',pop:.76},
-  {code:'MUC',name:'München Franz Josef Strauss',city:'München',country:'Duitsland',pop:.75},
-  {code:'ZRH',name:'Zürich Airport',city:'Zürich',country:'Zwitserland',pop:.74},
-  {code:'MAD',name:'Adolfo Suárez Madrid-Barajas',city:'Madrid',country:'Spanje',pop:.73},
-  {code:'ATL',name:'Hartsfield-Jackson Atlanta',city:'Atlanta',country:'Verenigde Staten',pop:.72},
-  {code:'DEN',name:'Denver International Airport',city:'Denver',country:'Verenigde Staten',pop:.71},
-  {code:'SFO',name:'San Francisco International',city:'San Francisco',country:'Verenigde Staten',pop:.70},
-  {code:'SEA',name:'Seattle-Tacoma International',city:'Seattle',country:'Verenigde Staten',pop:.69},
+  {code:'MLE',name:'Velana International Airport',city:'Malé',country:'Maldives',pop:.79},
+  {code:'CPT',name:'Cape Town International',city:'Cape Town',country:'South Africa',pop:.78},
+  {code:'ORD',name:"O'Hare International Airport",city:'Chicago',country:'United States',pop:.77},
+  {code:'FRA',name:'Frankfurt Airport',city:'Frankfurt',country:'Germany',pop:.76},
+  {code:'MUC',name:'München Franz Josef Strauss',city:'Munich',country:'Germany',pop:.75},
+  {code:'ZRH',name:'Zürich Airport',city:'Zurich',country:'Switzerland',pop:.74},
+  {code:'MAD',name:'Adolfo Suárez Madrid-Barajas',city:'Madrid',country:'Spain',pop:.73},
+  {code:'ATL',name:'Hartsfield-Jackson Atlanta',city:'Atlanta',country:'United States',pop:.72},
+  {code:'DEN',name:'Denver International Airport',city:'Denver',country:'United States',pop:.71},
+  {code:'SFO',name:'San Francisco International',city:'San Francisco',country:'United States',pop:.70},
+  {code:'SEA',name:'Seattle-Tacoma International',city:'Seattle',country:'United States',pop:.69},
   {code:'YYZ',name:'Toronto Pearson International',city:'Toronto',country:'Canada',pop:.68},
-  {code:'PEK',name:'Beijing Capital International',city:'Peking',country:'China',pop:.67},
+  {code:'PEK',name:'Beijing Capital International',city:'Beijing',country:'China',pop:.67},
   {code:'PVG',name:'Shanghai Pudong International',city:'Shanghai',country:'China',pop:.66},
-  {code:'ICN',name:'Incheon International Airport',city:'Seoul',country:'Zuid-Korea',pop:.65},
-  {code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'Maleisië',pop:.64},
+  {code:'ICN',name:'Incheon International Airport',city:'Seoul',country:'South Korea',pop:.65},
+  {code:'KUL',name:'Kuala Lumpur International',city:'Kuala Lumpur',country:'Malaysia',pop:.64},
   {code:'BOM',name:'Chhatrapati Shivaji Maharaj',city:'Mumbai',country:'India',pop:.63},
   {code:'DEL',name:'Indira Gandhi International',city:'Delhi',country:'India',pop:.62},
-  {code:'DPS',name:'Ngurah Rai International',city:'Bali',country:'Indonesië',pop:.61},
-  {code:'AUH',name:'Abu Dhabi International',city:'Abu Dhabi',country:'VAE',pop:.60},
+  {code:'DPS',name:'Ngurah Rai International',city:'Bali',country:'Indonesia',pop:.61},
+  {code:'AUH',name:'Abu Dhabi International',city:'Abu Dhabi',country:'UAE',pop:.60},
   {code:'CAN',name:'Guangzhou Baiyun International',city:'Guangzhou',country:'China',pop:.59},
-  {code:'GRU',name:'São Paulo–Guarulhos International',city:'São Paulo',country:'Brazilië',pop:.58},
-  {code:'EZE',name:'Ministro Pistarini International',city:'Buenos Aires',country:'Argentinië',pop:.57},
-  {code:'MEX',name:'Mexico City International',city:'Mexico-Stad',country:'Mexico',pop:.56},
-  {code:'JNB',name:'O.R. Tambo International',city:'Johannesburg',country:'Zuid-Afrika',pop:.55},
-  {code:'CAI',name:'Cairo International Airport',city:'Caïro',country:'Egypte',pop:.54},
-  {code:'LIS',name:'Humberto Delgado Airport',city:'Lissabon',country:'Portugal',pop:.53},
-  {code:'VIE',name:'Vienna International Airport',city:'Wenen',country:'Oostenrijk',pop:.52},
-  {code:'OSL',name:'Oslo Gardermoen Airport',city:'Oslo',country:'Noorwegen',pop:.51},
-  {code:'CPH',name:'Copenhagen Kastrup Airport',city:'Kopenhagen',country:'Denemarken',pop:.50},
-  {code:'ARN',name:'Stockholm Arlanda Airport',city:'Stockholm',country:'Zweden',pop:.49},
+  {code:'GRU',name:'São Paulo–Guarulhos International',city:'São Paulo',country:'Brazil',pop:.58},
+  {code:'EZE',name:'Ministro Pistarini International',city:'Buenos Aires',country:'Argentina',pop:.57},
+  {code:'MEX',name:'Mexico City International',city:'Mexico City',country:'Mexico',pop:.56},
+  {code:'JNB',name:'O.R. Tambo International',city:'Johannesburg',country:'South Africa',pop:.55},
+  {code:'CAI',name:'Cairo International Airport',city:'Cairo',country:'Egypt',pop:.54},
+  {code:'LIS',name:'Humberto Delgado Airport',city:'Lisbon',country:'Portugal',pop:.53},
+  {code:'VIE',name:'Vienna International Airport',city:'Vienna',country:'Austria',pop:.52},
+  {code:'OSL',name:'Oslo Gardermoen Airport',city:'Oslo',country:'Norway',pop:.51},
+  {code:'CPH',name:'Copenhagen Kastrup Airport',city:'Copenhagen',country:'Denmark',pop:.50},
+  {code:'ARN',name:'Stockholm Arlanda Airport',city:'Stockholm',country:'Sweden',pop:.49},
   {code:'HEL',name:'Helsinki-Vantaa Airport',city:'Helsinki',country:'Finland',pop:.48},
-  {code:'BRU',name:'Brussels Airport Zaventem',city:'Brussel',country:'België',pop:.47},
-  {code:'DUB',name:'Dublin Airport',city:'Dublin',country:'Ierland',pop:.46},
-  {code:'ATH',name:'Athens International Airport',city:'Athene',country:'Griekenland',pop:.45},
-  {code:'PMI',name:'Palma de Mallorca Airport',city:'Mallorca',country:'Spanje',pop:.44},
-  {code:'AGP',name:'Málaga-Costa del Sol Airport',city:'Málaga',country:'Spanje',pop:.43},
-  {code:'ALC',name:'Alicante-Elche Airport',city:'Alicante',country:'Spanje',pop:.42},
-  {code:'TFS',name:'Tenerife South Airport',city:'Tenerife',country:'Spanje',pop:.41},
+  {code:'BRU',name:'Brussels Airport Zaventem',city:'Brussels',country:'Belgium',pop:.47},
+  {code:'DUB',name:'Dublin Airport',city:'Dublin',country:'Ireland',pop:.46},
+  {code:'ATH',name:'Athens International Airport',city:'Athens',country:'Greece',pop:.45},
+  {code:'PMI',name:'Palma de Mallorca Airport',city:'Mallorca',country:'Spain',pop:.44},
+  {code:'AGP',name:'Málaga-Costa del Sol Airport',city:'Málaga',country:'Spain',pop:.43},
+  {code:'ALC',name:'Alicante-Elche Airport',city:'Alicante',country:'Spain',pop:.42},
+  {code:'TFS',name:'Tenerife South Airport',city:'Tenerife',country:'Spain',pop:.41},
   {code:'MCT',name:'Muscat International Airport',city:'Muscat',country:'Oman',pop:.40},
   {code:'CMB',name:'Bandaranaike International',city:'Colombo',country:'Sri Lanka',pop:.39},
-  {code:'PHX',name:'Phoenix Sky Harbor International',city:'Phoenix',country:'Verenigde Staten',pop:.38},
-  {code:'BOS',name:'Boston Logan International',city:'Boston',country:'Verenigde Staten',pop:.37},
-  {code:'IAD',name:'Washington Dulles International',city:'Washington D.C.',country:'Verenigde Staten',pop:.36},
-  {code:'EWR',name:'Newark Liberty International',city:'Newark',country:'Verenigde Staten',pop:.35},
-  {code:'LGA',name:'LaGuardia Airport',city:'New York',country:'Verenigde Staten',pop:.34},
+  {code:'PHX',name:'Phoenix Sky Harbor International',city:'Phoenix',country:'United States',pop:.38},
+  {code:'BOS',name:'Boston Logan International',city:'Boston',country:'United States',pop:.37},
+  {code:'IAD',name:'Washington Dulles International',city:'Washington D.C.',country:'United States',pop:.36},
+  {code:'EWR',name:'Newark Liberty International',city:'Newark',country:'United States',pop:.35},
+  {code:'LGA',name:'LaGuardia Airport',city:'New York',country:'United States',pop:.34},
   {code:'YVR',name:'Vancouver International Airport',city:'Vancouver',country:'Canada',pop:.33},
-  {code:'AKL',name:'Auckland Airport',city:'Auckland',country:'Nieuw-Zeeland',pop:.32},
-  {code:'MEL',name:'Melbourne Tullamarine Airport',city:'Melbourne',country:'Australië',pop:.31},
-  {code:'PER',name:'Perth Airport',city:'Perth',country:'Australië',pop:.30},
-  {code:'NBO',name:'Jomo Kenyatta International',city:'Nairobi',country:'Kenia',pop:.29},
-  {code:'ADD',name:'Bole International Airport',city:'Addis Abeba',country:'Ethiopië',pop:.28},
-  {code:'CMN',name:'Mohammed V International',city:'Casablanca',country:'Marokko',pop:.27},
-  {code:'RAK',name:'Marrakech Menara Airport',city:'Marrakech',country:'Marokko',pop:.26},
-  {code:'TUN',name:'Tunis-Carthage International',city:'Tunis',country:'Tunesië',pop:.25},
+  {code:'AKL',name:'Auckland Airport',city:'Auckland',country:'New Zealand',pop:.32},
+  {code:'MEL',name:'Melbourne Tullamarine Airport',city:'Melbourne',country:'Australia',pop:.31},
+  {code:'PER',name:'Perth Airport',city:'Perth',country:'Australia',pop:.30},
+  {code:'NBO',name:'Jomo Kenyatta International',city:'Nairobi',country:'Kenya',pop:.29},
+  {code:'ADD',name:'Bole International Airport',city:'Addis Ababa',country:'Ethiopia',pop:.28},
+  {code:'CMN',name:'Mohammed V International',city:'Casablanca',country:'Morocco',pop:.27},
+  {code:'RAK',name:'Marrakech Menara Airport',city:'Marrakech',country:'Morocco',pop:.26},
+  {code:'TUN',name:'Tunis-Carthage International',city:'Tunis',country:'Tunisia',pop:.25},
   {code:'MRU',name:'Sir Seewoosagur Ramgoolam',city:'Mauritius',country:'Mauritius',pop:.24},
   {code:'CUR',name:'Hato International Airport',city:'Curaçao',country:'Curaçao',pop:.23},
   {code:'SXM',name:'Princess Juliana International',city:'Sint Maarten',country:'Sint Maarten',pop:.22},
   {code:'BON',name:'Flamingo International Airport',city:'Bonaire',country:'Bonaire',pop:.21},
   {code:'AUA',name:'Queen Beatrix International',city:'Aruba',country:'Aruba',pop:.20},
-  {code:'PUJ',name:'Punta Cana International',city:'Punta Cana',country:'Dominicaanse Republiek',pop:.19},
+  {code:'PUJ',name:'Punta Cana International',city:'Punta Cana',country:'Dominican Republic',pop:.19},
   {code:'CUN',name:'Cancún International Airport',city:'Cancún',country:'Mexico',pop:.18},
-  {code:'GIG',name:'Rio de Janeiro–Galeão',city:'Rio de Janeiro',country:'Brazilië',pop:.17},
-  {code:'SCL',name:'Arturo Merino Benítez',city:'Santiago',country:'Chili',pop:.16},
+  {code:'GIG',name:'Rio de Janeiro–Galeão',city:'Rio de Janeiro',country:'Brazil',pop:.17},
+  {code:'SCL',name:'Arturo Merino Benítez',city:'Santiago',country:'Chile',pop:.16},
   {code:'LIM',name:'Jorge Chávez International',city:'Lima',country:'Peru',pop:.15},
   {code:'BOG',name:'El Dorado International',city:'Bogotá',country:'Colombia',pop:.14},
-  {code:'PTY',name:'Tocumen International Airport',city:'Panama-Stad',country:'Panama',pop:.13}
+  {code:'PTY',name:'Tocumen International Airport',city:'Panama City',country:'Panama',pop:.13}
 ];
 
 const AIRLINE_NAMES={EK:'Emirates',QR:'Qatar Airways',TK:'Turkish Airlines',SQ:'Singapore Airlines',TG:'Thai Airways',CX:'Cathay Pacific',LH:'Lufthansa',BA:'British Airways',AF:'Air France',KL:'KLM',NH:'ANA',JL:'Japan Airlines',DL:'Delta Air Lines',UA:'United Airlines',AA:'American Airlines',VS:'Virgin Atlantic',QF:'Qantas',SA:'South African Airways',PC:'Pegasus Airlines',AZ:'ITA Airways',VY:'Vueling',UL:'SriLankan Airlines'};
 
 // ========== STATE ==========
-let trip='retour', step=1, selOrig=null, selDest=null;
+let trip='roundtrip', step=1, selOrig=null, selDest=null;
 let outFlights=[], retFlights=[], selOut=null, selRet=null, selOutCabin='', selRetCabin='';
 let activeDD=null;
 
@@ -384,7 +384,7 @@ function renderAP(dd, query, which) {
   `).join('');
 
   if (filtered.length === 0) {
-    dd.innerHTML = '<div style="padding:16px;text-align:center;color:var(--txt4);font-size:13px">Geen luchthavens gevonden</div>';
+    dd.innerHTML = '<div style="padding:16px;text-align:center;color:var(--txt4);font-size:13px">No airports found</div>';
   }
 }
 
@@ -424,7 +424,7 @@ function setTrip(t, btn) {
   trip = t;
   document.querySelectorAll('.trip-tog button').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('retFld').classList.toggle('hidden', t === 'enkel');
+  document.getElementById('retFld').classList.toggle('hidden', t === 'oneway');
 }
 
 // ========== SEARCH ==========
@@ -434,33 +434,33 @@ async function doSearch() {
   const dep = document.getElementById('iDep').value;
   const ret = document.getElementById('iRet').value;
 
-  if (!o || !d) { alert('Selecteer vertrek- en bestemmingsluchthaven'); return; }
-  if (!dep) { alert('Kies een heenreisdatum'); return; }
-  if (trip === 'retour' && !ret) { alert('Kies een terugreisdatum'); return; }
+  if (!o || !d) { alert('Please select departure and destination airports'); return; }
+  if (!dep) { alert('Please select a departure date'); return; }
+  if (trip === 'roundtrip' && !ret) { alert('Please select a return date'); return; }
 
   document.getElementById('results').classList.remove('hidden');
   document.getElementById('summaryWrap').classList.add('hidden');
-  document.getElementById('flightList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Beschikbare vluchten zoeken...</p></div>';
+  document.getElementById('flightList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching available flights...</p></div>';
 
   step = 1; selOut = null; selRet = null;
   updateSteps();
-  document.getElementById('resTitle').innerHTML = `Vluchten <em>${o} → ${d}</em>`;
+  document.getElementById('resTitle').innerHTML = `Flights <em>${o} → ${d}</em>`;
   document.getElementById('resCnt').textContent = '';
 
   try {
     const r = await fetch(`/api/search?origin=${o}&destination=${d}&date=${dep}`);
     const data = await r.json();
     outFlights = data.flights || [];
-    document.getElementById('resCnt').textContent = `${outFlights.length} vluchten gevonden`;
+    document.getElementById('resCnt').textContent = `${outFlights.length} flights found`;
     renderFlights(outFlights, 'out');
 
-    if (trip === 'retour') {
+    if (trip === 'roundtrip') {
       const r2 = await fetch(`/api/search?origin=${d}&destination=${o}&date=${ret}`);
       const data2 = await r2.json();
       retFlights = data2.flights || [];
     }
   } catch (e) {
-    document.getElementById('flightList').innerHTML = `<div class="err-msg"><h3>Er ging iets mis</h3><p>${e.message}</p></div>`;
+    document.getElementById('flightList').innerHTML = `<div class="err-msg"><h3>Something went wrong</h3><p>${e.message}</p></div>`;
   }
 
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
@@ -469,7 +469,7 @@ async function doSearch() {
 // ========== RENDER ==========
 function renderFlights(flights, dir) {
   const el = document.getElementById('flightList');
-  if (!flights.length) { el.innerHTML = '<div class="err-msg"><h3>Geen vluchten gevonden</h3><p>Probeer een andere datum of route.</p></div>'; return; }
+  if (!flights.length) { el.innerHTML = '<div class="err-msg"><h3>No flights found</h3><p>Try a different date or route.</p></div>'; return; }
 
   el.innerHTML = flights.map(f => {
     const al = AIRLINE_NAMES[f.airline] || f.airline;
@@ -480,7 +480,7 @@ function renderFlights(flights, dir) {
       {key:'first', label:'First Class', avail:f.availability.first, price:f.prices.first}
     ];
     const stopsText = f.direct ? 'Direct' : (f.stops === 1 ? '1 Stop' : (f.stops || 1) + ' Stops');
-    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('nl-NL', {weekday:'short', day:'numeric', month:'long', year:'numeric'}) : '';
+    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', day:'numeric', month:'long', year:'numeric'}) : '';
     // Build segments HTML
     let segHtml = '';
     if (f.segments && f.segments.length > 0) {
@@ -496,17 +496,17 @@ function renderFlights(flights, dir) {
         <div class="f-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
         <div class="f-airline"><div class="f-airline-name">${al}</div><div class="f-flight-no">${f.flightNo}</div></div>
         <span class="f-badge ${f.direct?'direct':'stop'}">${stopsText}</span>
-        <span class="f-seats">${f.remainingSeats} ${f.remainingSeats===1?'stoel':'stoelen'} over</span>
+        <span class="f-seats">${f.remainingSeats} ${f.remainingSeats===1?'seat':'seats'} left</span>
       </div>
       <div class="f-mid">
         <div class="f-time"><div class="f-time-val">${f.depTime || '--:--'}</div><div class="f-time-code">${f.origin}</div></div>
-        <div class="f-route-line"><div class="f-dur">${f.duration ? (Number(f.duration) > 0 && !f.duration.toString().includes("u") ? Math.floor(Number(f.duration)/60) + "u " + String(Number(f.duration)%60).padStart(2,"0") + "m" : f.duration) : ""}</div><div class="f-line"></div></div>
+        <div class="f-route-line"><div class="f-dur">${f.duration ? (Number(f.duration) > 0 && !f.duration.toString().includes("h") ? Math.floor(Number(f.duration)/60) + "h " + String(Number(f.duration)%60).padStart(2,"0") + "m" : f.duration) : ""}${!f.direct && f.segments && f.segments.length > 1 ? " · via " + f.segments.slice(0,-1).map(s => s.destination).join(", ") : ""}</div><div class="f-line"></div></div>
         <div class="f-time"><div class="f-time-val">${f.arrTime || '--:--'}</div><div class="f-time-code">${f.destination}</div></div>
       </div>
       <div class="f-prices">
         ${cabins.map(c => c.avail && c.price
           ? `<div class="f-price-btn" onclick="pickFlight('${dir}','${f.id}','${c.key}',${c.price})"><div class="f-price-cabin">${c.label}</div><div class="f-price-val">€${c.price.toLocaleString()}</div></div>`
-          : `<div class="f-price-btn na"><div class="f-price-cabin">${c.label}</div><div class="f-price-na">${c.avail ? 'Op aanvraag' : 'Niet beschikbaar'}</div></div>`
+          : `<div class="f-price-btn na"><div class="f-price-cabin">${c.label}</div><div class="f-price-na">${c.avail ? 'On request' : 'Not available'}</div></div>`
         ).join('')}
       </div>
     </div>`;
@@ -519,10 +519,10 @@ function pickFlight(dir, id, cabin, price) {
     selOutCabin = cabin;
     selOut._price = price;
     step = 2;
-    if (trip === 'retour') {
+    if (trip === 'roundtrip') {
       updateSteps();
-      document.getElementById('resTitle').innerHTML = `Retourvluchten <em>${selOut.destination} → ${selOut.origin}</em>`;
-      document.getElementById('resCnt').textContent = `${retFlights.length} vluchten gevonden`;
+      document.getElementById('resTitle').innerHTML = `Return flights <em>${selOut.destination} → ${selOut.origin}</em>`;
+      document.getElementById('resCnt').textContent = `${retFlights.length} flights found`;
       renderFlights(retFlights, 'ret');
       document.getElementById('flightList').scrollIntoView({behavior:'smooth',block:'start'});
     } else {
@@ -540,11 +540,11 @@ function pickFlight(dir, id, cabin, price) {
 function updateSteps() {
   const s = document.getElementById('stepsBar');
   const steps = [
-    {n:1, label:'Heenvlucht'},
-    {n:2, label:'Retourvlucht'},
-    {n:3, label:'Overzicht'}
+    {n:1, label:'Outbound'},
+    {n:2, label:'Round tripvlucht'},
+    {n:3, label:'Summary'}
   ];
-  if (trip==='enkel') steps.splice(1,1);
+  if (trip==='oneway') steps.splice(1,1);
   s.innerHTML = '<div class="steps">' + steps.map((st,i) => {
     const cls = step > st.n ? 'done' : step === st.n ? 'on' : '';
     return `${i>0?'<div class="stp-line"></div>':''}<div class="stp ${cls}"><div class="stp-num">${step > st.n ? '✓' : st.n}</div>${st.label}</div>`;
@@ -559,9 +559,9 @@ function showSummary() {
   const alOut = AIRLINE_NAMES[selOut.airline] || selOut.airline;
   let total = selOut._price;
 
-  let html = `<div class="sum-title">Uw selectie</div>
+  let html = `<div class="sum-title">Your selection</div>
     <div class="sum-flight">
-      <div class="sum-dir">Heen</div>
+      <div class="sum-dir">Out</div>
       <div class="sum-detail">
         <div class="sum-route">${selOut.origin} → ${selOut.destination}</div>
         <div class="sum-info">${alOut} ${selOut.flightNo} · ${selOut.depTime} - ${selOut.arrTime} · ${cabinLabel[selOutCabin]}</div>
@@ -573,7 +573,7 @@ function showSummary() {
     const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline;
     total += selRet._price;
     html += `<div class="sum-flight">
-      <div class="sum-dir">Terug</div>
+      <div class="sum-dir">Return</div>
       <div class="sum-detail">
         <div class="sum-route">${selRet.origin} → ${selRet.destination}</div>
         <div class="sum-info">${alRet} ${selRet.flightNo} · ${selRet.depTime} - ${selRet.arrTime} · ${cabinLabel[selRetCabin]}</div>
@@ -582,28 +582,28 @@ function showSummary() {
     </div>`;
   }
 
-  html += `<div class="sum-total"><div class="sum-total-label">Totaal per persoon</div><div class="sum-total-val">€${total.toLocaleString()}</div></div>`;
+  html += `<div class="sum-total"><div class="sum-total-label">Total per person</div><div class="sum-total-val">€${total.toLocaleString()}</div></div>`;
 
   // WhatsApp message
-  let msg = `Hallo! Ik wil graag de volgende vlucht(en) boeken via Élysian Flights:\n\n`;
-  msg += `✈ HEEN: ${selOut.origin} → ${selOut.destination}\n`;
+  let msg = `Hello! I would like to book the following flight(s) via Élysian Flights:\n\n`;
+  msg += `✈ OUTBOUND: ${selOut.origin} → ${selOut.destination}\n`;
   msg += `${alOut} ${selOut.flightNo} | ${selOut.date} | ${selOut.depTime}-${selOut.arrTime}\n`;
-  msg += `Cabine: ${cabinLabel[selOutCabin]} | Prijs: €${selOut._price.toLocaleString()}\n`;
+  msg += `Cabin: ${cabinLabel[selOutCabin]} | Price: €${selOut._price.toLocaleString()}\n`;
   if (selRet) {
     const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline;
-    msg += `\n✈ TERUG: ${selRet.origin} → ${selRet.destination}\n`;
+    msg += `\n✈ RETURN: ${selRet.origin} → ${selRet.destination}\n`;
     msg += `${alRet} ${selRet.flightNo} | ${selRet.date} | ${selRet.depTime}-${selRet.arrTime}\n`;
-    msg += `Cabine: ${cabinLabel[selRetCabin]} | Prijs: €${selRet._price.toLocaleString()}\n`;
+    msg += `Cabin: ${cabinLabel[selRetCabin]} | Price: €${selRet._price.toLocaleString()}\n`;
   }
-  msg += `\nTotaal: €${total.toLocaleString()}\n\nGraag ontvang ik een bevestiging. Bedankt!`;
+  msg += `\nTotal: €${total.toLocaleString()}\n\nI would like to receive a confirmation. Thank you!`;
 
   const waUrl = `https://wa.me/31639027470?text=${encodeURIComponent(msg)}`;
 
   html += `<button class="btn-wa" onclick="window.open('${waUrl}','_blank')">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.61.609l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.227-2.01a.5.5 0 00-.395-.084l-3.16 1.06 1.06-3.16a.5.5 0 00-.084-.396A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-    Boek via WhatsApp
+    Book via WhatsApp
   </button>
-  <button class="btn-back" onclick="backToSearch()">← Terug naar zoekresultaten</button>`;
+  <button class="btn-back" onclick="backToSearch()">← Back to search results</button>`;
 
   document.getElementById('summaryContent').innerHTML = html;
   document.getElementById('summaryWrap').scrollIntoView({behavior:'smooth',block:'start'});
@@ -615,7 +615,7 @@ function backToSearch() {
   step = 1; selOut = null; selRet = null;
   updateSteps();
   document.getElementById('resTitle').innerHTML = `Vluchten <em>${selOrig} → ${selDest}</em>`;
-  document.getElementById('resCnt').textContent = `${outFlights.length} vluchten gevonden`;
+  document.getElementById('resCnt').textContent = `${outFlights.length} flights found`;
   renderFlights(outFlights, 'out');
 }
 
@@ -623,7 +623,7 @@ function backToSearch() {
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 7);
 document.getElementById('iDep').value = tomorrow.toISOString().slice(0,10);
-if (trip === 'retour') {
+if (trip === 'roundtrip') {
   const ret = new Date(tomorrow);
   ret.setDate(ret.getDate() + 7);
   document.getElementById('iRet').value = ret.toISOString().slice(0,10);
@@ -632,9 +632,9 @@ if (trip === 'retour') {
 <script>
 // === Custom Calendar Datepicker ===
 const calState={dep:{month:null,year:null},ret:{month:null,year:null}};
-const MONTHS_NL=['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
-const MONTHS_SHORT=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
-const DAYS_NL=['Ma','Di','Wo','Do','Vr','Za','Zo'];
+const MONTHS_NL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS_NL=['Mo','Tu','We','Th','Fr','Sa','Su'];
 
 function initCalDate(w){const n=new Date();if(!calState[w].month&&calState[w].month!==0){calState[w].month=n.getMonth();calState[w].year=n.getFullYear();}}
 
@@ -675,7 +675,7 @@ function renderCal(w){
     else{h+='<div class="'+c+'">'+d+'</div>';}
   }
   h+='</div>';
-  h+='<button type="button" class="cal-today-btn" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Vandaag</button>';
+  h+='<button type="button" class="cal-today-btn" onclick="event.stopPropagation();pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Today</button>';
   dd.innerHTML=h;
 }
 </script>
