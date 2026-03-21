@@ -168,6 +168,31 @@
       .f-prices{flex-direction:column}
       .sum-flight{flex-direction:column;text-align:center}
     }
+  
+    /* Custom Calendar Datepicker */
+    .date-display{width:100%;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:12px 14px;color:var(--txt);font-family:inherit;font-size:14px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;user-select:none}
+    .date-display:hover{border-color:var(--brd-l)}
+    .date-display.active{border-color:var(--gold)}
+    .date-display .dd-text{color:var(--txt)}
+    .date-display .dd-placeholder{color:var(--txt4)}
+    .date-display .dd-icon{color:var(--txt3);font-size:10px;flex-shrink:0;margin-left:8px}
+    .cal-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--brd-l);border-radius:10px;margin-top:4px;z-index:200;display:none;box-shadow:0 16px 48px rgba(0,0,0,.5);padding:16px;min-width:280px}
+    .cal-dropdown.show{display:block}
+    .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .cal-title{font-size:14px;font-weight:600;color:var(--txt);letter-spacing:.3px}
+    .cal-nav{width:30px;height:30px;border-radius:8px;background:var(--card2);border:1px solid var(--brd);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.15s;line-height:1}
+    .cal-nav:hover{background:var(--card-h);border-color:var(--brd-l);color:var(--txt)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+    .cal-dow{font-size:10px;font-weight:600;color:var(--txt4);padding:6px 0;text-transform:uppercase;letter-spacing:.8px}
+    .cal-day{font-size:13px;padding:8px 2px;border-radius:6px;cursor:pointer;color:var(--txt2);transition:.15s;font-weight:500}
+    .cal-day:hover:not(.past):not(.empty){background:var(--card-h);color:var(--txt)}
+    .cal-day.today{color:var(--gold);font-weight:700}
+    .cal-day.selected{background:var(--gold)!important;color:var(--bg)!important;font-weight:700}
+    .cal-day.other{color:var(--txt4);opacity:.35}
+    .cal-day.past{color:var(--txt4);opacity:.25;cursor:default;pointer-events:none}
+    .cal-day.empty{pointer-events:none}
+    .cal-today-btn{display:block;width:100%;margin-top:10px;padding:8px;background:transparent;border:1px solid var(--brd);border-radius:8px;color:var(--gold);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;text-transform:uppercase;letter-spacing:.5px}
+    .cal-today-btn:hover{background:var(--card2);border-color:var(--gold-d)}
   </style>
 </head>
 <body>
@@ -199,8 +224,8 @@
           <input id="iDest" autocomplete="off" placeholder="Stad of luchthaven" value="" onfocus="openAP(this,'dest')" oninput="filterAP(this,'dest')">
           <div class="ap-dropdown" id="ddDest"></div>
         </div>
-        <div class="fld"><label>Heen</label><input type="date" id="iDep"></div>
-        <div class="fld" id="retFld"><label>Terug</label><input type="date" id="iRet"></div>
+        <div class="fld"><label>Heen</label><div class="date-display" id="iDepDisplay" onclick="toggleCal('dep')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iDep"><div class="cal-dropdown" id="calDep"></div></div>
+        <div class="fld" id="retFld"><label>Terug</label><div class="date-display" id="iRetDisplay" onclick="toggleCal('ret')"><span class="dd-placeholder">Kies datum</span><span class="dd-icon">&#9662;</span></div><input type="hidden" id="iRet"><div class="cal-dropdown" id="calRet"></div></div>
         <button class="btn-s" id="btnSearch" onclick="doSearch()">Zoeken</button>
       </div>
     </div>
@@ -605,6 +630,98 @@ if (trip === 'retour') {
   ret.setDate(ret.getDate() + 7);
   document.getElementById('iRet').value = ret.toISOString().slice(0,10);
 }
+</script>
+<script>
+// === Custom Calendar Datepicker ===
+const calState={dep:{month:null,year:null},ret:{month:null,year:null}};
+const MONTHS_NL=['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const MONTHS_SHORT=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const DAYS_NL=['Ma','Di','Wo','Do','Vr','Za','Zo'];
+
+function initCalDate(w){const n=new Date();if(!calState[w].month&&calState[w].month!==0){calState[w].month=n.getMonth();calState[w].year=n.getFullYear();}}
+
+function toggleCal(w){
+  const dd=document.getElementById(w==='dep'?'calDep':'calRet');
+  const ds=document.getElementById(w==='dep'?'iDepDisplay':'iRetDisplay');
+  const isOpen=dd.classList.contains('show');
+  document.querySelectorAll('.cal-dropdown').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.date-display').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.ap-dropdown').forEach(d=>d.classList.remove('show'));
+  if(!isOpen){initCalDate(w);renderCal(w);dd.classList.add('show');ds.classList.add('active');}
+}
+
+function renderCal(w){
+  const st=calState[w];
+  const dd=document.getElementById(w==='dep'?'calDep':'calRet');
+  const today=new Date();today.setHours(0,0,0,0);
+  const sv=document.getElementById(w==='dep'?'iDep':'iRet').value;
+  const sd=sv?new Date(sv+'T00:00:00'):null;
+  const first=new Date(st.year,st.month,1);
+  const last=new Date(st.year,st.month+1,0);
+  let dow=first.getDay();dow=dow===0?6:dow-1;
+  let h='<div class="cal-hdr">';
+  h+='<button class="cal-nav" onclick="navCal(\''+w+'\', -1)">&lsaquo;</button>';
+  h+='<span class="cal-title">'+MONTHS_NL[st.month]+' '+st.year+'</span>';
+  h+='<button class="cal-nav" onclick="navCal(\''+w+'\', 1)">&rsaquo;</button>';
+  h+='</div><div class="cal-grid">';
+  DAYS_NL.forEach(d=>{h+='<div class="cal-dow">'+d+'</div>';});
+  for(let i=0;i<dow;i++)h+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=last.getDate();d++){
+    const dt=new Date(st.year,st.month,d);
+    let c='cal-day';
+    if(dt<today)c+=' past';
+    if(dt.getTime()===today.getTime())c+=' today';
+    if(sd&&dt.getTime()===sd.getTime())c+=' selected';
+    const ds=st.year+'-'+String(st.month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    if(dt>=today){h+='<div class="'+c+'" onclick="pickDate(\''+w+'\',\''+ds+'\')">'+d+'</div>';}
+    else{h+='<div class="'+c+'">'+d+'</div>';}
+  }
+  h+='</div>';
+  h+='<button class="cal-today-btn" onclick="pickDate(\''+w+'\',\''+fmtISO(today)+'\')">Vandaag</button>';
+  dd.innerHTML=h;
+}
+</script>
+<script>
+function navCal(w,dir){
+  const st=calState[w];st.month+=dir;
+  if(st.month<0){st.month=11;st.year--;}
+  if(st.month>11){st.month=0;st.year++;}
+  renderCal(w);
+}
+
+function pickDate(w,dateStr){
+  const inp=document.getElementById(w==='dep'?'iDep':'iRet');
+  const ds=document.getElementById(w==='dep'?'iDepDisplay':'iRetDisplay');
+  const dd=document.getElementById(w==='dep'?'calDep':'calRet');
+  inp.value=dateStr;
+  const p=dateStr.split('-');
+  const d=parseInt(p[2]),m=parseInt(p[1])-1,y=parseInt(p[0]);
+  const fmt=d+' '+MONTHS_SHORT[m]+' '+y;
+  ds.innerHTML='<span class="dd-text">'+fmt+'</span><span class="dd-icon">&#9662;</span>';
+  ds.classList.remove('active');dd.classList.remove('show');
+  if(w==='dep'){
+    const ri=document.getElementById('iRet');
+    if(!ri.value){const rd=new Date(y,m,d+7);pickDate('ret',fmtISO(rd));}
+    calState.ret.month=m;calState.ret.year=y;
+  }
+}
+
+function fmtISO(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.fld')){
+    document.querySelectorAll('.cal-dropdown').forEach(d=>d.classList.remove('show'));
+    document.querySelectorAll('.date-display').forEach(d=>d.classList.remove('active'));
+  }
+});
+
+(function(){
+  const now=new Date();
+  const dep=new Date(now);dep.setDate(dep.getDate()+7);
+  const ret=new Date(dep);ret.setDate(ret.getDate()+7);
+  pickDate('dep',fmtISO(dep));
+  pickDate('ret',fmtISO(ret));
+})();
 </script>
 </body>
 </html>
