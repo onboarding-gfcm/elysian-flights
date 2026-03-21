@@ -492,7 +492,6 @@ function renderFlights(flights, dir) {
     }
     return `<div class="f-card">
       ${dateStr ? `<div class="f-date">${dateStr}</div>` : ''}
-      ${f.program ? `<div class="f-program ${f.programKey === 'flying_blue' ? 'fb' : f.programKey === 'virginatlantic' ? 'va' : f.programKey === 'american' ? 'aa' : ''}">${f.program}${f._mileage && f._mileage.business ? ' • ' + (f._mileage.business/1000).toFixed(0) + 'K pts' : ''}</div>` : ''}
       <div class="f-top">
         <div class="f-logo"><img src="${logoUrl}" alt="${al}" onerror="this.style.display='none';this.parentElement.textContent='${f.airline}'"></div>
         <div class="f-airline"><div class="f-airline-name">${al}</div><div class="f-flight-no">${f.flightNo}</div></div>
@@ -501,10 +500,9 @@ function renderFlights(flights, dir) {
       </div>
       <div class="f-mid">
         <div class="f-time"><div class="f-time-val">${f.depTime || '--:--'}</div><div class="f-time-code">${f.origin}</div></div>
-        <div class="f-route-line"><div class="f-dur">${f.duration || ''}</div><div class="f-line"></div></div>
+        <div class="f-route-line"><div class="f-dur">${f.duration ? (Number(f.duration) > 0 && !f.duration.toString().includes("u") ? Math.floor(Number(f.duration)/60) + "u " + String(Number(f.duration)%60).padStart(2,"0") + "m" : f.duration) : ""}</div><div class="f-line"></div></div>
         <div class="f-time"><div class="f-time-val">${f.arrTime || '--:--'}</div><div class="f-time-code">${f.destination}</div></div>
       </div>
-      ${segHtml}
       <div class="f-prices">
         ${cabins.map(c => c.avail && c.price
           ? `<div class="f-price-btn" onclick="pickFlight('${dir}','${f.id}','${c.key}',${c.price})"><div class="f-price-cabin">${c.label}</div><div class="f-price-val">€${c.price.toLocaleString()}</div></div>`
