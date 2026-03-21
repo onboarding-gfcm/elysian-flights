@@ -155,7 +155,7 @@
     /* LOADING */
     .loading{text-align:center;padding:60px 20px}
     .spinner{width:32px;height:32px;border:3px solid var(--brd);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes spin{to{transform:rotate(360deg)}} html{scroll-behavior:smooth} #results,#summaryWrap{scroll-margin-top:80px}
     .loading p{color:var(--txt3);font-size:14px}
 
     /* FOOTER */
@@ -335,7 +335,7 @@ const AIRPORTS=[
 const AIRLINE_NAMES={EK:'Emirates',QR:'Qatar Airways',TK:'Turkish Airlines',SQ:'Singapore Airlines',TG:'Thai Airways',CX:'Cathay Pacific',LH:'Lufthansa',BA:'British Airways',AF:'Air France',KL:'KLM',NH:'ANA',JL:'Japan Airlines',DL:'Delta Air Lines',UA:'United Airlines',AA:'American Airlines',VS:'Virgin Atlantic',QF:'Qantas',SA:'South African Airways',PC:'Pegasus Airlines',AZ:'ITA Airways',VY:'Vueling',UL:'SriLankan Airlines'};
 
 // ========== STATE ==========
-let trip='roundtrip', step=1, selOrig=null, selDest=null;
+let trip='oneway', step=1, selOrig=null, selDest=null;
 let outFlights=[], retFlights=[], selOut=null, selRet=null, selOutCabin='', selRetCabin='';
 let activeDD=null;
 
@@ -524,7 +524,7 @@ function pickFlight(dir, id, cabin, price) {
       document.getElementById('resTitle').innerHTML = `Return flights <em>${selOut.destination} → ${selOut.origin}</em>`;
       document.getElementById('resCnt').textContent = `${retFlights.length} flights found`;
       renderFlights(retFlights, 'ret');
-      document.getElementById('flightList').scrollIntoView({behavior:'smooth',block:'start'});
+      document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
     } else {
       showSummary();
     }
@@ -554,57 +554,84 @@ function updateSteps() {
 function showSummary() {
   document.getElementById('results').classList.add('hidden');
   document.getElementById('summaryWrap').classList.remove('hidden');
-
+  step = trip === 'oneway' ? 3 : 3;
+  updateSteps();
   const cabinLabel = {business:'Business Class',first:'First Class',premiumEconomy:'Premium Economy'};
-  const alOut = AIRLINE_NAMES[selOut.airline] || selOut.airline;
+  function fmtDur(d) {
+    if (!d) return '';
+    if (typeof d === 'number' || (typeof d === 'string' && !d.includes('h'))) {
+      const m = Number(d); return Math.floor(m/60) + 'h ' + String(m%60).padStart(2,'0') + 'm';
+    }
+    return d;
+  }
+  function flightCard(f, cabin, dirLabel) {
+    const al = AIRLINE_NAMES[f.airline] || f.airline;
+    const logoUrl = 'https://pics.avs.io/60/60/' + f.airline + '.png';
+    const dateStr = f.date ? new Date(f.date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) : '';
+    const dur = fmtDur(f.duration);
+    const stopsText = f.direct ? 'Direct flight' : (f.stops === 1 ? '1 stop' : (f.stops || 1) + ' stops');
+    const layover = !f.direct && f.segments && f.segments.length > 1 ? ' via ' + f.segments.slice(0,-1).map(s => s.destination).join(', ') : '';
+    let aircraft = '';
+    if (f.segments && f.segments.length > 0) {
+      const types = [...new Set(f.segments.map(s => s.aircraft).filter(Boolean))];
+      if (types.length) aircraft = types.join(', ');
+    }
+    let segHtml = '';
+    if (f.segments && f.segments.length > 1) {
+      segHtml = '<div style="margin-top:14px;background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:14px 16px">';
+      segHtml += '<div style="font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Flight segments</div>';
+      f.segments.forEach((s, i) => {
+        if (i > 0) segHtml += '<div style="padding:6px 0 6px 16px;font-size:11px;color:var(--gold);border-left:2px dashed var(--brd);margin-left:6px">Layover in ' + s.origin + '</div>';
+        segHtml += '<div style="display:flex;align-items:center;gap:14px;padding:8px 0;' + (i > 0 ? 'border-top:1px solid var(--brd);' : '') + '">';
+        segHtml += '<div style="min-width:110px"><span style="font-size:14px;font-weight:600">' + (s.depTime||'') + '</span> <span style="color:var(--txt4);font-size:11px">&rarr;</span> <span style="font-size:14px;font-weight:600">' + (s.arrTime||'') + '</span></div>';
+        segHtml += '<div style="flex:1"><div style="font-size:13px;font-weight:500">' + s.origin + ' &rarr; ' + s.destination + ' <span style="color:var(--txt4);font-weight:400;font-size:12px">' + (s.flightNo||'') + '</span></div>';
+        segHtml += '<div style="font-size:12px;color:var(--txt3);margin-top:2px">' + [s.duration||'', s.aircraft||''].filter(Boolean).join(' &middot; ') + '</div></div></div>';
+      });
+      segHtml += '</div>';
+    }
+    return '<div style="padding:20px;background:var(--bg);border-radius:12px;margin-bottom:12px">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+      + '<div style="font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px">' + dirLabel + '</div>'
+      + '<div style="font-size:22px;font-weight:600;color:var(--gold)">&euro;' + f._price.toLocaleString() + '</div></div>'
+      + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
+      + '<div style="width:44px;height:44px;border-radius:10px;background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center">'
+      + '<img src="' + logoUrl + '" alt="' + al + '" style="width:36px;height:36px;object-fit:contain" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + f.airline + '\'">'
+      + '</div><div><div style="font-size:16px;font-weight:500">' + al + '</div>'
+      + '<div style="font-size:12px;color:var(--txt3)">' + f.flightNo + '</div></div></div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-bottom:16px;padding:14px;background:var(--card);border-radius:10px;border:1px solid var(--brd)">'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Route</div><div style="font-size:14px;font-weight:500">' + f.origin + ' &rarr; ' + f.destination + '</div></div>'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Date</div><div style="font-size:14px">' + dateStr + '</div></div>'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Time</div><div style="font-size:14px;font-weight:500">' + (f.depTime||'') + ' &ndash; ' + (f.arrTime||'') + '</div></div>'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Duration</div><div style="font-size:14px">' + dur + '</div></div>'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Cabin</div><div style="font-size:14px">' + cabinLabel[cabin] + '</div></div>'
+      + '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Stops</div><div style="font-size:14px">' + stopsText + layover + '</div></div>'
+      + (aircraft ? '<div><div style="font-size:10px;font-weight:600;color:var(--txt4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Aircraft</div><div style="font-size:14px">' + aircraft + '</div></div>' : '')
+      + '</div>'
+      + segHtml
+      + '</div>';
+  }
   let total = selOut._price;
-
-  let html = `<div class="sum-title">Your selection</div>
-    <div class="sum-flight">
-      <div class="sum-dir">Out</div>
-      <div class="sum-detail">
-        <div class="sum-route">${selOut.origin} → ${selOut.destination}</div>
-        <div class="sum-info">${alOut} ${selOut.flightNo} · ${selOut.depTime} - ${selOut.arrTime} · ${cabinLabel[selOutCabin]}</div>
-      </div>
-      <div class="sum-price">€${selOut._price.toLocaleString()}</div>
-    </div>`;
-
+  let html = '<div class="sum-title">Your selection</div>';
+  html += flightCard(selOut, selOutCabin, 'Outbound');
+  if (selRet) { total += selRet._price; html += flightCard(selRet, selRetCabin, 'Return'); }
+  html += '<div class="sum-total"><div class="sum-total-label">Total per person</div><div class="sum-total-val">&euro;' + total.toLocaleString() + '</div></div>';
+  const alOut = AIRLINE_NAMES[selOut.airline] || selOut.airline;
+  let msg = 'Hello! I would like to book the following flight(s) via Elysian Flights:\n\n';
+  msg += 'OUTBOUND: ' + selOut.origin + ' > ' + selOut.destination + '\n';
+  msg += alOut + ' ' + selOut.flightNo + ' | ' + selOut.date + ' | ' + selOut.depTime + '-' + selOut.arrTime + '\n';
+  msg += 'Cabin: ' + cabinLabel[selOutCabin] + ' | Price: EUR' + selOut._price.toLocaleString() + '\n';
   if (selRet) {
     const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline;
-    total += selRet._price;
-    html += `<div class="sum-flight">
-      <div class="sum-dir">Return</div>
-      <div class="sum-detail">
-        <div class="sum-route">${selRet.origin} → ${selRet.destination}</div>
-        <div class="sum-info">${alRet} ${selRet.flightNo} · ${selRet.depTime} - ${selRet.arrTime} · ${cabinLabel[selRetCabin]}</div>
-      </div>
-      <div class="sum-price">€${selRet._price.toLocaleString()}</div>
-    </div>`;
+    msg += '\nRETURN: ' + selRet.origin + ' > ' + selRet.destination + '\n';
+    msg += alRet + ' ' + selRet.flightNo + ' | ' + selRet.date + ' | ' + selRet.depTime + '-' + selRet.arrTime + '\n';
+    msg += 'Cabin: ' + cabinLabel[selRetCabin] + ' | Price: EUR' + selRet._price.toLocaleString() + '\n';
   }
-
-  html += `<div class="sum-total"><div class="sum-total-label">Total per person</div><div class="sum-total-val">€${total.toLocaleString()}</div></div>`;
-
-  // WhatsApp message
-  let msg = `Hello! I would like to book the following flight(s) via Élysian Flights:\n\n`;
-  msg += `✈ OUTBOUND: ${selOut.origin} → ${selOut.destination}\n`;
-  msg += `${alOut} ${selOut.flightNo} | ${selOut.date} | ${selOut.depTime}-${selOut.arrTime}\n`;
-  msg += `Cabin: ${cabinLabel[selOutCabin]} | Price: €${selOut._price.toLocaleString()}\n`;
-  if (selRet) {
-    const alRet = AIRLINE_NAMES[selRet.airline] || selRet.airline;
-    msg += `\n✈ RETURN: ${selRet.origin} → ${selRet.destination}\n`;
-    msg += `${alRet} ${selRet.flightNo} | ${selRet.date} | ${selRet.depTime}-${selRet.arrTime}\n`;
-    msg += `Cabin: ${cabinLabel[selRetCabin]} | Price: €${selRet._price.toLocaleString()}\n`;
-  }
-  msg += `\nTotal: €${total.toLocaleString()}\n\nI would like to receive a confirmation. Thank you!`;
-
-  const waUrl = `https://wa.me/31639027470?text=${encodeURIComponent(msg)}`;
-
-  html += `<button class="btn-wa" onclick="window.open('${waUrl}','_blank')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.61.609l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.227-2.01a.5.5 0 00-.395-.084l-3.16 1.06 1.06-3.16a.5.5 0 00-.084-.396A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-    Book via WhatsApp
-  </button>
-  <button class="btn-back" onclick="backToSearch()">← Back to search results</button>`;
-
+  msg += '\nTotal: EUR' + total.toLocaleString() + '\n\nI would like to receive a confirmation. Thank you!';
+  const waUrl = 'https://wa.me/31639027470?text=' + encodeURIComponent(msg);
+  html += '<button class="btn-wa" onclick="window.open(\'' + waUrl + '\',\'_blank\')">';
+  html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.61.609l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.227-2.01a.5.5 0 00-.395-.084l-3.16 1.06 1.06-3.16a.5.5 0 00-.084-.396A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>';
+  html += ' Book via WhatsApp</button>';
+  html += '<button class="btn-back" onclick="backToSearch()">&#8592; Back to search results</button>';
   document.getElementById('summaryContent').innerHTML = html;
   document.getElementById('summaryWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -614,7 +641,7 @@ function backToSearch() {
   document.getElementById('results').classList.remove('hidden');
   step = 1; selOut = null; selRet = null;
   updateSteps();
-  document.getElementById('resTitle').innerHTML = `Vluchten <em>${selOrig} → ${selDest}</em>`;
+  document.getElementById('resTitle').innerHTML = `Flights <em>${selOrig} → ${selDest}</em>`;
   document.getElementById('resCnt').textContent = `${outFlights.length} flights found`;
   renderFlights(outFlights, 'out');
 }
