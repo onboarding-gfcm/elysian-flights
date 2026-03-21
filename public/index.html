@@ -545,6 +545,7 @@ function updateSteps() {
     {n:3, label:'Summary'}
   ];
   if (trip==='oneway') steps.splice(1,1);
+    steps.forEach((s,i) => s.n = i+1);
   s.innerHTML = '<div class="steps">' + steps.map((st,i) => {
     const cls = step > st.n ? 'done' : step === st.n ? 'on' : '';
     return `${i>0?'<div class="stp-line"></div>':''}<div class="stp ${cls}"><div class="stp-num">${step > st.n ? '✓' : st.n}</div>${st.label}</div>`;
@@ -554,7 +555,7 @@ function updateSteps() {
 function showSummary() {
   document.getElementById('results').classList.add('hidden');
   document.getElementById('summaryWrap').classList.remove('hidden');
-  step = trip === 'oneway' ? 3 : 3;
+  step = trip === 'oneway' ? 2 : 3;
   updateSteps();
   const cabinLabel = {business:'Business Class',first:'First Class',premiumEconomy:'Premium Economy'};
   function fmtDur(d) {
