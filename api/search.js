@@ -293,6 +293,6 @@ function computeDuration(depStr, arrStr) {
     if (diffMs < 0) return '';
     const hours = Math.floor(diffMs / 3600000);
     const mins = Math.floor((diffMs % 3600000) / 60000);
-    return `${hours}u ${mins.toString().padStart(2, '0')}m`;
+    return `${hours}h ${mins.toString().padStart(2, '0')}m`;
   } catch { return ''; }
 }
