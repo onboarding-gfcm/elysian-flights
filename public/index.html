@@ -748,7 +748,7 @@ function setTrip(t, btn) {
   document.getElementById('searchRow').className = 'search-row ' + (t === 'enkel' ? 'row-oneway' : 'row-roundtrip');
 }
 
-async function swapAirports(){
+function swapAirports(){
   var origInput=document.getElementById('iOrig');
   var destInput=document.getElementById('iDest');
   var origVal=origInput.value;
@@ -758,7 +758,7 @@ async function swapAirports(){
   var origData=selOrig;selOrig=selDest;selDest=origData;
 }
 
-  function doSearch() {
+  async function doSearch() {
   const o = selOrig; const d = selDest;
   const dep = document.getElementById('iDep').value;
   const ret = document.getElementById('iRet').value;
