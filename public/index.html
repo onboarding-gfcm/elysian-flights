@@ -333,6 +333,8 @@ const AIRPORTS=[
 ];
 
 const AIRLINE_NAMES={EK:'Emirates',QR:'Qatar Airways',TK:'Turkish Airlines',SQ:'Singapore Airlines',TG:'Thai Airways',CX:'Cathay Pacific',LH:'Lufthansa',BA:'British Airways',AF:'Air France',KL:'KLM',NH:'ANA',JL:'Japan Airlines',DL:'Delta Air Lines',UA:'United Airlines',AA:'American Airlines',VS:'Virgin Atlantic',QF:'Qantas',SA:'South African Airways',PC:'Pegasus Airlines',AZ:'ITA Airways',VY:'Vueling',UL:'SriLankan Airlines'};
+    const CUSTOM_LOGOS={KL:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KICA8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgcng9IjEyIiBmaWxsPSIjMDBBMURFIi8+CiAgPGcgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYwLDI4KSI+CiAgICA8Y2lyY2xlIGN4PSItMTgiIGN5PSItNCIgcj0iNC41Ii8+CiAgICA8Y2lyY2xlIGN4PSItNiIgY3k9Ii00IiByPSI0LjUiLz4KICAgIDxjaXJjbGUgY3g9IjYiIGN5PSItNCIgcj0iNC41Ii8+CiAgICA8Y2lyY2xlIGN4PSIxOCIgY3k9Ii00IiByPSI0LjUiLz4KICAgIDxyZWN0IHg9Ii0xLjUiIHk9Ii0xNiIgd2lkdGg9IjMiIGhlaWdodD0iMTAiLz4KICAgIDxyZWN0IHg9Ii01IiB5PSItMTIuNSIgd2lkdGg9IjEwIiBoZWlnaHQ9IjMiLz4KICAgIDxyZWN0IHg9Ii0yNCIgeT0iMyIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjYiIHJ4PSIxIi8+CiAgICA8cmVjdCB4PSItMjIiIHk9IjExIiB3aWR0aD0iNDQiIGhlaWdodD0iNCIgcng9IjEiLz4KICA8L2c+CiAgPHRleHQgeD0iNjAiIHk9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssQXJpYWwsc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIzNiIgZmlsbD0id2hpdGUiIGxldHRlci1zcGFjaW5nPSIyIj5LTE08L3RleHQ+Cjwvc3ZnPgo='};
+
 
 // ========== STATE ==========
 let trip='oneway', step=1, selOrig=null, selDest=null;
@@ -473,7 +475,7 @@ function renderFlights(flights, dir) {
 
   el.innerHTML = flights.map(f => {
     const al = AIRLINE_NAMES[f.airline] || f.airline;
-    const logoUrl = `https://pics.avs.io/60/60/${f.airline}.png`;
+    const logoUrl = CUSTOM_LOGOS[f.airline] || `https://pics.avs.io/60/60/${f.airline}.png`;
     const cabins = [
       {key:'premiumEconomy', label:'Premium Economy', avail:f.availability.premiumEconomy, price:f.prices.premiumEconomy},
       {key:'business', label:'Business', avail:f.availability.business, price:f.prices.business},
