@@ -78,11 +78,6 @@ nav {
 .search-tabs { display: flex; gap: 6px; }
 .search-tab { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--border); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s; background: white; color: var(--mid); }
 .search-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
-.class-toggle { display: flex; gap: 6px; }
-.class-btn { padding: 7px 16px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.18s; background: white; color: var(--mid); display: flex; align-items: center; gap: 6px; font-family:'Inter',sans-serif; }
-.class-btn.active { border-color: var(--gold); background: #fffbf0; color: #92650a; }
-.class-badge-b { background: #dbeafe; color: #1d4ed8; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
-.class-badge-f { background: #fef3c7; color: #92400e; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
 .search-row { display: grid; gap: 12px; align-items: end; }
 .row-oneway { grid-template-columns: 1.15fr 36px 1fr 1fr 1fr auto; }
 .row-roundtrip { grid-template-columns: 1.05fr 36px 0.95fr 0.9fr 0.9fr 0.9fr auto; }
@@ -135,13 +130,6 @@ nav {
 .search-btn { height: 52px; padding: 0 26px; background: var(--navy); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: 0 4px 14px rgba(15,32,68,0.28); align-self: flex-end; }
 .search-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
 .search-btn svg { width: 17px; height: 17px; }
-.mc-legs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-.mc-leg { display: grid; grid-template-columns: 1.1fr 36px 1fr 1fr auto; gap: 12px; align-items: end; }
-.mc-remove { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #fecaca; background: white; color: #ef4444; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; align-self: flex-end; margin-bottom: 10px; transition: all 0.15s; line-height:1; font-family:'Inter',sans-serif; }
-.mc-remove:hover { background: #fef2f2; }
-.mc-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.add-leg { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--blue); background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-family:'Inter',sans-serif; }
-.add-leg:hover { background: #dbeafe; }
 .dd-overlay { display: none; position: fixed; inset: 0; z-index: 400; }
 .dd-overlay.open { display: block; }
 .results-section { max-width: 1200px; margin: 0 auto; padding: 40px 48px 60px; display: none; }
@@ -315,7 +303,6 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
   .faq-grid{grid-template-columns:1fr;}
   .fgrid,.extras-g{grid-template-columns:1fr;}
   .ft-top{grid-template-columns:1fr 1fr;}
-  .mc-leg{grid-template-columns:1fr 30px 1fr 1fr auto;}
 }
 </style>
 </head>
@@ -367,11 +354,6 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
       <div class="search-tabs">
         <button class="search-tab active" onclick="setTab(this,'oneway')">One Way</button>
         <button class="search-tab" onclick="setTab(this,'roundtrip')">Round Trip</button>
-        <button class="search-tab" onclick="setTab(this,'multicity')">Multi-City</button>
-      </div>
-      <div class="class-toggle">
-        <button class="class-btn active" id="btn-biz" onclick="setClass('business')"><span class="class-badge-b">B</span> Business — €1,500</button>
-        <button class="class-btn" id="btn-first" onclick="setClass('first')"><span class="class-badge-f">F</span> First Class — €2,500</button>
       </div>
     </div>
 
@@ -396,15 +378,7 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
       <button class="search-btn" onclick="doSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search</button>
     </div>
 
-    <!-- MULTI CITY -->
-    <div id="row-mc" style="display:none">
-      <div class="mc-legs" id="mc-legs-wrap"></div>
-      <div class="mc-actions">
-        <button class="add-leg" onclick="addLeg()">+ Add another flight</button>
-        <div style="flex:1"></div>
-        <button class="search-btn" onclick="doSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search Flights</button>
-      </div>
-    </div>
+    <!-- MULTI CITY removed -->
   </div>
 </div>
 
@@ -460,7 +434,7 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
     <div>
       <div class="faq-item open"><div class="faq-q" onclick="tfaq(this)">How do I book a flight with Élysian Flights?<div class="faq-ico">−</div></div><div class="faq-a">Search your route, select a flight, fill in your details and hit the WhatsApp button. We confirm your booking within 15 minutes.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="tfaq(this)">Why only Business and First Class?<div class="faq-ico">+</div></div><div class="faq-a">Our model is built on accessing premium cabin inventory at exclusive rates. We specialise in Business and First Class because that's where we deliver the most value — up to 40% below published fares.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="tfaq(this)">Are the prices shown final?<div class="faq-ico">+</div></div><div class="faq-a">Prices shown (€1,500 Business / €2,500 First) are our standard starting rates. The final price is confirmed via WhatsApp based on exact dates and availability.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="tfaq(this)">Are the prices shown final?<div class="faq-ico">+</div></div><div class="faq-a">Prices are calculated in real time based on current availability. The final price is confirmed via WhatsApp once you select a flight.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="tfaq(this)">When and how do I pay?<div class="faq-ico">+</div></div><div class="faq-a">Payment is made after we confirm your booking via WhatsApp. We accept iDEAL, credit card and bank transfer. You only pay once everything is confirmed.</div></div>
     </div>
   </div>
@@ -606,10 +580,9 @@ const FLIGHTS = [
   {from:'AMS',to:'MIA',dep:'12:15',arr:'16:05',dur:'10h 50m',airline:'Air France',code:'AF',color:'#002157',stops:'Direct',price:1500,cls:'business',feat:['Lie-flat seat','Lounge','Champagne service']},
 ];
 
-let curTab = 'oneway', curClass = 'business';
+let curTab = 'oneway';
 let sel = { 'ow-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'ow-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'}, 'rt-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'rt-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'} };
 let pax = {'ow':1,'rt':1};
-let legCtr = 0, legs = [];
 let bkData = {};
 
 function showPage(n) {
@@ -624,13 +597,6 @@ function setTab(el,tab) {
   el.classList.add('active'); curTab=tab;
   document.getElementById('row-ow').style.display=tab==='oneway'?'':'none';
   document.getElementById('row-rt').style.display=tab==='roundtrip'?'':'none';
-  document.getElementById('row-mc').style.display=tab==='multicity'?'':'none';
-  if(tab==='multicity'&&legs.length===0){addLeg();addLeg();}
-}
-function setClass(c) {
-  curClass=c;
-  document.getElementById('btn-biz').classList.toggle('active',c==='business');
-  document.getElementById('btn-first').classList.toggle('active',c==='first');
 }
 function buildOpts(containerId,field,q) {
   const list=q?APS.filter(a=>a.city.toLowerCase().includes(q.toLowerCase())||a.code.toLowerCase().includes(q.toLowerCase())||a.country.toLowerCase().includes(q.toLowerCase())):APS;
@@ -684,34 +650,6 @@ function chPax(pfx,d) {
   const k=pfx; pax[k]=Math.max(1,Math.min(9,pax[k]+d));
   document.getElementById('pn-'+k).textContent=pax[k];
   document.getElementById('pax-'+k+'-txt').textContent=pax[k]+(pax[k]===1?' passenger':' passengers');
-}
-function addLeg() {
-  const id=++legCtr;
-  const def=APS[0];
-  document.getElementById('mc-legs-wrap').insertAdjacentHTML('beforeend',`
-    <div class="mc-leg" id="mcl-${id}">
-      <div class="sfield"><label>From</label><div class="airport-picker"><div class="ap-trigger" onclick="openDD('dd-mc${id}f')"><span class="ap-flag" id="fl-mc${id}f">🇳🇱</span><div class="ap-text"><div class="ap-city" id="cy-mc${id}f">Amsterdam</div><div class="ap-code" id="cd-mc${id}f">AMS · Schiphol</div></div></div><div class="ap-dropdown" id="dd-mc${id}f"><input class="ap-search" placeholder="Search…" oninput="buildMCOpts(this,'opts-mc${id}f','mc${id}f')" autocomplete="off"><div class="ap-opts" id="opts-mc${id}f"></div></div></div></div>
-      <div class="swap-wrap"><div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:18px;">→</div></div>
-      <div class="sfield"><label>To</label><div class="airport-picker"><div class="ap-trigger" onclick="openDD('dd-mc${id}t')"><span class="ap-flag" id="fl-mc${id}t">🌍</span><div class="ap-text"><div class="ap-city" id="cy-mc${id}t">Select city</div><div class="ap-code" id="cd-mc${id}t">Choose destination</div></div></div><div class="ap-dropdown" id="dd-mc${id}t"><input class="ap-search" placeholder="Search…" oninput="buildMCOpts(this,'opts-mc${id}t','mc${id}t')" autocomplete="off"><div class="ap-opts" id="opts-mc${id}t"></div></div></div></div>
-      <div class="sfield"><label>Date</label><div class="date-wrap" onclick="pickDate('d-mc${id}')"><span class="date-ico">📅</span><div><div class="date-day" id="d-mc${id}-dsp">Select date</div><div class="date-month" id="d-mc${id}-mo"></div></div><input type="date" class="date-input-hidden" id="d-mc${id}" onchange="showDate(this,'d-mc${id}-dsp','d-mc${id}-mo')"></div></div>
-      <button class="mc-remove" onclick="rmLeg(${id})" title="Remove">×</button>
-    </div>`);
-  buildMCOpts2(`opts-mc${id}f`,`mc${id}f`,'');
-  buildMCOpts2(`opts-mc${id}t`,`mc${id}t`,'');
-  legs.push(id);
-}
-function rmLeg(id) { if(legs.length<=2)return; document.getElementById('mcl-'+id).remove(); legs=legs.filter(l=>l!==id); }
-function buildMCOpts(inp,optsId,field) { buildMCOpts2(optsId,field,inp.value); }
-function buildMCOpts2(optsId,field,q) {
-  const list=q?APS.filter(a=>a.city.toLowerCase().includes(q.toLowerCase())||a.code.toLowerCase().includes(q.toLowerCase())):APS;
-  const el=document.getElementById(optsId); if(!el)return;
-  el.innerHTML=list.map(a=>`<div class="ap-opt" onclick="selMCAP('${field}','${a.code}','${a.city}','${a.flag}','${a.apt}')"><span class="of">${a.flag}</span><div><div class="oc">${a.city} (${a.code})</div><div class="od">${a.country}</div></div></div>`).join('');
-}
-function selMCAP(field,code,city,flag,apt) {
-  document.getElementById('fl-'+field).textContent=flag;
-  document.getElementById('cy-'+field).textContent=city;
-  document.getElementById('cd-'+field).textContent=code+' · '+apt;
-  closeAll();
 }
 function getCityName(code) { const a=APS.find(x=>x.code===code); return a?a.city:code; }
 async function doSearch() {
