@@ -1561,35 +1561,95 @@ function qs(fc,fcode,tc,tcode) {
   doSearch();
 }
 const MERHABA_PRICE=85;
-// Aircraft mapping by airline + route/aircraft type
-const AIRCRAFT_MAP={
-  'EK':{'default':'Boeing 777-300ER','A380':['LHR','CDG','JFK','SYD','BKK','SIN']},
-  'KL':{'default':'Boeing 787-9 Dreamliner','772':['JFK'],'789':['DXB','NRT','KIX','BKK','SIN','JNB']},
-  'AF':{'default':'Airbus A350-900','388':['JFK','MIA','CDG'],'773':['DXB','SIN']},
-  'TK':{'default':'Boeing 787-9 Dreamliner','77W':['JFK','SFO','IAH'],'333':['AMS','CDG','LHR']},
-  'QR':{'default':'Boeing 787-9 Dreamliner','351':['LHR','CDG'],'77W':['JFK','AMS']},
-  'LH':{'default':'Airbus A340-300','748':['JFK','PVG','DEL'],'359':['BOS','YUL']},
-  'SQ':{'default':'Airbus A350-900','388':['LHR','SYD','FRA']},
-  'BA':{'default':'Boeing 787-9 Dreamliner','388':['JFK','LAX','MIA']},
-  'QF':{'default':'Airbus A380-800'},
-  'VS':{'default':'Airbus A350-1000'}
+// Aircraft mapping — flight number first, then airline+route fallback
+const FLIGHT_AIRCRAFT={
+  // Emirates (EK) — AMS routes
+  'EK150':'Airbus A380-800','EK148':'Boeing 777-300ER','EK149':'Boeing 777-300ER','EK151':'Airbus A380-800',
+  // Emirates — other hubs
+  'EK1':'Airbus A380-800','EK2':'Airbus A380-800','EK3':'Airbus A380-800','EK4':'Airbus A380-800',
+  'EK201':'Airbus A380-800','EK202':'Airbus A380-800','EK203':'Airbus A380-800','EK204':'Airbus A380-800',
+  'EK31':'Airbus A380-800','EK32':'Airbus A380-800', // DXB-LHR
+  'EK73':'Boeing 777-300ER','EK74':'Boeing 777-300ER', // DXB-CDG
+  'EK371':'Boeing 777-300ER','EK372':'Boeing 777-300ER', // DXB-MLE
+  'EK241':'Boeing 777-300ER','EK242':'Boeing 777-300ER', // DXB-BKK
+  'EK384':'Airbus A380-800','EK385':'Airbus A380-800', // DXB-SYD
+  'EK405':'Airbus A380-800','EK406':'Airbus A380-800', // DXB-SIN
+  'EK161':'Boeing 777-300ER','EK162':'Boeing 777-300ER', // DXB-DUS
+  // KLM (KL)
+  'KL427':'Boeing 787-10 Dreamliner','KL428':'Boeing 787-10 Dreamliner', // AMS-DXB
+  'KL643':'Boeing 787-9 Dreamliner','KL644':'Boeing 787-9 Dreamliner', // AMS-JFK
+  'KL645':'Boeing 787-10 Dreamliner','KL646':'Boeing 787-10 Dreamliner', // AMS-JFK
+  'KL601':'Boeing 787-9 Dreamliner','KL602':'Boeing 787-9 Dreamliner', // AMS-IAH
+  'KL651':'Airbus A330-300','KL652':'Airbus A330-300', // AMS-ATL
+  'KL685':'Boeing 777-200ER','KL686':'Boeing 777-200ER', // AMS-MIA
+  'KL759':'Boeing 787-9 Dreamliner','KL760':'Boeing 787-9 Dreamliner', // AMS-NRT
+  'KL791':'Boeing 787-9 Dreamliner','KL792':'Boeing 787-9 Dreamliner', // AMS-SIN
+  'KL861':'Boeing 787-9 Dreamliner','KL862':'Boeing 787-9 Dreamliner', // AMS-BKK
+  'KL767':'Boeing 787-10 Dreamliner','KL768':'Boeing 787-10 Dreamliner', // AMS-CUR/AUA
+  'KL785':'Boeing 787-10 Dreamliner','KL786':'Boeing 787-10 Dreamliner', // AMS-DPS
+  // Air France (AF)
+  'AF1641':'Airbus A321','AF1340':'Airbus A319', // Intra-Europe
+  'AF990':'Boeing 777-300ER','AF991':'Boeing 777-300ER', // CDG-DXB
+  'AF6':'Airbus A350-900','AF7':'Airbus A350-900', // CDG-JFK
+  'AF8':'Boeing 777-300ER','AF9':'Boeing 777-300ER', // CDG-JFK
+  'AF10':'Boeing 777-200ER','AF11':'Boeing 777-200ER', // CDG-JFK
+  'AF66':'Boeing 777-300ER','AF67':'Boeing 777-300ER', // CDG-MIA
+  'AF254':'Boeing 787-9 Dreamliner','AF255':'Boeing 787-9 Dreamliner', // CDG-SIN
+  'AF662':'Airbus A350-900','AF663':'Airbus A350-900', // CDG-IBZ
+  // Turkish Airlines (TK)
+  'TK1951':'Airbus A321','TK1952':'Airbus A321', // IST-AMS
+  'TK1953':'Boeing 737-900ER','TK1954':'Boeing 737-900ER',
+  'TK77':'Boeing 787-9 Dreamliner','TK78':'Boeing 787-9 Dreamliner', // IST-DXB
+  'TK1':'Boeing 777-300ER','TK2':'Boeing 777-300ER', // IST-JFK
+  'TK7':'Airbus A350-900','TK8':'Airbus A350-900', // IST-JFK
+  'TK9':'Boeing 787-9 Dreamliner','TK10':'Boeing 787-9 Dreamliner', // IST-MIA
+  'TK164':'Boeing 787-9 Dreamliner','TK165':'Boeing 787-9 Dreamliner', // IST-BKK
+  // Qatar Airways (QR)
+  'QR273':'Boeing 787-9 Dreamliner','QR274':'Boeing 787-9 Dreamliner', // DOH-AMS
+  'QR275':'Airbus A350-1000','QR276':'Airbus A350-1000', // DOH-AMS
+  'QR701':'Boeing 777-300ER','QR702':'Boeing 777-300ER', // DOH-JFK
+  'QR739':'Airbus A350-1000','QR740':'Airbus A350-1000', // DOH-LHR
+  'QR3':'Airbus A380-800','QR4':'Airbus A380-800', // DOH-LHR
+  'QR844':'Boeing 787-9 Dreamliner','QR845':'Boeing 787-9 Dreamliner', // DOH-BKK
+  'QR670':'Boeing 787-9 Dreamliner','QR671':'Boeing 787-9 Dreamliner', // DOH-MLE
+  // Lufthansa (LH)
+  'LH2542':'Airbus A320','LH2543':'Airbus A320', // FRA-AMS
+  'LH400':'Boeing 747-8','LH401':'Boeing 747-8', // FRA-JFK
+  'LH402':'Airbus A340-300','LH403':'Airbus A340-300',
+  'LH630':'Airbus A350-900','LH631':'Airbus A350-900', // FRA-DXB
+  'LH780':'Airbus A350-900','LH781':'Airbus A350-900', // FRA-HKG
+  // Singapore Airlines (SQ)
+  'SQ319':'Airbus A380-800','SQ322':'Airbus A380-800', // SIN-LHR
+  'SQ25':'Airbus A380-800','SQ26':'Airbus A380-800', // SIN-FRA
+  'SQ321':'Boeing 777-300ER','SQ324':'Boeing 777-300ER',
+  // British Airways (BA)
+  'BA435':'Airbus A320','BA436':'Airbus A320', // LHR-AMS
+  'BA115':'Boeing 777-300ER','BA116':'Boeing 777-300ER', // LHR-JFK
+  'BA117':'Airbus A380-800','BA118':'Airbus A380-800', // LHR-JFK
+  'BA107':'Boeing 787-9 Dreamliner','BA108':'Boeing 787-9 Dreamliner', // LHR-DXB
+  // Virgin Atlantic (VS)
+  'VS3':'Airbus A350-1000','VS4':'Airbus A350-1000', // LHR-JFK
+  'VS9':'Airbus A350-1000','VS10':'Airbus A350-1000', // LHR-JFK
+  // Etihad (EY)
+  'EY73':'Boeing 787-9 Dreamliner','EY74':'Boeing 787-9 Dreamliner', // AUH-AMS
+  'EY103':'Boeing 787-9 Dreamliner','EY104':'Boeing 787-9 Dreamliner', // AUH-JFK
+  'EY19':'Airbus A350-1000','EY20':'Airbus A350-1000' // AUH-LHR
+};
+// Fallback by airline code
+const AIRLINE_AIRCRAFT_DEFAULT={
+  'EK':'Boeing 777-300ER','KL':'Boeing 787-10 Dreamliner','AF':'Airbus A350-900',
+  'TK':'Airbus A350-900','QR':'Boeing 787-9 Dreamliner','LH':'Airbus A350-900',
+  'SQ':'Airbus A350-900','BA':'Boeing 787-9 Dreamliner','VS':'Airbus A350-1000',
+  'QF':'Boeing 787-9 Dreamliner','EY':'Boeing 787-9 Dreamliner','AA':'Boeing 777-300ER',
+  'DL':'Airbus A350-900','UA':'Boeing 777-300ER','SV':'Boeing 787-9 Dreamliner'
 };
 function getAircraft(alCode,dest){
-  const m=AIRCRAFT_MAP[alCode];
-  if(!m) return '—';
-  // Check if destination matches a specific aircraft
-  for(const[type,dests] of Object.entries(m)){
-    if(type==='default') continue;
-    if(Array.isArray(dests)&&dests.includes(dest)) {
-      if(type==='A380'||type==='388') return 'Airbus A380-800';
-      if(type==='748') return 'Boeing 747-8';
-      if(type==='77W'||type==='772'||type==='773') return 'Boeing 777-300ER';
-      if(type==='789') return 'Boeing 787-9 Dreamliner';
-      if(type==='351'||type==='359') return 'Airbus A350-900';
-      if(type==='333') return 'Airbus A330-300';
-    }
-  }
-  return m['default']||'—';
+  // Try exact flight number match first (strip spaces)
+  const fn=arguments[2]||'';
+  const fnClean=fn.replace(/\s+/g,'').split(',')[0].trim();
+  if(fnClean && FLIGHT_AIRCRAFT[fnClean]) return FLIGHT_AIRCRAFT[fnClean];
+  // Fallback to airline default
+  return AIRLINE_AIRCRAFT_DEFAULT[alCode]||'—';
 }
 
 function openBk(f,tp,pLabel) {
@@ -1606,7 +1666,7 @@ function openBk(f,tp,pLabel) {
   document.getElementById('b-dur').textContent=durText;
   const cabinLabel=f.cls==='first'?'First Class':'Business Class';
   document.getElementById('b-cabin').textContent=cabinLabel;
-  document.getElementById('b-aircraft').textContent=getAircraft(f.code,f.to);
+  document.getElementById('b-aircraft').textContent=getAircraft(f.code,f.to,f.flightNo);
   if(f.direct){
     document.getElementById('b-stops').innerHTML='<span class="fs-direct-badge">Direct</span>';
   } else {
