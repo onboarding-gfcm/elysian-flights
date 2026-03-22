@@ -384,8 +384,8 @@ nav {
 .transfer-card { background:white; border:2px solid var(--border); border-radius:14px; overflow:hidden; cursor:pointer; transition:all 0.2s; }
 .transfer-card:hover { border-color:#94a3b8; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
 .transfer-card.on { border-color:var(--gold); box-shadow:0 2px 16px rgba(212,168,67,0.15); }
-.tf-img-wrap { height:140px; overflow:hidden; }
-.tf-img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.tf-img-wrap { height:140px; overflow:hidden; background:#f0f2f5; display:flex; align-items:center; justify-content:center; }
+.tf-img { width:100%; height:100%; object-fit:contain; padding:12px; transition:transform 0.3s; }
 .transfer-card:hover .tf-img { transform:scale(1.05); }
 .tf-body { padding:14px 16px; }
 .tf-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:8px; }
@@ -761,14 +761,14 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
         <div class="transfer-sub">Add a private chauffeur service to or from the airport.</div>
         <div class="transfer-grid">
           <div class="transfer-card" id="tf-sclass" onclick="selectTransfer('sclass')">
-            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&q=80" alt="Mercedes S-Class" class="tf-img"></div>
+            <div class="tf-img-wrap"><img src="https://www.carsized.com/resources/mercedes-benz/s/lwb/2020/sl_253111171_mercedes-benz-s-2020-side-view_4x.webp" alt="Mercedes S-Class" class="tf-img"></div>
             <div class="tf-body">
               <div class="tf-name">Mercedes S-Class</div>
               <div class="tf-specs">
                 <span class="tf-spec">👤 3 passengers</span>
                 <span class="tf-spec">🧳 2 suitcases</span>
               </div>
-              <div class="tf-desc">Executive sedan — premium leather, quiet ride, climate control.</div>
+              <div class="tf-desc">Private chauffeur in a premium executive sedan with leather interior.</div>
               <div class="tf-bottom">
                 <div class="tf-price">€95</div>
                 <div class="tf-check" id="tf-check-sclass"></div>
@@ -776,14 +776,14 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
             </div>
           </div>
           <div class="transfer-card" id="tf-vclass" onclick="selectTransfer('vclass')">
-            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=600&q=80" alt="Mercedes V-Class" class="tf-img"></div>
+            <div class="tf-img-wrap"><img src="https://www.carsized.com/resources/mercedes-benz/v/long/2024/sm_313119158_mercedes-benz-v-2024-side-view_4x.png" alt="Mercedes V-Class" class="tf-img"></div>
             <div class="tf-body">
               <div class="tf-name">Mercedes V-Class</div>
               <div class="tf-specs">
                 <span class="tf-spec">👤 6 passengers</span>
                 <span class="tf-spec">🧳 6 suitcases</span>
               </div>
-              <div class="tf-desc">Luxury van — spacious, perfect for families or groups with luggage.</div>
+              <div class="tf-desc">Private chauffeur in a spacious luxury van, ideal for groups.</div>
               <div class="tf-bottom">
                 <div class="tf-price">€120</div>
                 <div class="tf-check" id="tf-check-vclass"></div>
@@ -791,14 +791,14 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
             </div>
           </div>
           <div class="transfer-card" id="tf-rolls" onclick="selectTransfer('rolls')">
-            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1631295868223-63265b40d9e4?w=600&q=80" alt="Rolls Royce" class="tf-img"></div>
+            <div class="tf-img-wrap"><img src="https://www.carsized.com/resources/rolls-royce/ghost/d/2014/sl_255107166_rolls-royce-ghost-2014-side-view_4x.webp" alt="Rolls Royce Ghost" class="tf-img"></div>
             <div class="tf-body">
-              <div class="tf-name">Rolls Royce</div>
+              <div class="tf-name">Rolls Royce Ghost</div>
               <div class="tf-specs">
-                <span class="tf-spec">👤 2 passengers</span>
+                <span class="tf-spec">👤 3 passengers</span>
                 <span class="tf-spec">🧳 2 suitcases</span>
               </div>
-              <div class="tf-desc">Ultimate luxury — the finest arrival experience, white-glove service.</div>
+              <div class="tf-desc">Private chauffeur in the ultimate luxury sedan, white-glove service.</div>
               <div class="tf-bottom">
                 <div class="tf-price">€295</div>
                 <div class="tf-check" id="tf-check-rolls"></div>
@@ -1519,7 +1519,7 @@ function toggleMerhaba(){
   updateBookingPrice();
 }
 const TRANSFER_PRICES={sclass:95,vclass:120,rolls:295};
-const TRANSFER_NAMES={sclass:'Mercedes S-Class',vclass:'Mercedes V-Class',rolls:'Rolls Royce'};
+const TRANSFER_NAMES={sclass:'Mercedes S-Class',vclass:'Mercedes V-Class',rolls:'Rolls Royce Ghost'};
 function selectTransfer(key){
   const card=document.getElementById('tf-'+key);
   const wasOn=card.classList.contains('on');
