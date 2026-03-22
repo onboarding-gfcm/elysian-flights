@@ -108,11 +108,12 @@ nav {
 .swap-btn { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; font-size: 14px; color: var(--mid); box-shadow: var(--shadow-sm); }
 .swap-btn:hover { border-color: var(--navy); color: var(--navy); transform: rotate(180deg); }
 .date-wrap { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; min-height: 52px; display: flex; align-items: center; gap: 10px; position: relative; }
-.date-wrap:hover { border-color: var(--blue-light); }
-.date-ico { font-size: 17px; flex-shrink: 0; }
+.date-wrap:hover { border-color: var(--gold); background: #fffbf0; }
+.date-ico { font-size: 17px; flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 8px; color: white; font-size: 14px; }
 .date-day { font-size: 14px; font-weight: 600; color: var(--black); }
 .date-month { font-size: 11px; color: var(--light); margin-top: 1px; }
-.date-input-hidden { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+.date-input-hidden { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
+.date-input-hidden::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; opacity: 0; }
 .pax-wrap { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; min-height: 52px; display: flex; align-items: center; gap: 10px; position: relative; }
 .pax-wrap:hover { border-color: var(--blue-light); }
 .pax-ico { font-size: 17px; }
@@ -134,41 +135,54 @@ nav {
 .dd-overlay.open { display: block; }
 .results-section { max-width: 1200px; margin: 0 auto; padding: 40px 48px 60px; display: none; }
 .results-section.visible { display: block; }
-.results-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-.results-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; }
+.results-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.results-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.results-title .route-codes { color: var(--gold); font-weight: 800; }
 .results-badge { font-size: 13px; color: var(--mid); background: white; padding: 6px 14px; border-radius: 50px; border: 1px solid var(--border); }
-.flight-card { background: white; border-radius: var(--radius); margin-bottom: 10px; border: 1.5px solid var(--border); transition: all 0.22s; cursor: pointer; display: block; overflow: hidden; text-decoration: none; color: inherit; }
-.flight-card:hover { border-color: var(--navy); box-shadow: var(--shadow); transform: translateY(-2px); }
-.fc-top { display: grid; grid-template-columns: 5px 70px 1fr auto 1fr 170px; align-items: center; gap: 20px; padding: 20px 24px; }
-.fc-bar { width: 5px; height: 56px; border-radius: 4px; background: #bfdbfe; align-self: center; }
-.fc-bar.first { background: linear-gradient(180deg, var(--gold), var(--gold-light)); }
-.fc-al { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.fc-al-logo { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; }
-.fc-al-name { font-size: 10px; color: var(--light); font-weight: 500; white-space: nowrap; text-align: center; }
+.results-steps { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.results-step { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--light); }
+.results-step.active { color: var(--navy); font-weight: 600; }
+.results-step .step-num { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.results-step.active .step-num { border-color: var(--gold); color: var(--gold); }
+.results-step-line { width: 40px; height: 1.5px; background: var(--border); }
+.flight-card { background: #1c2333; border-radius: var(--radius); margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08); transition: all 0.22s; cursor: pointer; display: block; overflow: hidden; text-decoration: none; color: #e5e7eb; }
+.flight-card:hover { border-color: var(--gold); box-shadow: 0 4px 24px rgba(0,0,0,0.3); transform: translateY(-2px); }
+.fc-date { padding: 14px 24px 0; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+.fc-top { display: flex; align-items: center; padding: 16px 24px; gap: 20px; }
+.fc-al { display: flex; align-items: center; gap: 12px; min-width: 180px; }
+.fc-al-logo { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1); }
+.fc-al-info { display: flex; flex-direction: column; }
+.fc-al-name { font-size: 14px; font-weight: 600; color: #f3f4f6; }
+.fc-al-code { font-size: 12px; color: rgba(255,255,255,0.4); }
+.fc-route-badges { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.fc-direct { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; border: 1.5px solid #059669; color: #34d399; background: rgba(5,150,105,0.1); }
+.fc-stops-badge { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+.fc-seats { font-size: 11px; color: rgba(255,255,255,0.35); }
+.fc-timeline { display: flex; align-items: center; padding: 0 24px 16px; gap: 16px; }
 .fc-end {}
-.fc-time { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.fc-city { font-size: 12px; color: var(--mid); margin-top: 1px; }
-.fc-apt { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--light); margin-top: 2px; }
-.fc-mid { text-align: center; padding: 0 4px; }
-.fc-dur { font-size: 12px; font-weight: 600; color: var(--mid); margin-bottom: 7px; }
-.fc-line { display: flex; align-items: center; justify-content: center; gap: 0; }
-.fc-dot { width: 7px; height: 7px; border-radius: 50%; border: 2px solid var(--navy); background: white; flex-shrink: 0; }
-.fc-track { width: 44px; height: 1.5px; background: var(--border); }
-.fc-pico { font-size: 13px; color: var(--navy); }
-.fc-stop { font-size: 11px; margin-top: 5px; color: var(--light); }
-.fc-stop.direct { color: var(--green); font-weight: 700; }
-.fc-price-block { text-align: right; }
-.fc-badges { display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 5px; flex-wrap: wrap; }
+.fc-time { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: white; }
+.fc-city { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.fc-mid { flex: 1; text-align: center; padding: 0 8px; }
+.fc-dur { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.fc-line { display: flex; align-items: center; justify-content: center; gap: 0; position: relative; }
+.fc-dot { width: 7px; height: 7px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: #1c2333; flex-shrink: 0; }
+.fc-track { flex: 1; height: 1px; background: rgba(255,255,255,0.15); }
+.fc-pico { font-size: 13px; color: var(--gold); margin: 0 4px; }
+.fc-classes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; padding: 0 24px 20px; }
+.fc-class-col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; text-align: center; transition: all 0.18s; }
+.fc-class-col:hover { background: rgba(255,255,255,0.07); }
+.fc-class-col.unavail { opacity: 0.35; }
+.fc-class-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); margin-bottom: 6px; }
+.fc-class-price { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
+.fc-class-price.na { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.25); }
+.fc-class-note { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
 .badge { padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
-.bdeal { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-.bbiz { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-.bfirst { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-.fc-price { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--navy); }
-.fc-pnote { font-size: 11px; color: var(--light); margin-bottom: 10px; }
-.fc-book-btn { background: var(--navy); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.18s; }
-.fc-book-btn:hover { background: var(--navy-mid); }
-.fc-bot { border-top: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 20px; background: #fafafa; }
-.fc-feat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--mid); }
+.bdeal { background: rgba(212,168,67,0.15); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
+.no-results-msg { text-align: center; padding: 48px 24px; color: var(--mid); }
+.no-results-msg h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.no-results-msg p { font-size: 14px; line-height: 1.6; }
+.no-results-msg .next-date-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 10px 24px; background: var(--navy); color: white; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+.no-results-msg .next-date-btn:hover { background: var(--navy-mid); }
 .section { max-width: 1200px; margin: 0 auto; padding: 0 48px 72px; }
 .sec-hd { margin-bottom: 32px; }
 .sec-hd h2 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.5px; }
@@ -384,9 +398,14 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
 
 <!-- RESULTS -->
 <div class="results-section" id="results">
+  <div class="results-steps">
+    <div class="results-step active"><span class="step-num">1</span> Outbound</div>
+    <div class="results-step-line"></div>
+    <div class="results-step"><span class="step-num">2</span> Summary</div>
+  </div>
   <div class="results-hd">
-    <div class="results-title" id="res-title">Available Flights</div>
-    <span class="results-badge" id="res-badge">4 results</span>
+    <div class="results-title">Flights <span class="route-codes" id="res-title">LHR → MIA</span></div>
+    <span class="results-badge" id="res-badge">0 results</span>
   </div>
   <div id="cards-wrap"></div>
 </div>
@@ -543,42 +562,128 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
 
 <script>
 const APS = [
-  {code:'AMS',city:'Amsterdam',country:'Netherlands',flag:'🇳🇱',apt:'Schiphol'},
-  {code:'RTM',city:'Rotterdam',country:'Netherlands',flag:'🇳🇱',apt:'The Hague Airport'},
-  {code:'EIN',city:'Eindhoven',country:'Netherlands',flag:'🇳🇱',apt:'Eindhoven Airport'},
-  {code:'BRU',city:'Brussels',country:'Belgium',flag:'🇧🇪',apt:'Brussels Airport'},
-  {code:'DUS',city:'Düsseldorf',country:'Germany',flag:'🇩🇪',apt:'International'},
-  {code:'FRA',city:'Frankfurt',country:'Germany',flag:'🇩🇪',apt:'Frankfurt Airport'},
-  {code:'LHR',city:'London',country:'UK',flag:'🇬🇧',apt:'Heathrow'},
-  {code:'CDG',city:'Paris',country:'France',flag:'🇫🇷',apt:'Charles de Gaulle'},
-  {code:'DXB',city:'Dubai',country:'UAE',flag:'🇦🇪',apt:'International'},
-  {code:'JFK',city:'New York',country:'USA',flag:'🇺🇸',apt:'John F. Kennedy'},
-  {code:'MIA',city:'Miami',country:'USA',flag:'🇺🇸',apt:'International'},
-  {code:'LAX',city:'Los Angeles',country:'USA',flag:'🇺🇸',apt:'International'},
-  {code:'DPS',city:'Bali',country:'Indonesia',flag:'🇮🇩',apt:'Ngurah Rai'},
-  {code:'NRT',city:'Tokyo',country:'Japan',flag:'🇯🇵',apt:'Narita'},
-  {code:'IBZ',city:'Ibiza',country:'Spain',flag:'🇪🇸',apt:'Ibiza Airport'},
-  {code:'BCN',city:'Barcelona',country:'Spain',flag:'🇪🇸',apt:'El Prat'},
-  {code:'MLE',city:'Maldives',country:'Maldives',flag:'🇲🇻',apt:'Velana Intl'},
-  {code:'BKK',city:'Bangkok',country:'Thailand',flag:'🇹🇭',apt:'Suvarnabhumi'},
-  {code:'SIN',city:'Singapore',country:'Singapore',flag:'🇸🇬',apt:'Changi'},
-  {code:'CPT',city:'Cape Town',country:'South Africa',flag:'🇿🇦',apt:'International'},
-  {code:'GVA',city:'Geneva',country:'Switzerland',flag:'🇨🇭',apt:'Geneva Airport'},
+  // Netherlands
+  {code:'AMS',city:'Amsterdam',country:'Netherlands',flag:'\ud83c\uddf3\ud83c\uddf1',apt:'Schiphol'},
+  {code:'RTM',city:'Rotterdam',country:'Netherlands',flag:'\ud83c\uddf3\ud83c\uddf1',apt:'The Hague Airport'},
+  {code:'EIN',city:'Eindhoven',country:'Netherlands',flag:'\ud83c\uddf3\ud83c\uddf1',apt:'Eindhoven Airport'},
+  // Europe
+  {code:'LHR',city:'London',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'Heathrow'},
+  {code:'LGW',city:'London',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'Gatwick'},
+  {code:'LCY',city:'London',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'City Airport'},
+  {code:'STN',city:'London',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'Stansted'},
+  {code:'MAN',city:'Manchester',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'Manchester Airport'},
+  {code:'EDI',city:'Edinburgh',country:'UK',flag:'\ud83c\uddec\ud83c\udde7',apt:'Edinburgh Airport'},
+  {code:'CDG',city:'Paris',country:'France',flag:'\ud83c\uddeb\ud83c\uddf7',apt:'Charles de Gaulle'},
+  {code:'ORY',city:'Paris',country:'France',flag:'\ud83c\uddeb\ud83c\uddf7',apt:'Orly'},
+  {code:'NCE',city:'Nice',country:'France',flag:'\ud83c\uddeb\ud83c\uddf7',apt:'Cote d\'Azur'},
+  {code:'FRA',city:'Frankfurt',country:'Germany',flag:'\ud83c\udde9\ud83c\uddea',apt:'Frankfurt Airport'},
+  {code:'MUC',city:'Munich',country:'Germany',flag:'\ud83c\udde9\ud83c\uddea',apt:'Franz Josef Strauss'},
+  {code:'DUS',city:'D\u00fcsseldorf',country:'Germany',flag:'\ud83c\udde9\ud83c\uddea',apt:'International'},
+  {code:'TXL',city:'Berlin',country:'Germany',flag:'\ud83c\udde9\ud83c\uddea',apt:'Brandenburg'},
+  {code:'HAM',city:'Hamburg',country:'Germany',flag:'\ud83c\udde9\ud83c\uddea',apt:'Hamburg Airport'},
+  {code:'BRU',city:'Brussels',country:'Belgium',flag:'\ud83c\udde7\ud83c\uddea',apt:'Brussels Airport'},
+  {code:'ZRH',city:'Zurich',country:'Switzerland',flag:'\ud83c\udde8\ud83c\udded',apt:'Zurich Airport'},
+  {code:'GVA',city:'Geneva',country:'Switzerland',flag:'\ud83c\udde8\ud83c\udded',apt:'Geneva Airport'},
+  {code:'VIE',city:'Vienna',country:'Austria',flag:'\ud83c\udde6\ud83c\uddf9',apt:'Schwechat'},
+  {code:'MAD',city:'Madrid',country:'Spain',flag:'\ud83c\uddea\ud83c\uddf8',apt:'Barajas'},
+  {code:'BCN',city:'Barcelona',country:'Spain',flag:'\ud83c\uddea\ud83c\uddf8',apt:'El Prat'},
+  {code:'IBZ',city:'Ibiza',country:'Spain',flag:'\ud83c\uddea\ud83c\uddf8',apt:'Ibiza Airport'},
+  {code:'AGP',city:'Malaga',country:'Spain',flag:'\ud83c\uddea\ud83c\uddf8',apt:'Costa del Sol'},
+  {code:'PMI',city:'Palma de Mallorca',country:'Spain',flag:'\ud83c\uddea\ud83c\uddf8',apt:'Son Sant Joan'},
+  {code:'FCO',city:'Rome',country:'Italy',flag:'\ud83c\uddee\ud83c\uddf9',apt:'Fiumicino'},
+  {code:'MXP',city:'Milan',country:'Italy',flag:'\ud83c\uddee\ud83c\uddf9',apt:'Malpensa'},
+  {code:'VCE',city:'Venice',country:'Italy',flag:'\ud83c\uddee\ud83c\uddf9',apt:'Marco Polo'},
+  {code:'LIS',city:'Lisbon',country:'Portugal',flag:'\ud83c\uddf5\ud83c\uddf9',apt:'Humberto Delgado'},
+  {code:'OPO',city:'Porto',country:'Portugal',flag:'\ud83c\uddf5\ud83c\uddf9',apt:'Francisco S\u00e1 Carneiro'},
+  {code:'CPH',city:'Copenhagen',country:'Denmark',flag:'\ud83c\udde9\ud83c\uddf0',apt:'Kastrup'},
+  {code:'OSL',city:'Oslo',country:'Norway',flag:'\ud83c\uddf3\ud83c\uddf4',apt:'Gardermoen'},
+  {code:'ARN',city:'Stockholm',country:'Sweden',flag:'\ud83c\uddf8\ud83c\uddea',apt:'Arlanda'},
+  {code:'HEL',city:'Helsinki',country:'Finland',flag:'\ud83c\uddeb\ud83c\uddee',apt:'Vantaa'},
+  {code:'ATH',city:'Athens',country:'Greece',flag:'\ud83c\uddec\ud83c\uddf7',apt:'Eleftherios Venizelos'},
+  {code:'IST',city:'Istanbul',country:'Turkey',flag:'\ud83c\uddf9\ud83c\uddf7',apt:'Istanbul Airport'},
+  {code:'DUB',city:'Dublin',country:'Ireland',flag:'\ud83c\uddee\ud83c\uddea',apt:'Dublin Airport'},
+  {code:'WAW',city:'Warsaw',country:'Poland',flag:'\ud83c\uddf5\ud83c\uddf1',apt:'Chopin Airport'},
+  {code:'PRG',city:'Prague',country:'Czech Republic',flag:'\ud83c\udde8\ud83c\uddff',apt:'V\u00e1clav Havel'},
+  {code:'BUD',city:'Budapest',country:'Hungary',flag:'\ud83c\udded\ud83c\uddfa',apt:'Ferenc Liszt'},
+  // Middle East
+  {code:'DXB',city:'Dubai',country:'UAE',flag:'\ud83c\udde6\ud83c\uddea',apt:'International'},
+  {code:'AUH',city:'Abu Dhabi',country:'UAE',flag:'\ud83c\udde6\ud83c\uddea',apt:'Zayed Intl'},
+  {code:'DOH',city:'Doha',country:'Qatar',flag:'\ud83c\uddf6\ud83c\udde6',apt:'Hamad Intl'},
+  {code:'RUH',city:'Riyadh',country:'Saudi Arabia',flag:'\ud83c\uddf8\ud83c\udde6',apt:'King Khalid'},
+  {code:'JED',city:'Jeddah',country:'Saudi Arabia',flag:'\ud83c\uddf8\ud83c\udde6',apt:'King Abdulaziz'},
+  {code:'BAH',city:'Bahrain',country:'Bahrain',flag:'\ud83c\udde7\ud83c\udded',apt:'Bahrain Intl'},
+  {code:'TLV',city:'Tel Aviv',country:'Israel',flag:'\ud83c\uddee\ud83c\uddf1',apt:'Ben Gurion'},
+  {code:'AMM',city:'Amman',country:'Jordan',flag:'\ud83c\uddef\ud83c\uddf4',apt:'Queen Alia'},
+  // North America
+  {code:'JFK',city:'New York',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'John F. Kennedy'},
+  {code:'EWR',city:'Newark',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Liberty Intl'},
+  {code:'LAX',city:'Los Angeles',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'International'},
+  {code:'SFO',city:'San Francisco',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'International'},
+  {code:'MIA',city:'Miami',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'International'},
+  {code:'ORD',city:'Chicago',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'O\'Hare'},
+  {code:'ATL',city:'Atlanta',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Hartsfield-Jackson'},
+  {code:'DFW',city:'Dallas',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Fort Worth'},
+  {code:'IAD',city:'Washington DC',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Dulles'},
+  {code:'BOS',city:'Boston',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Logan'},
+  {code:'SEA',city:'Seattle',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'SeaTac'},
+  {code:'DEN',city:'Denver',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'International'},
+  {code:'LAS',city:'Las Vegas',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Harry Reid'},
+  {code:'HNL',city:'Honolulu',country:'USA',flag:'\ud83c\uddfa\ud83c\uddf8',apt:'Daniel K. Inouye'},
+  {code:'YYZ',city:'Toronto',country:'Canada',flag:'\ud83c\udde8\ud83c\udde6',apt:'Pearson'},
+  {code:'YVR',city:'Vancouver',country:'Canada',flag:'\ud83c\udde8\ud83c\udde6',apt:'International'},
+  {code:'YUL',city:'Montreal',country:'Canada',flag:'\ud83c\udde8\ud83c\udde6',apt:'Trudeau'},
+  {code:'MEX',city:'Mexico City',country:'Mexico',flag:'\ud83c\uddf2\ud83c\uddfd',apt:'Benito Ju\u00e1rez'},
+  {code:'CUN',city:'Cancun',country:'Mexico',flag:'\ud83c\uddf2\ud83c\uddfd',apt:'International'},
+  // South America
+  {code:'GRU',city:'S\u00e3o Paulo',country:'Brazil',flag:'\ud83c\udde7\ud83c\uddf7',apt:'Guarulhos'},
+  {code:'GIG',city:'Rio de Janeiro',country:'Brazil',flag:'\ud83c\udde7\ud83c\uddf7',apt:'Gale\u00e3o'},
+  {code:'EZE',city:'Buenos Aires',country:'Argentina',flag:'\ud83c\udde6\ud83c\uddf7',apt:'Ezeiza'},
+  {code:'SCL',city:'Santiago',country:'Chile',flag:'\ud83c\udde8\ud83c\uddf1',apt:'Arturo Merino'},
+  {code:'BOG',city:'Bogot\u00e1',country:'Colombia',flag:'\ud83c\udde8\ud83c\uddf4',apt:'El Dorado'},
+  {code:'LIM',city:'Lima',country:'Peru',flag:'\ud83c\uddf5\ud83c\uddea',apt:'Jorge Ch\u00e1vez'},
+  // Asia
+  {code:'NRT',city:'Tokyo',country:'Japan',flag:'\ud83c\uddef\ud83c\uddf5',apt:'Narita'},
+  {code:'HND',city:'Tokyo',country:'Japan',flag:'\ud83c\uddef\ud83c\uddf5',apt:'Haneda'},
+  {code:'KIX',city:'Osaka',country:'Japan',flag:'\ud83c\uddef\ud83c\uddf5',apt:'Kansai'},
+  {code:'ICN',city:'Seoul',country:'South Korea',flag:'\ud83c\uddf0\ud83c\uddf7',apt:'Incheon'},
+  {code:'PEK',city:'Beijing',country:'China',flag:'\ud83c\udde8\ud83c\uddf3',apt:'Capital'},
+  {code:'PVG',city:'Shanghai',country:'China',flag:'\ud83c\udde8\ud83c\uddf3',apt:'Pudong'},
+  {code:'HKG',city:'Hong Kong',country:'Hong Kong',flag:'\ud83c\udded\ud83c\uddf0',apt:'Chek Lap Kok'},
+  {code:'SIN',city:'Singapore',country:'Singapore',flag:'\ud83c\uddf8\ud83c\uddec',apt:'Changi'},
+  {code:'BKK',city:'Bangkok',country:'Thailand',flag:'\ud83c\uddf9\ud83c\udded',apt:'Suvarnabhumi'},
+  {code:'KUL',city:'Kuala Lumpur',country:'Malaysia',flag:'\ud83c\uddf2\ud83c\uddfe',apt:'KLIA'},
+  {code:'CGK',city:'Jakarta',country:'Indonesia',flag:'\ud83c\uddee\ud83c\udde9',apt:'Soekarno-Hatta'},
+  {code:'DPS',city:'Bali',country:'Indonesia',flag:'\ud83c\uddee\ud83c\udde9',apt:'Ngurah Rai'},
+  {code:'DEL',city:'New Delhi',country:'India',flag:'\ud83c\uddee\ud83c\uddf3',apt:'Indira Gandhi'},
+  {code:'BOM',city:'Mumbai',country:'India',flag:'\ud83c\uddee\ud83c\uddf3',apt:'Chhatrapati Shivaji'},
+  {code:'MNL',city:'Manila',country:'Philippines',flag:'\ud83c\uddf5\ud83c\udded',apt:'Ninoy Aquino'},
+  {code:'SGN',city:'Ho Chi Minh City',country:'Vietnam',flag:'\ud83c\uddfb\ud83c\uddf3',apt:'Tan Son Nhat'},
+  {code:'HAN',city:'Hanoi',country:'Vietnam',flag:'\ud83c\uddfb\ud83c\uddf3',apt:'Noi Bai'},
+  {code:'CMB',city:'Colombo',country:'Sri Lanka',flag:'\ud83c\uddf1\ud83c\uddf0',apt:'Bandaranaike'},
+  // Oceania
+  {code:'SYD',city:'Sydney',country:'Australia',flag:'\ud83c\udde6\ud83c\uddfa',apt:'Kingsford Smith'},
+  {code:'MEL',city:'Melbourne',country:'Australia',flag:'\ud83c\udde6\ud83c\uddfa',apt:'Tullamarine'},
+  {code:'BNE',city:'Brisbane',country:'Australia',flag:'\ud83c\udde6\ud83c\uddfa',apt:'Brisbane Airport'},
+  {code:'PER',city:'Perth',country:'Australia',flag:'\ud83c\udde6\ud83c\uddfa',apt:'Perth Airport'},
+  {code:'AKL',city:'Auckland',country:'New Zealand',flag:'\ud83c\uddf3\ud83c\uddff',apt:'Auckland Airport'},
+  // Africa
+  {code:'CPT',city:'Cape Town',country:'South Africa',flag:'\ud83c\uddff\ud83c\udde6',apt:'International'},
+  {code:'JNB',city:'Johannesburg',country:'South Africa',flag:'\ud83c\uddff\ud83c\udde6',apt:'O.R. Tambo'},
+  {code:'NBO',city:'Nairobi',country:'Kenya',flag:'\ud83c\uddf0\ud83c\uddea',apt:'Jomo Kenyatta'},
+  {code:'CAI',city:'Cairo',country:'Egypt',flag:'\ud83c\uddea\ud83c\uddec',apt:'Cairo Intl'},
+  {code:'CMN',city:'Casablanca',country:'Morocco',flag:'\ud83c\uddf2\ud83c\udde6',apt:'Mohammed V'},
+  {code:'ADD',city:'Addis Ababa',country:'Ethiopia',flag:'\ud83c\uddea\ud83c\uddf9',apt:'Bole Intl'},
+  {code:'LOS',city:'Lagos',country:'Nigeria',flag:'\ud83c\uddf3\ud83c\uddec',apt:'Murtala Muhammed'},
+  // Indian Ocean
+  {code:'MLE',city:'Maldives',country:'Maldives',flag:'\ud83c\uddf2\ud83c\uddfb',apt:'Velana Intl'},
+  {code:'MRU',city:'Mauritius',country:'Mauritius',flag:'\ud83c\uddf2\ud83c\uddfa',apt:'Sir Seewoosagur'},
+  {code:'SEZ',city:'Seychelles',country:'Seychelles',flag:'\ud83c\uddf8\ud83c\udde8',apt:'Pointe Larue'},
+  // Caribbean
+  {code:'SXM',city:'St. Maarten',country:'St. Maarten',flag:'\ud83c\uddf8\ud83c\uddfd',apt:'Princess Juliana'},
+  {code:'PUJ',city:'Punta Cana',country:'Dominican Republic',flag:'\ud83c\udde9\ud83c\uddf4',apt:'International'},
+  {code:'MBJ',city:'Montego Bay',country:'Jamaica',flag:'\ud83c\uddef\ud83c\uddf2',apt:'Sangster Intl'},
 ];
-const FLIGHTS = [
-  {from:'AMS',to:'DXB',dep:'09:45',arr:'14:20',dur:'6h 35m',airline:'Emirates',code:'EK',color:'#C01F36',stops:'Direct',price:1500,cls:'business',feat:['Lie-flat seat','5★ lounge access','Champagne service']},
-  {from:'AMS',to:'DXB',dep:'07:10',arr:'12:55',dur:'5h 45m',airline:'KLM',code:'KL',color:'#00A1DE',stops:'Direct',price:1500,cls:'business',feat:['Flat bed','Crown Lounge','Priority boarding']},
-  {from:'AMS',to:'DXB',dep:'13:30',arr:'22:05',dur:'8h 35m',airline:'Turkish Airlines',code:'TK',color:'#C70A0A',stops:'1 stop · Istanbul',price:1500,cls:'business',feat:['Lie-flat seat','Business lounge','À-la-carte dining']},
-  {from:'AMS',to:'DXB',dep:'16:55',arr:'23:30',dur:'6h 35m',airline:'Qatar Airways',code:'QR',color:'#5C0632',stops:'Direct',price:2500,cls:'first',feat:['Private suite','Al Safwa lounge','Butler service']},
-  {from:'AMS',to:'JFK',dep:'10:05',arr:'12:40',dur:'8h 35m',airline:'KLM',code:'KL',color:'#00A1DE',stops:'Direct',price:1500,cls:'business',feat:['Flat bed','Crown Lounge','Priority boarding']},
-  {from:'AMS',to:'JFK',dep:'08:50',arr:'11:30',dur:'8h 40m',airline:'Air France',code:'AF',color:'#002157',stops:'Direct',price:1500,cls:'business',feat:['Lie-flat seat','Lounge','Gourmet dining']},
-  {from:'AMS',to:'JFK',dep:'17:30',arr:'20:15',dur:'8h 45m',airline:'Emirates',code:'EK',color:'#C01F36',stops:'Direct',price:2500,cls:'first',feat:['Private suite','Emirates lounge','Shower spa']},
-  {from:'AMS',to:'DPS',dep:'11:20',arr:'06:10',dur:'14h 50m',airline:'Qatar Airways',code:'QR',color:'#5C0632',stops:'1 stop · Doha',price:2200,cls:'business',feat:['Flat bed','Al Safwa lounge','Gourmet dining']},
-  {from:'AMS',to:'DPS',dep:'23:55',arr:'18:40',dur:'16h 45m',airline:'Emirates',code:'EK',color:'#C01F36',stops:'1 stop · Dubai',price:2500,cls:'first',feat:['Private suite','Lounge','Shower spa']},
-  {from:'AMS',to:'IBZ',dep:'07:40',arr:'10:15',dur:'2h 35m',airline:'KLM',code:'KL',color:'#00A1DE',stops:'Direct',price:1500,cls:'business',feat:['Business cabin','Priority boarding','Lounge access']},
-  {from:'AMS',to:'MLE',dep:'09:30',arr:'22:50',dur:'12h 20m',airline:'Emirates',code:'EK',color:'#C01F36',stops:'1 stop · Dubai',price:2500,cls:'first',feat:['Private suite','Emirates lounge','Shower spa']},
-  {from:'AMS',to:'MIA',dep:'12:15',arr:'16:05',dur:'10h 50m',airline:'Air France',code:'AF',color:'#002157',stops:'Direct',price:1500,cls:'business',feat:['Lie-flat seat','Lounge','Champagne service']},
-];
+const FLIGHTS = []; // Only real API data is used
 
 let curTab = 'oneway';
 let sel = { 'ow-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'ow-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'}, 'rt-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'rt-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'} };
@@ -652,17 +757,17 @@ function chPax(pfx,d) {
   document.getElementById('pax-'+k+'-txt').textContent=pax[k]+(pax[k]===1?' passenger':' passengers');
 }
 function getCityName(code) { const a=APS.find(x=>x.code===code); return a?a.city:code; }
-async function doSearch() {
+async function doSearch(overrideDate) {
   closeAll();
   const fCode=curTab==='roundtrip'?sel['rt-from'].code:sel['ow-from'].code;
   const tCode=curTab==='roundtrip'?sel['rt-to'].code:sel['ow-to'].code;
   const dateEl=curTab==='roundtrip'?document.getElementById('d-rt-dep'):document.getElementById('d-ow-dep');
-  const dateVal=dateEl?dateEl.value:'';
+  const dateVal=overrideDate||( dateEl?dateEl.value:'');
   const mult=curTab==='roundtrip'?2:1;
   const pLabel=curTab==='roundtrip'?'p.p. return':'per person';
 
-  document.getElementById('res-title').textContent=getCityName(fCode)+' → '+getCityName(tCode);
-  document.getElementById('cards-wrap').innerHTML='<div style="text-align:center;padding:40px;color:var(--mid);font-size:15px;">Searching flights...</div>';
+  document.getElementById('res-title').textContent=fCode+' \u2192 '+tCode;
+  document.getElementById('cards-wrap').innerHTML='<div style="text-align:center;padding:48px;color:var(--mid);font-size:15px;"><div style="margin-bottom:12px;font-size:24px;">Searching flights...</div><div style="color:var(--light);font-size:13px;">Checking availability on all airlines</div></div>';
   const sec=document.getElementById('results'); sec.classList.add('visible');
   setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),80);
 
@@ -674,73 +779,94 @@ async function doSearch() {
     flights=data.flights||[];
   } catch(e) { console.error('Search error',e); }
 
-  if(flights.length===0 && FLIGHTS.length>0) {
-    let res=FLIGHTS.filter(f=>f.from===fCode&&f.to===tCode);
-    if(res.length===0) res=FLIGHTS.slice(0,4);
-    flights=res.map(f=>({
-      origin:f.from, destination:f.to, depTime:f.dep, arrTime:f.arr, duration:f.dur,
-      airline:f.airline, flightNo:f.code, stops:f.stops==='Direct'?0:1,
-      direct:f.stops==='Direct',
-      availability:{business:f.cls==='business',first:f.cls==='first'},
-      prices:{business:f.cls==='business'?f.price:null,first:f.cls==='first'?f.price:null}
-    }));
+  // No fallback to hardcoded — only real API data
+  if(flights.length===0) {
+    // Try to find next available date (up to 14 days ahead)
+    if(!overrideDate && dateVal) {
+      document.getElementById('cards-wrap').innerHTML='<div style="text-align:center;padding:48px;color:var(--mid);font-size:15px;">No availability on this date. Checking next dates...</div>';
+      let nextDate=null;
+      const base=new Date(dateVal+'T12:00:00');
+      for(let i=1;i<=14;i++){
+        const d=new Date(base); d.setDate(d.getDate()+i);
+        const ds=d.toISOString().split('T')[0];
+        try {
+          const r=await fetch('/api/search?origin='+fCode+'&destination='+tCode+'&date='+ds);
+          const dd=await r.json();
+          if(dd.flights&&dd.flights.length>0){nextDate=ds;break;}
+        } catch(e){}
+      }
+      const dateFmt=new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+      let noHtml='<div class="no-results-msg"><h3>No availability on '+dateFmt+'</h3><p>There are no Business or First Class seats available for '+fCode+' \u2192 '+tCode+' on this date.</p>';
+      if(nextDate){
+        const nd=new Date(nextDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+        noHtml+='<p style="margin-top:12px;color:var(--navy);font-weight:600;">Next available date: '+nd+'</p><button class="next-date-btn" onclick="doSearch(\''+nextDate+'\')">Search '+nd+' \u2192</button>';
+      } else {
+        noHtml+='<p style="margin-top:12px;">Try a different date or route.</p>';
+      }
+      noHtml+='</div>';
+      document.getElementById('res-badge').textContent='0 flights found';
+      document.getElementById('cards-wrap').innerHTML=noHtml;
+      return;
+    }
+    document.getElementById('res-badge').textContent='0 flights found';
+    document.getElementById('cards-wrap').innerHTML='<div class="no-results-msg"><h3>No flights found</h3><p>No Business or First Class availability for this route. Try a different date or destination.</p></div>';
+    return;
   }
 
-  const COLORS={'Emirates':'#C01F36','KLM':'#00A1DE','Turkish Airlines':'#C70A0A','Qatar Airways':'#5C0632','Air France':'#002157','Lufthansa':'#003670','Qantas':'#E0002A','Virgin Atlantic':'#B10030','American Airlines':'#0078D2'};
-  const getColor=a=>COLORS[a]||'#0f2044';
+  const COLORS={'Emirates':'#C01F36','KLM':'#00A1DE','Turkish Airlines':'#C70A0A','Qatar Airways':'#5C0632','Air France':'#002157','Lufthansa':'#003670','Qantas':'#E0002A','Virgin Atlantic':'#B10030','American Airlines':'#0078D2','British Airways':'#075AAA','Singapore Airlines':'#F59E0B','Cathay Pacific':'#006564','Japan Airlines':'#C4002F','ANA':'#003C71','Swiss':'#E4002B','Etihad':'#C6992E'};
+  const getColor=a=>COLORS[a]||'#4b5563';
   const getCode=a=>(a||'').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()||'--';
+
+  // Format the date for display
+  const displayDate=dateVal?new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'long',day:'numeric'}):'';
 
   const cards=flights.map((f,i)=>{
     const hasBiz=f.availability&&f.availability.business;
     const hasFirst=f.availability&&f.availability.first;
     const bizPrice=f.prices&&f.prices.business?Math.round(f.prices.business):null;
     const firstPrice=f.prices&&f.prices.first?Math.round(f.prices.first):null;
-    const results=[];
-    if(hasBiz&&bizPrice){
-      const tp=bizPrice*mult;
-      const color=getColor(f.airline);
-      const code=getCode(f.airline);
-      const stopTxt=f.direct?'Direct':(f.stops||0)+' stop'+(f.stops>1?'s':'');
-      const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:f.airline||'Unknown',code:code,color:color,stops:stopTxt,price:bizPrice,cls:'business',feat:['Lie-flat seat','Lounge access','Priority boarding']};
-      results.push({html:`<div class="flight-card" onclick='openBk(${JSON.stringify(fData).replace(/'/g,"\\u0027")},${tp},"${pLabel}")'>
-        <div class="fc-top">
-          <div class="fc-bar"></div>
-          <div class="fc-al"><div class="fc-al-logo" style="background:${color}18;border:1px solid ${color}35;color:${color}">${code}</div><div class="fc-al-name">${f.airline||'Unknown'}</div></div>
-          <div class="fc-end"><div class="fc-time">${f.depTime||'--:--'}</div><div class="fc-city">${f.origin}</div><div class="fc-apt">${getCityName(f.origin)}</div></div>
-          <div class="fc-mid"><div class="fc-dur">${f.duration||''}</div><div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div><span class="fc-pico">✈</span><div class="fc-track"></div><div class="fc-dot"></div></div><div class="fc-stop ${f.direct?'direct':''}">${stopTxt}</div></div>
-          <div class="fc-end"><div class="fc-time">${f.arrTime||'--:--'}</div><div class="fc-city">${f.destination}</div><div class="fc-apt">${getCityName(f.destination)}</div></div>
-          <div class="fc-price-block"><div class="fc-badges"><span class="badge bbiz">Business</span></div><div class="fc-price">&euro;${tp.toLocaleString()}</div><div class="fc-pnote">${pLabel}</div><button class="fc-book-btn">Select &rarr;</button></div>
-        </div>
-        <div class="fc-bot"><div class="fc-feat"><span style="color:var(--green)">✓</span> Lie-flat seat</div><div class="fc-feat"><span style="color:var(--green)">✓</span> Lounge access</div><div class="fc-feat"><span style="color:var(--green)">✓</span> Priority boarding</div></div>
-      </div>`,price:tp});
-    }
-    if(hasFirst&&firstPrice){
-      const tp=firstPrice*mult;
-      const color=getColor(f.airline);
-      const code=getCode(f.airline);
-      const stopTxt=f.direct?'Direct':(f.stops||0)+' stop'+(f.stops>1?'s':'');
-      const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:f.airline||'Unknown',code:code,color:color,stops:stopTxt,price:firstPrice,cls:'first',feat:['Private suite','Premium lounge','Butler service']};
-      results.push({html:`<div class="flight-card" onclick='openBk(${JSON.stringify(fData).replace(/'/g,"\\u0027")},${tp},"${pLabel}")'>
-        <div class="fc-top">
-          <div class="fc-bar first"></div>
-          <div class="fc-al"><div class="fc-al-logo" style="background:${color}18;border:1px solid ${color}35;color:${color}">${code}</div><div class="fc-al-name">${f.airline||'Unknown'}</div></div>
-          <div class="fc-end"><div class="fc-time">${f.depTime||'--:--'}</div><div class="fc-city">${f.origin}</div><div class="fc-apt">${getCityName(f.origin)}</div></div>
-          <div class="fc-mid"><div class="fc-dur">${f.duration||''}</div><div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div><span class="fc-pico">✈</span><div class="fc-track"></div><div class="fc-dot"></div></div><div class="fc-stop ${f.direct?'direct':''}">${stopTxt}</div></div>
-          <div class="fc-end"><div class="fc-time">${f.arrTime||'--:--'}</div><div class="fc-city">${f.destination}</div><div class="fc-apt">${getCityName(f.destination)}</div></div>
-          <div class="fc-price-block"><div class="fc-badges"><span class="badge bfirst">First Class</span></div><div class="fc-price">&euro;${tp.toLocaleString()}</div><div class="fc-pnote">${pLabel}</div><button class="fc-book-btn">Select &rarr;</button></div>
-        </div>
-        <div class="fc-bot"><div class="fc-feat"><span style="color:var(--green)">✓</span> Private suite</div><div class="fc-feat"><span style="color:var(--green)">✓</span> Premium lounge</div><div class="fc-feat"><span style="color:var(--green)">✓</span> Butler service</div></div>
-      </div>`,price:tp});
-    }
-    return results;
-  }).flat().sort((a,b)=>a.price-b.price);
+    if(!hasBiz&&!hasFirst) return null;
+    if(!bizPrice&&!firstPrice) return null;
 
-  if(cards.length>0&&cards[0]) {
-    cards[0].html=cards[0].html.replace('<div class="fc-badges">','<div class="fc-badges"><span class="badge bdeal">Best Deal</span>');
+    const color=getColor(f.airline);
+    const code=getCode(f.airline);
+    const stopTxt=f.direct?'Direct':(f.stops||0)+' stop'+(f.stops>1?'s':'');
+    const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
+    const bookCls=bizPrice?'business':'first';
+    const bookPrice=bizPrice||firstPrice;
+    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:f.airline||'Unknown',code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding']};
+
+    const bizCol=hasBiz&&bizPrice
+      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">&euro;'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
+      :'<div class="fc-class-col unavail"><div class="fc-class-label">Business</div><div class="fc-class-price na">Not available</div></div>';
+    const firstCol=hasFirst&&firstPrice
+      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:firstPrice,cls:"first",feat:["Private suite","Premium lounge","Butler service"]}).replace(/'/g,"\\u0027")+','+firstPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">First Class</div><div class="fc-class-price">&euro;'+((firstPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
+      :'<div class="fc-class-col unavail"><div class="fc-class-label">First Class</div><div class="fc-class-price na">Not available</div></div>';
+    const premCol='<div class="fc-class-col unavail"><div class="fc-class-label">Premium Economy</div><div class="fc-class-price na">Not available</div></div>';
+
+    const html='<div class="flight-card">'
+      +(displayDate?'<div class="fc-date">'+displayDate+'</div>':'')
+      +'<div class="fc-top">'
+      +'<div class="fc-al"><div class="fc-al-logo" style="background:'+color+'18;border:1px solid '+color+'35;color:'+color+'">'+code+'</div><div class="fc-al-info"><div class="fc-al-name">'+(f.airline||'Unknown')+'</div><div class="fc-al-code">'+(f.flightNo||'')+'</div></div></div>'
+      +'<div class="fc-route-badges">'+(f.direct?'<span class="fc-direct">Direct</span>':'<span class="fc-stops-badge">'+stopTxt+'</span>')
+      +(f.seatsLeft?'<span class="fc-seats">'+f.seatsLeft+' seats left</span>':'')
+      +'</div></div>'
+      +'<div class="fc-timeline">'
+      +'<div class="fc-end"><div class="fc-time">'+(f.depTime||'--:--')+'</div><div class="fc-city">'+f.origin+'</div></div>'
+      +'<div class="fc-mid"><div class="fc-dur">'+(f.duration||'')+'</div><div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div><span class="fc-pico">\u2708</span><div class="fc-track"></div><div class="fc-dot"></div></div></div>'
+      +'<div class="fc-end"><div class="fc-time">'+(f.arrTime||'--:--')+'</div><div class="fc-city">'+f.destination+'</div></div>'
+      +'</div>'
+      +'<div class="fc-classes">'+premCol+bizCol+firstCol+'</div>'
+      +'</div>';
+    return {html,price:lowestPrice};
+  }).filter(Boolean).sort((a,b)=>a.price-b.price);
+
+  if(cards.length>0){
+    cards[0].html=cards[0].html.replace('class="flight-card"','class="flight-card" style="border-color:rgba(212,168,67,0.3);"');
   }
 
-  document.getElementById('res-badge').textContent=cards.length+' result'+(cards.length===1?'':'s');
-  document.getElementById('cards-wrap').innerHTML=cards.length?cards.map(c=>c.html).join(''):'<div style="text-align:center;padding:40px;color:var(--mid);">No flights found for this route. Try different dates or destinations.</div>';
+  document.getElementById('res-badge').textContent=cards.length+' flight'+(cards.length===1?'':'s')+' found';
+  document.getElementById('cards-wrap').innerHTML=cards.length?cards.map(c=>c.html).join(''):'<div class="no-results-msg"><h3>No flights found</h3><p>No availability for this route. Try a different date or destination.</p></div>';
 }
 function qs(fc,fcode,tc,tcode) {
   const fa=APS.find(a=>a.code===fcode)||{code:fcode,city:fc,flag:'🌍',apt:''};
