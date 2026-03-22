@@ -1152,7 +1152,9 @@ async function doSearch(overrideDate) {
     return;
   }
 
+  const AIRLINE_NAMES={'EK':'Emirates','KL':'KLM','AF':'Air France','TK':'Turkish Airlines','QR':'Qatar Airways','LH':'Lufthansa','QF':'Qantas','VS':'Virgin Atlantic','AA':'American Airlines','BA':'British Airways','SQ':'Singapore Airlines','CX':'Cathay Pacific','JL':'Japan Airlines','NH':'ANA','LX':'Swiss','EY':'Etihad','SV':'Saudia','WY':'Oman Air','GF':'Gulf Air','UL':'SriLankan','MH':'Malaysia Airlines','GA':'Garuda Indonesia','SU':'Aeroflot','AZ':'ITA Airways','KE':'Korean Air','OZ':'Asiana','CI':'China Airlines','BR':'EVA Air','AC':'Air Canada','DL':'Delta','UA':'United','AI':'Air India'};
   const COLORS={'Emirates':'#C01F36','KLM':'#00A1DE','Turkish Airlines':'#C70A0A','Qatar Airways':'#5C0632','Air France':'#002157','Lufthansa':'#003670','Qantas':'#E0002A','Virgin Atlantic':'#B10030','American Airlines':'#0078D2','British Airways':'#075AAA','Singapore Airlines':'#F59E0B','Cathay Pacific':'#006564','Japan Airlines':'#C4002F','ANA':'#003C71','Swiss':'#E4002B','Etihad':'#C6992E'};
+  const getAirlineName=code=>{if(AIRLINE_NAMES[code])return AIRLINE_NAMES[code];if(COLORS[code])return code;return code;};
   const getColor=a=>COLORS[a]||'#4b5563';
   const getCode=a=>(a||'').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()||'--';
   function formatDuration(d) {
@@ -1175,19 +1177,27 @@ async function doSearch(overrideDate) {
     if(!hasBiz&&!hasFirst) return null;
     if(!bizPrice&&!firstPrice) return null;
 
-    const color=getColor(f.airline);
-    const code=getCode(f.airline);
+    const airlineName=getAirlineName(f.airline);
+    const color=getColor(airlineName);
+    const code=getCode(airlineName);
+    const alCode=(f.airline||'').toUpperCase();
+    const logoUrl='https://pics.avs.io/80/80/'+alCode+'.png';
     const stopTxt=f.direct?'Direct':(f.stops||0)+' stop'+(f.stops>1?'s':'');
     // Build layover info string
     let layoverInfo='';
-    if(!f.direct&&f.segments&&f.segments.length>1){
-      const connAirports=f.segments.slice(0,-1).map(s=>s.destination).filter(Boolean);
-      if(connAirports.length>0) layoverInfo='via '+connAirports.join(', ');
+    if(!f.direct){
+      const conns=f.connections||[];
+      if(conns.length>0){
+        layoverInfo='via '+conns.join(', ');
+      } else if(f.segments&&f.segments.length>1){
+        const connAirports=f.segments.slice(0,-1).map(s=>s.destination).filter(Boolean);
+        if(connAirports.length>0) layoverInfo='via '+connAirports.join(', ');
+      }
     }
     const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
     const bookCls=bizPrice?'business':'first';
     const bookPrice=bizPrice||firstPrice;
-    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:f.airline||'Unknown',code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding']};
+    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding']};
 
     const bizCol=hasBiz&&bizPrice
       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">&euro;'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
@@ -1200,13 +1210,13 @@ async function doSearch(overrideDate) {
     const html='<div class="flight-card">'
       +(displayDate?'<div class="fc-date">'+displayDate+'</div>':'')
       +'<div class="fc-top">'
-      +'<div class="fc-al"><div class="fc-al-logo" style="background:'+color+'18;border:1px solid '+color+'35;color:'+color+'">'+code+'</div><div class="fc-al-info"><div class="fc-al-name">'+(f.airline||'Unknown')+'</div><div class="fc-al-code">'+(f.flightNo||'')+'</div></div></div>'
+      +'<div class="fc-al"><div class="fc-al-logo" style="background:'+color+'10;border:1px solid '+color+'25"><img src="'+logoUrl+'" alt="'+airlineName+'" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display=\'none\';this.parentElement.textContent=\''+code+'\';this.parentElement.style.color=\''+color+'\';this.parentElement.style.fontWeight=800;this.parentElement.style.fontSize=\'11px\'"></div><div class="fc-al-info"><div class="fc-al-name">'+airlineName+'</div><div class="fc-al-code">'+(f.flightNo||'')+'</div></div></div>'
       +'<div class="fc-route-badges">'+(f.direct?'<span class="fc-direct">Direct</span>':'<span class="fc-stops-badge">'+stopTxt+'</span>')
       +(f.seatsLeft?'<span class="fc-seats">'+f.seatsLeft+' seats left</span>':'')
       +'</div></div>'
       +'<div class="fc-timeline">'
       +'<div class="fc-end"><div class="fc-time">'+(f.depTime||'--:--')+'</div><div class="fc-city">'+f.origin+'</div></div>'
-      +'<div class="fc-mid"><div class="fc-dur">'+formatDuration(f.duration)+'</div>'+(layoverInfo?'<div class="fc-layover">'+layoverInfo+'</div>':'')+'<div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div>'+(f.stops>0&&f.segments&&f.segments.length>1?f.segments.slice(0,-1).map(s=>'<div class="fc-stop-dot" title="'+s.destination+'"></div><div class="fc-track"></div>').join(''):'<span class="fc-pico">\u2708</span><div class="fc-track"></div>')+'<div class="fc-dot"></div></div></div>'
+      +'<div class="fc-mid"><div class="fc-dur">'+formatDuration(f.duration)+'</div>'+(layoverInfo?'<div class="fc-layover">'+layoverInfo+'</div>':'')+'<div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div>'+((!f.direct&&((f.connections&&f.connections.length>0)||(f.segments&&f.segments.length>1)))?(f.connections&&f.connections.length>0?f.connections:f.segments.slice(0,-1).map(s=>s.destination)).map(c=>'<div class="fc-stop-dot" title="'+c+'"></div><div class="fc-track"></div>').join(''):'<span class="fc-pico">\u2708</span><div class="fc-track"></div>')+'<div class="fc-dot"></div></div></div>'
       +'<div class="fc-end"><div class="fc-time">'+(f.arrTime||'--:--')+'</div><div class="fc-city">'+f.destination+'</div></div>'
       +'</div>'
       +'<div class="fc-classes">'+premCol+bizCol+firstCol+'</div>'
