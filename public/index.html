@@ -377,6 +377,26 @@ nav {
 .merhaba-card.on .merhaba-check { background:var(--gold); border-color:var(--gold); }
 .merhaba-card.on .merhaba-check::after { content:'✓'; color:white; font-size:14px; font-weight:700; }
 #merhaba-label { font-size:13px; font-weight:600; color:#475569; }
+
+/* Transfer upsell */
+.transfer-sub { font-size:13px; color:#64748b; margin-bottom:16px; }
+.transfer-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+.transfer-card { background:white; border:2px solid var(--border); border-radius:14px; overflow:hidden; cursor:pointer; transition:all 0.2s; }
+.transfer-card:hover { border-color:#94a3b8; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.transfer-card.on { border-color:var(--gold); box-shadow:0 2px 16px rgba(212,168,67,0.15); }
+.tf-img-wrap { height:140px; overflow:hidden; }
+.tf-img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.transfer-card:hover .tf-img { transform:scale(1.05); }
+.tf-body { padding:14px 16px; }
+.tf-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+.tf-specs { display:flex; gap:12px; margin-bottom:8px; }
+.tf-spec { font-size:12px; color:#64748b; }
+.tf-desc { font-size:12px; color:#94a3b8; line-height:1.45; margin-bottom:12px; }
+.tf-bottom { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid #f1f5f9; }
+.tf-price { font-family:'Inter',sans-serif; font-size:20px; font-weight:800; color:var(--gold); }
+.tf-check { width:22px; height:22px; border-radius:6px; border:2px solid #cbd5e1; transition:all 0.15s; }
+.transfer-card.on .tf-check { background:var(--gold); border-color:var(--gold); }
+.transfer-card.on .tf-check::after { content:'✓'; color:white; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; height:100%; }
 .eico { font-size:18px; }
 footer { background:var(--navy); color:white; padding:52px 48px 26px; }
 .ft-inner { max-width:1200px; margin:0 auto; }
@@ -498,6 +518,10 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
   .why-grid,.hotel-grid,.conc-grid{grid-template-columns:1fr;}
   .sec-hd h2{font-size:24px;}
   .sec-hd p{font-size:13px;}
+
+  /* Transfer cards */
+  .transfer-grid{grid-template-columns:1fr; gap:12px;}
+  .tf-img-wrap{height:160px;}
 
   /* Concierge hero */
   .cs-hero{padding-top:56px; padding-bottom:40px;}
@@ -733,14 +757,54 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
         </div>
       </div>
       <div class="form-sec">
-        <div class="form-sec-hd"><span class="step-n">3</span>Optional Extras</div>
-        <div class="extras-g">
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">🧳</span>Extra Baggage</div>
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">💺</span>Seat Selection</div>
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">🍽️</span>Meal Preference</div>
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">🏨</span>Hotel Needed</div>
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">🚗</span>Airport Transfer</div>
-          <div class="extra-i" onclick="this.classList.toggle('on')"><span class="eico">🛡️</span>Travel Insurance</div>
+        <div class="form-sec-hd"><span class="step-n">3</span>Airport Transfer</div>
+        <div class="transfer-sub">Add a private chauffeur service to or from the airport.</div>
+        <div class="transfer-grid">
+          <div class="transfer-card" id="tf-sclass" onclick="selectTransfer('sclass')">
+            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&q=80" alt="Mercedes S-Class" class="tf-img"></div>
+            <div class="tf-body">
+              <div class="tf-name">Mercedes S-Class</div>
+              <div class="tf-specs">
+                <span class="tf-spec">👤 3 passengers</span>
+                <span class="tf-spec">🧳 2 suitcases</span>
+              </div>
+              <div class="tf-desc">Executive sedan — premium leather, quiet ride, climate control.</div>
+              <div class="tf-bottom">
+                <div class="tf-price">€95</div>
+                <div class="tf-check" id="tf-check-sclass"></div>
+              </div>
+            </div>
+          </div>
+          <div class="transfer-card" id="tf-vclass" onclick="selectTransfer('vclass')">
+            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=600&q=80" alt="Mercedes V-Class" class="tf-img"></div>
+            <div class="tf-body">
+              <div class="tf-name">Mercedes V-Class</div>
+              <div class="tf-specs">
+                <span class="tf-spec">👤 6 passengers</span>
+                <span class="tf-spec">🧳 6 suitcases</span>
+              </div>
+              <div class="tf-desc">Luxury van — spacious, perfect for families or groups with luggage.</div>
+              <div class="tf-bottom">
+                <div class="tf-price">€120</div>
+                <div class="tf-check" id="tf-check-vclass"></div>
+              </div>
+            </div>
+          </div>
+          <div class="transfer-card" id="tf-rolls" onclick="selectTransfer('rolls')">
+            <div class="tf-img-wrap"><img src="https://images.unsplash.com/photo-1631295868223-63265b40d9e4?w=600&q=80" alt="Rolls Royce" class="tf-img"></div>
+            <div class="tf-body">
+              <div class="tf-name">Rolls Royce</div>
+              <div class="tf-specs">
+                <span class="tf-spec">👤 2 passengers</span>
+                <span class="tf-spec">🧳 2 suitcases</span>
+              </div>
+              <div class="tf-desc">Ultimate luxury — the finest arrival experience, white-glove service.</div>
+              <div class="tf-bottom">
+                <div class="tf-price">€295</div>
+                <div class="tf-check" id="tf-check-rolls"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-sec" id="merhaba-sec" style="display:none;">
@@ -1431,7 +1495,7 @@ function qs(fc,fcode,tc,tcode) {
 }
 const MERHABA_PRICE=85;
 function openBk(f,tp,pLabel) {
-  bkData={f,tp,pLabel,merhaba:false};
+  bkData={f,tp,pLabel,merhaba:false,transfer:null};
   document.getElementById('b-route').textContent=f.from+' → '+f.to;
   document.getElementById('b-detail').textContent=f.dep+' → '+f.arr+' · '+f.dur+' · '+f.airline+' · '+(f.cls==='first'?'First Class':'Business Class');
   document.getElementById('b-price').textContent='€'+tp.toLocaleString();
@@ -1442,6 +1506,9 @@ function openBk(f,tp,pLabel) {
   document.getElementById('merhaba-card').classList.remove('on');
   document.getElementById('merhaba-label').textContent='Add to booking';
   bkData.merhaba=false;
+  // Reset transfer state
+  document.querySelectorAll('.transfer-card').forEach(c=>c.classList.remove('on'));
+  bkData.transfer=null;
   showPage('booking');
 }
 function toggleMerhaba(){
@@ -1449,17 +1516,40 @@ function toggleMerhaba(){
   const isOn=card.classList.toggle('on');
   bkData.merhaba=isOn;
   document.getElementById('merhaba-label').textContent=isOn?'Added to booking':'Add to booking';
-  const total=bkData.tp+(isOn?MERHABA_PRICE:0);
+  updateBookingPrice();
+}
+const TRANSFER_PRICES={sclass:95,vclass:120,rolls:295};
+const TRANSFER_NAMES={sclass:'Mercedes S-Class',vclass:'Mercedes V-Class',rolls:'Rolls Royce'};
+function selectTransfer(key){
+  const card=document.getElementById('tf-'+key);
+  const wasOn=card.classList.contains('on');
+  // Deselect all
+  document.querySelectorAll('.transfer-card').forEach(c=>c.classList.remove('on'));
+  if(wasOn){
+    bkData.transfer=null;
+  } else {
+    card.classList.add('on');
+    bkData.transfer=key;
+  }
+  updateBookingPrice();
+}
+function updateBookingPrice(){
+  let total=bkData.tp;
+  if(bkData.merhaba) total+=MERHABA_PRICE;
+  if(bkData.transfer) total+=TRANSFER_PRICES[bkData.transfer];
   document.getElementById('b-price').textContent='€'+total.toLocaleString();
 }
 function buildWA() {
   const fn=document.getElementById('b-fn').value||'—', ln=document.getElementById('b-ln').value||'—';
   const em=document.getElementById('b-em').value||'—', wa=document.getElementById('b-wa').value||'—';
   const pp=document.getElementById('b-pp').value||'—';
-  const f=bkData.f||{}; const ex=Array.from(document.querySelectorAll('.extra-i.on')).map(e=>e.textContent.trim()).join(', ')||'None';
+  const f=bkData.f||{};
   const merhabaText=bkData.merhaba?'✅ Merhaba Meet & Greet (+€'+MERHABA_PRICE+')':'';
-  const totalPrice=bkData.tp+(bkData.merhaba?MERHABA_PRICE:0);
-  const msg=encodeURIComponent(`Hello butler.flights! I'd like to book a flight:\n\n✈️ Route: ${f.from||'—'} → ${f.to||'—'}\n🕐 ${f.dep||'—'} → ${f.arr||'—'} · ${f.dur||'—'}\n🏢 Airline: ${f.airline||'—'}\n💺 Class: ${f.cls==='first'?'First Class':'Business Class'}\n💰 Price: €${totalPrice} ${bkData.pLabel||''}${merhabaText?'\n'+merhabaText:''}\n\n👤 Passenger: ${fn} ${ln}\n📧 Email: ${em}\n📱 WhatsApp: ${wa}\n🛂 Passport: ${pp}\n➕ Extras: ${ex}\n\nPlease confirm availability. Thank you!`);
+  const transferText=bkData.transfer?'🚘 Transfer: '+TRANSFER_NAMES[bkData.transfer]+' (+€'+TRANSFER_PRICES[bkData.transfer]+')':'';
+  let totalPrice=bkData.tp;
+  if(bkData.merhaba) totalPrice+=MERHABA_PRICE;
+  if(bkData.transfer) totalPrice+=TRANSFER_PRICES[bkData.transfer];
+  const msg=encodeURIComponent(`Hello butler.flights! I'd like to book a flight:\n\n✈️ Route: ${f.from||'—'} → ${f.to||'—'}\n🕐 ${f.dep||'—'} → ${f.arr||'—'} · ${f.dur||'—'}\n🏢 Airline: ${f.airline||'—'}\n💺 Class: ${f.cls==='first'?'First Class':'Business Class'}\n💰 Price: €${totalPrice} ${bkData.pLabel||''}${merhabaText?'\n'+merhabaText:''}${transferText?'\n'+transferText:''}\n\n👤 Passenger: ${fn} ${ln}\n📧 Email: ${em}\n📱 WhatsApp: ${wa}\n🛂 Passport: ${pp}\n\nPlease confirm availability. Thank you!`);
   document.getElementById('wa-final').href='https://wa.me/31612345678?text='+msg;
 }
 function tfaq(el) {
