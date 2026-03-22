@@ -189,37 +189,39 @@ nav {
 .results-step .step-num { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
 .results-step.active .step-num { border-color: var(--gold); color: var(--gold); }
 .results-step-line { width: 40px; height: 1.5px; background: var(--border); }
-.flight-card { background: #1c2333; border-radius: var(--radius); margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08); transition: all 0.22s; cursor: pointer; display: block; overflow: hidden; text-decoration: none; color: #e5e7eb; }
-.flight-card:hover { border-color: var(--gold); box-shadow: 0 4px 24px rgba(0,0,0,0.3); transform: translateY(-2px); }
-.fc-date { padding: 14px 24px 0; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+.flight-card { background: #f8f9fb; border-radius: var(--radius); margin-bottom: 14px; border: 1px solid #e2e5eb; transition: all 0.22s; cursor: pointer; display: block; overflow: hidden; text-decoration: none; color: #1e293b; }
+.flight-card:hover { border-color: var(--gold); box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.fc-date { padding: 14px 24px 0; font-size: 13px; color: #64748b; font-weight: 500; }
 .fc-top { display: flex; align-items: center; padding: 16px 24px; gap: 20px; }
 .fc-al { display: flex; align-items: center; gap: 12px; min-width: 180px; }
-.fc-al-logo { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1); }
+.fc-al-logo { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; background: rgba(0,0,0,0.04); color: #475569; border: 1px solid #e2e5eb; }
 .fc-al-info { display: flex; flex-direction: column; }
-.fc-al-name { font-size: 14px; font-weight: 600; color: #f3f4f6; }
-.fc-al-code { font-size: 12px; color: rgba(255,255,255,0.4); }
+.fc-al-name { font-size: 14px; font-weight: 600; color: #1e293b; }
+.fc-al-code { font-size: 12px; color: #94a3b8; }
 .fc-route-badges { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.fc-direct { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; border: 1.5px solid #059669; color: #34d399; background: rgba(5,150,105,0.1); }
-.fc-stops-badge { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
-.fc-seats { font-size: 11px; color: rgba(255,255,255,0.35); }
+.fc-direct { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; border: 1.5px solid #059669; color: #059669; background: rgba(5,150,105,0.08); }
+.fc-stops-badge { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid #cbd5e1; color: #64748b; }
+.fc-seats { font-size: 11px; color: #94a3b8; }
 .fc-timeline { display: flex; align-items: center; padding: 0 24px 16px; gap: 16px; }
 .fc-end {}
-.fc-time { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: white; }
-.fc-city { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.fc-time { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: var(--navy); }
+.fc-city { font-size: 12px; color: #94a3b8; margin-top: 2px; }
 .fc-mid { flex: 1; text-align: center; padding: 0 8px; }
-.fc-dur { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.fc-dur { font-size: 12px; font-weight: 500; color: #64748b; margin-bottom: 4px; }
+.fc-layover { font-size: 10px; color: #94a3b8; margin-bottom: 6px; }
 .fc-line { display: flex; align-items: center; justify-content: center; gap: 0; position: relative; }
-.fc-dot { width: 7px; height: 7px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: #1c2333; flex-shrink: 0; }
-.fc-track { flex: 1; height: 1px; background: rgba(255,255,255,0.15); }
+.fc-dot { width: 7px; height: 7px; border-radius: 50%; border: 2px solid #cbd5e1; background: #f8f9fb; flex-shrink: 0; }
+.fc-stop-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); flex-shrink: 0; z-index: 1; }
+.fc-track { flex: 1; height: 1px; background: #cbd5e1; }
 .fc-pico { font-size: 13px; color: var(--gold); margin: 0 4px; }
 .fc-classes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; padding: 0 24px 20px; }
-.fc-class-col { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; text-align: center; transition: all 0.18s; }
-.fc-class-col:hover { background: rgba(255,255,255,0.07); }
+.fc-class-col { background: #eef1f5; border: 1px solid #e2e5eb; border-radius: 10px; padding: 14px 16px; text-align: center; transition: all 0.18s; }
+.fc-class-col:hover { background: #e2e6ec; }
 .fc-class-col.unavail { opacity: 0.35; }
-.fc-class-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); margin-bottom: 6px; }
+.fc-class-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 6px; }
 .fc-class-price { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
-.fc-class-price.na { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.25); }
-.fc-class-note { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.fc-class-price.na { font-size: 13px; font-weight: 500; color: #b0b8c4; }
+.fc-class-note { font-size: 10px; color: #94a3b8; margin-top: 2px; }
 .badge { padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .bdeal { background: rgba(212,168,67,0.15); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
 .no-results-msg { text-align: center; padding: 48px 24px; color: var(--mid); }
@@ -1153,6 +1155,14 @@ async function doSearch(overrideDate) {
   const COLORS={'Emirates':'#C01F36','KLM':'#00A1DE','Turkish Airlines':'#C70A0A','Qatar Airways':'#5C0632','Air France':'#002157','Lufthansa':'#003670','Qantas':'#E0002A','Virgin Atlantic':'#B10030','American Airlines':'#0078D2','British Airways':'#075AAA','Singapore Airlines':'#F59E0B','Cathay Pacific':'#006564','Japan Airlines':'#C4002F','ANA':'#003C71','Swiss':'#E4002B','Etihad':'#C6992E'};
   const getColor=a=>COLORS[a]||'#4b5563';
   const getCode=a=>(a||'').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()||'--';
+  function formatDuration(d) {
+    if(!d) return '';
+    const mins=parseInt(d,10);
+    if(isNaN(mins)||mins<=0) return d;
+    const h=Math.floor(mins/60);
+    const m=mins%60;
+    return h+'h'+(m>0?' '+m+'m':'');
+  }
 
   // Format the date for display
   const displayDate=dateVal?new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'long',day:'numeric'}):'';
@@ -1168,6 +1178,12 @@ async function doSearch(overrideDate) {
     const color=getColor(f.airline);
     const code=getCode(f.airline);
     const stopTxt=f.direct?'Direct':(f.stops||0)+' stop'+(f.stops>1?'s':'');
+    // Build layover info string
+    let layoverInfo='';
+    if(!f.direct&&f.segments&&f.segments.length>1){
+      const connAirports=f.segments.slice(0,-1).map(s=>s.destination).filter(Boolean);
+      if(connAirports.length>0) layoverInfo='via '+connAirports.join(', ');
+    }
     const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
     const bookCls=bizPrice?'business':'first';
     const bookPrice=bizPrice||firstPrice;
@@ -1190,7 +1206,7 @@ async function doSearch(overrideDate) {
       +'</div></div>'
       +'<div class="fc-timeline">'
       +'<div class="fc-end"><div class="fc-time">'+(f.depTime||'--:--')+'</div><div class="fc-city">'+f.origin+'</div></div>'
-      +'<div class="fc-mid"><div class="fc-dur">'+(f.duration||'')+'</div><div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div><span class="fc-pico">\u2708</span><div class="fc-track"></div><div class="fc-dot"></div></div></div>'
+      +'<div class="fc-mid"><div class="fc-dur">'+formatDuration(f.duration)+'</div>'+(layoverInfo?'<div class="fc-layover">'+layoverInfo+'</div>':'')+'<div class="fc-line"><div class="fc-dot"></div><div class="fc-track"></div>'+(f.stops>0&&f.segments&&f.segments.length>1?f.segments.slice(0,-1).map(s=>'<div class="fc-stop-dot" title="'+s.destination+'"></div><div class="fc-track"></div>').join(''):'<span class="fc-pico">\u2708</span><div class="fc-track"></div>')+'<div class="fc-dot"></div></div></div>'
       +'<div class="fc-end"><div class="fc-time">'+(f.arrTime||'--:--')+'</div><div class="fc-city">'+f.destination+'</div></div>'
       +'</div>'
       +'<div class="fc-classes">'+premCol+bizCol+firstCol+'</div>'
