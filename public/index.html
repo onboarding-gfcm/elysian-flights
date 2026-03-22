@@ -1349,7 +1349,7 @@ async function doSearch(overrideDate) {
       document.getElementById('cards-wrap').innerHTML='<div style="text-align:center;padding:48px;color:var(--mid);font-size:15px;">No availability on this date. Checking next dates...</div>';
       let nextDate=null;
       const base=new Date(dateVal+'T12:00:00');
-      for(let i=1;i<=14;i++){
+      for(let i=1;i<=3;i++){
         const d=new Date(base); d.setDate(d.getDate()+i);
         const ds=d.toISOString().split('T')[0];
         try {
