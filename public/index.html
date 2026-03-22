@@ -109,7 +109,7 @@ nav {
 .swap-btn:hover { border-color: var(--navy); color: var(--navy); transform: rotate(180deg); }
 .date-wrap { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; min-height: 52px; display: flex; align-items: center; gap: 10px; position: relative; }
 .date-wrap:hover { border-color: var(--gold); background: #fffbf0; }
-.date-ico { font-size: 17px; flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 8px; color: white; font-size: 14px; }
+.date-ico { font-size: 20px; flex-shrink: 0; line-height: 1; }
 .date-day { font-size: 14px; font-weight: 600; color: var(--black); }
 .date-month { font-size: 11px; color: var(--light); margin-top: 1px; }
 .date-input-hidden { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
@@ -706,7 +706,14 @@ function setTab(el,tab) {
 function buildOpts(containerId,field,q) {
   const list=q?APS.filter(a=>a.city.toLowerCase().includes(q.toLowerCase())||a.code.toLowerCase().includes(q.toLowerCase())||a.country.toLowerCase().includes(q.toLowerCase())):APS;
   const el=document.getElementById(containerId); if(!el)return;
-  el.innerHTML=list.map(a=>`<div class="ap-opt" onclick="selAP('${field}','${a.code}','${a.city}','${a.flag}','${a.apt}')"><span class="of">${a.flag}</span><div><div class="oc">${a.city} (${a.code})</div><div class="od">${a.country} · ${a.apt}</div></div></div>`).join('');
+  el.innerHTML='';
+  list.forEach(a=>{
+    const div=document.createElement('div');
+    div.className='ap-opt';
+    div.innerHTML=`<span class="of">${a.flag}</span><div><div class="oc">${a.city} (${a.code})</div><div class="od">${a.country} \u00b7 ${a.apt}</div></div>`;
+    div.addEventListener('click',function(e){e.stopPropagation();selAP(field,a.code,a.city,a.flag,a.apt);});
+    el.appendChild(div);
+  });
 }
 function openDD(id) {
   closeAll();
