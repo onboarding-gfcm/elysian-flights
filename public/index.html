@@ -65,9 +65,35 @@ nav {
 .hero-stats { display: flex; gap: 28px; }
 .hero-stat .num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--gold-light); }
 .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
-.hero-right { display: flex; align-items: flex-end; justify-content: flex-end; }
-.hero-plane-img { width: 100%; max-width: 520px; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.45)); animation: floatPlane 7s ease-in-out infinite; }
-@keyframes floatPlane { 0%,100%{transform:translateY(0) rotate(-1.5deg)} 50%{transform:translateY(-14px) rotate(0.5deg)} }
+.hero-right { display: flex; align-items: center; justify-content: center; }
+.hero-phone { animation: floatPhone 6s ease-in-out infinite; filter: drop-shadow(0 24px 60px rgba(0,0,0,0.5)); }
+@keyframes floatPhone { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.phone-frame { width: 300px; background: #1a1a2e; border-radius: 36px; padding: 12px; border: 2px solid rgba(255,255,255,0.1); position: relative; }
+.phone-notch { width: 120px; height: 24px; background: #1a1a2e; border-radius: 0 0 14px 14px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2; }
+.phone-screen { background: #0f172a; border-radius: 26px; overflow: hidden; padding: 36px 18px 18px; }
+.phone-header { text-align: center; margin-bottom: 16px; }
+.phone-route { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: white; letter-spacing: -0.3px; }
+.phone-date { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+.phone-compare { display: flex; flex-direction: column; gap: 10px; }
+.price-card { border-radius: 14px; padding: 14px 16px; position: relative; }
+.price-card.airline { background: #1e293b; border: 1px solid rgba(255,255,255,0.08); }
+.price-card.butler { background: linear-gradient(135deg, rgba(212,168,67,0.15) 0%, rgba(212,168,67,0.05) 100%); border: 1.5px solid rgba(212,168,67,0.35); }
+.price-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.price-card-airline { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); }
+.price-card-class { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px; }
+.price-card-class.biz { background: rgba(29,78,216,0.2); color: #60a5fa; }
+.price-card-bot { display: flex; align-items: baseline; justify-content: space-between; }
+.price-card-price { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+.price-card.airline .price-card-price { font-size: 22px; color: rgba(255,255,255,0.5); text-decoration: line-through; text-decoration-color: #ef4444; }
+.price-card.butler .price-card-price { font-size: 26px; color: var(--gold-light); }
+.price-card-label { font-size: 10px; color: rgba(255,255,255,0.35); }
+.price-card.butler .price-card-label { color: var(--gold); font-weight: 600; }
+.price-card-save { display: inline-block; font-size: 11px; font-weight: 700; color: #34d399; background: rgba(52,211,153,0.1); padding: 3px 10px; border-radius: 50px; margin-top: 8px; }
+.price-card-logo { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.06); margin: 0 auto 8px; }
+.price-card-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 6px; }
+.price-card.butler .price-card-name { color: var(--gold); }
+.phone-vs { text-align: center; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.12em; padding: 2px 0; }
+.phone-cta { display: block; width: 100%; margin-top: 12px; padding: 12px; background: var(--gold); color: #0f172a; border: none; border-radius: 10px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; text-align: center; letter-spacing: -0.2px; }
 .search-outer {
   background: linear-gradient(155deg, #0a1628 0%, #0f2044 50%, #1a3a6e 100%);
   padding: 0 48px 56px; position: relative;
@@ -370,12 +396,6 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
         <div class="hero-stat"><div class="num">50+</div><div class="lbl">Airlines partnered</div></div>
         <div class="hero-stat"><div class="num">15m</div><div class="lbl">Response time</div></div>
       </div>
-    </div>
-    <div class="hero-right">
-      <img class="hero-plane-img"
-        src="https://images.unsplash.com/photo-1557800636-894a64c1696f?w=900&q=85"
-        alt="Business class aircraft"
-        onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=85'">
     </div>
   </div>
 </div>
