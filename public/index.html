@@ -109,12 +109,31 @@ nav {
 .swap-btn { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s; font-size: 14px; color: var(--mid); box-shadow: var(--shadow-sm); }
 .swap-btn:hover { border-color: var(--navy); color: var(--navy); transform: rotate(180deg); }
 .date-wrap { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; min-height: 52px; display: flex; align-items: center; gap: 10px; position: relative; }
-.date-wrap:hover { border-color: var(--gold); background: #fffbf0; }
-.date-ico { font-size: 20px; flex-shrink: 0; line-height: 1; }
+.date-wrap:hover { border-color: var(--navy); }
+.date-wrap.focused { border-color: var(--navy); background: white; }
+.date-ico { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.date-ico svg { width: 18px; height: 18px; color: var(--mid); }
 .date-day { font-size: 14px; font-weight: 600; color: var(--black); }
 .date-month { font-size: 11px; color: var(--light); margin-top: 1px; }
-.date-input-hidden { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
-.date-input-hidden::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; opacity: 0; }
+.date-input-hidden { display: none; }
+.cal-popup { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: white; border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); z-index: 600; padding: 20px; min-width: 300px; }
+.cal-popup.open { display: block; }
+.cal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--black); }
+.cal-nav { display: flex; gap: 6px; }
+.cal-nav button { width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--mid); transition: all 0.15s; font-family: 'Inter', sans-serif; }
+.cal-nav button:hover { border-color: var(--navy); color: var(--navy); background: var(--bg); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.cal-dow { font-size: 11px; font-weight: 700; color: var(--light); text-transform: uppercase; padding: 0 0 10px; letter-spacing: 0.04em; }
+.cal-day { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.12s; color: var(--black); margin: 0 auto; }
+.cal-day:hover { background: var(--bg); }
+.cal-day.other { color: var(--light); opacity: 0.4; }
+.cal-day.today { font-weight: 700; color: var(--navy); }
+.cal-day.selected { background: var(--navy); color: white; font-weight: 700; }
+.cal-day.selected:hover { background: var(--navy-mid); }
+.cal-day.past { color: var(--light); opacity: 0.35; pointer-events: none; }
+.cal-today-btn { display: block; width: 100%; margin-top: 12px; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; background: white; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--black); cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.06em; }
+.cal-today-btn:hover { background: var(--bg); border-color: var(--navy); }
 .pax-wrap { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer; transition: all 0.18s; min-height: 52px; display: flex; align-items: center; gap: 10px; position: relative; }
 .pax-wrap:hover { border-color: var(--blue-light); }
 .pax-ico { font-size: 17px; }
@@ -376,7 +395,7 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
       <div class="sfield"><label>From</label><div class="airport-picker" id="ap-ow-from"><div class="ap-trigger" onclick="openDD('dd-ow-from')"><span class="ap-flag" id="fl-ow-from">🇳🇱</span><div class="ap-text"><div class="ap-city" id="cy-ow-from">Amsterdam</div><div class="ap-code" id="cd-ow-from">AMS · Schiphol</div></div></div><div class="ap-dropdown" id="dd-ow-from"><input class="ap-search" placeholder="Search city or airport…" oninput="filterAP(this,'opts-ow-from','ow-from')" autocomplete="off"><div class="ap-opts" id="opts-ow-from"></div></div></div></div>
       <div class="swap-wrap"><button class="swap-btn" onclick="doSwap('ow')" title="Swap">⇄</button></div>
       <div class="sfield"><label>To</label><div class="airport-picker" id="ap-ow-to"><div class="ap-trigger" onclick="openDD('dd-ow-to')"><span class="ap-flag" id="fl-ow-to">🇦🇪</span><div class="ap-text"><div class="ap-city" id="cy-ow-to">Dubai</div><div class="ap-code" id="cd-ow-to">DXB · International</div></div></div><div class="ap-dropdown" id="dd-ow-to"><input class="ap-search" placeholder="Search city or airport…" oninput="filterAP(this,'opts-ow-to','ow-to')" autocomplete="off"><div class="ap-opts" id="opts-ow-to"></div></div></div></div>
-      <div class="sfield"><label>Departure</label><div class="date-wrap" onclick="pickDate('d-ow-dep')"><span class="date-ico">📅</span><div><div class="date-day" id="d-ow-dep-d">Select date</div><div class="date-month" id="d-ow-dep-m"></div></div><input type="date" class="date-input-hidden" id="d-ow-dep" onchange="showDate(this,'d-ow-dep-d','d-ow-dep-m')"></div></div>
+      <div class="sfield"><label>Departure</label><div class="date-wrap" onclick="openCal('d-ow-dep')"><span class="date-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span><div><div class="date-day" id="d-ow-dep-d">Select date</div><div class="date-month" id="d-ow-dep-m"></div></div><input type="hidden" id="d-ow-dep"><div class="cal-popup" id="cal-d-ow-dep"></div></div></div>
       <div class="sfield"><label>Passengers</label><div class="pax-wrap" onclick="togglePaxDD('pdd-ow',event)"><span class="pax-ico">👤</span><div><div class="pax-count" id="pax-ow-txt">1 passenger</div><div class="pax-sub">Business or First</div></div><div class="pax-dd" id="pdd-ow" onclick="event.stopPropagation()"><div class="pax-row"><div><div class="pax-rl">Adults</div><div class="pax-rs">12+ years</div></div><div class="pax-ctrl-row"><button class="pax-ctrl" onclick="chPax('ow',-1)">−</button><span class="pax-n" id="pn-ow">1</span><button class="pax-ctrl" onclick="chPax('ow',1)">+</button></div></div></div></div></div>
       <button class="search-btn" onclick="doSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search</button>
     </div>
@@ -386,8 +405,8 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
       <div class="sfield"><label>From</label><div class="airport-picker"><div class="ap-trigger" onclick="openDD('dd-rt-from')"><span class="ap-flag" id="fl-rt-from">🇳🇱</span><div class="ap-text"><div class="ap-city" id="cy-rt-from">Amsterdam</div><div class="ap-code" id="cd-rt-from">AMS · Schiphol</div></div></div><div class="ap-dropdown" id="dd-rt-from"><input class="ap-search" placeholder="Search city or airport…" oninput="filterAP(this,'opts-rt-from','rt-from')" autocomplete="off"><div class="ap-opts" id="opts-rt-from"></div></div></div></div>
       <div class="swap-wrap"><button class="swap-btn" onclick="doSwap('rt')">⇄</button></div>
       <div class="sfield"><label>To</label><div class="airport-picker"><div class="ap-trigger" onclick="openDD('dd-rt-to')"><span class="ap-flag" id="fl-rt-to">🇦🇪</span><div class="ap-text"><div class="ap-city" id="cy-rt-to">Dubai</div><div class="ap-code" id="cd-rt-to">DXB · International</div></div></div><div class="ap-dropdown" id="dd-rt-to"><input class="ap-search" placeholder="Search city or airport…" oninput="filterAP(this,'opts-rt-to','rt-to')" autocomplete="off"><div class="ap-opts" id="opts-rt-to"></div></div></div></div>
-      <div class="sfield"><label>Departure</label><div class="date-wrap" onclick="pickDate('d-rt-dep')"><span class="date-ico">✈️</span><div><div class="date-day" id="d-rt-dep-d">Select date</div><div class="date-month" id="d-rt-dep-m"></div></div><input type="date" class="date-input-hidden" id="d-rt-dep" onchange="showDate(this,'d-rt-dep-d','d-rt-dep-m')"></div></div>
-      <div class="sfield"><label>Return</label><div class="date-wrap" onclick="pickDate('d-rt-ret')"><span class="date-ico">🔄</span><div><div class="date-day" id="d-rt-ret-d">Select date</div><div class="date-month" id="d-rt-ret-m"></div></div><input type="date" class="date-input-hidden" id="d-rt-ret" onchange="showDate(this,'d-rt-ret-d','d-rt-ret-m')"></div></div>
+      <div class="sfield"><label>Departure</label><div class="date-wrap" onclick="openCal('d-rt-dep')"><span class="date-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span><div><div class="date-day" id="d-rt-dep-d">Select date</div><div class="date-month" id="d-rt-dep-m"></div></div><input type="hidden" id="d-rt-dep"><div class="cal-popup" id="cal-d-rt-dep"></div></div></div>
+      <div class="sfield"><label>Return</label><div class="date-wrap" onclick="openCal('d-rt-ret')"><span class="date-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span><div><div class="date-day" id="d-rt-ret-d">Select date</div><div class="date-month" id="d-rt-ret-m"></div></div><input type="hidden" id="d-rt-ret"><div class="cal-popup" id="cal-d-rt-ret"></div></div></div>
       <div class="sfield"><label>Passengers</label><div class="pax-wrap" onclick="togglePaxDD('pdd-rt',event)"><span class="pax-ico">👤</span><div><div class="pax-count" id="pax-rt-txt">1 passenger</div><div class="pax-sub">Business or First</div></div><div class="pax-dd" id="pdd-rt" onclick="event.stopPropagation()"><div class="pax-row"><div><div class="pax-rl">Adults</div><div class="pax-rs">12+ years</div></div><div class="pax-ctrl-row"><button class="pax-ctrl" onclick="chPax('rt',-1)">−</button><span class="pax-n" id="pn-rt">1</span><button class="pax-ctrl" onclick="chPax('rt',1)">+</button></div></div></div></div></div>
       <button class="search-btn" onclick="doSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search</button>
     </div>
@@ -818,6 +837,9 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('.ap-dropdown')&&!e.target.closest('.ap-trigger')&&!e.target.closest('.pax-dd')&&!e.target.closest('.pax-wrap')){
     closeAll();
   }
+  if(!e.target.closest('.cal-popup')&&!e.target.closest('.date-wrap')){
+    closeCal();
+  }
 });
 function filterAP(inp,optsId,field) { buildOpts(optsId,field,inp.value); }
 function selAP(field,code,city,flag,apt) {
@@ -836,14 +858,92 @@ function doSwap(pfx) {
     const tmp2=fEl.textContent; fEl.textContent=tEl.textContent; tEl.textContent=tmp2;
   });
 }
-function pickDate(id) { const el=document.getElementById(id); if(el)el.showPicker?el.showPicker():el.click(); }
-function showDate(inp,dId,mId) {
-  if(!inp.value)return;
-  const d=new Date(inp.value+'T12:00:00');
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById(dId).textContent=days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()];
-  document.getElementById(mId).textContent=months[d.getMonth()]+' '+d.getFullYear();
+// Custom calendar picker
+const CAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CAL_DAYS=['MO','TU','WE','TH','FR','SA','SU'];
+const CAL_SHORT_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const CAL_SHORT_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let _calOpen=null, _calMonth=null, _calYear=null, _calField=null;
+
+function openCal(fieldId) {
+  event.stopPropagation();
+  if(_calOpen===fieldId){closeCal();return;}
+  closeCal();
+  _calField=fieldId;
+  _calOpen=fieldId;
+  const inp=document.getElementById(fieldId);
+  const today=new Date();
+  if(inp&&inp.value){
+    const d=new Date(inp.value+'T12:00:00');
+    _calMonth=d.getMonth(); _calYear=d.getFullYear();
+  } else {
+    _calMonth=today.getMonth(); _calYear=today.getFullYear();
+  }
+  const wrap=inp.closest('.date-wrap');
+  if(wrap) wrap.classList.add('focused');
+  renderCal();
+  document.getElementById('cal-'+fieldId).classList.add('open');
+}
+function closeCal() {
+  document.querySelectorAll('.cal-popup').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.date-wrap').forEach(function(w){w.classList.remove('focused');});
+  _calOpen=null;
+}
+function renderCal() {
+  const popup=document.getElementById('cal-'+_calField);
+  if(!popup) return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const inp=document.getElementById(_calField);
+  const selDate=inp&&inp.value?inp.value:'';
+
+  const first=new Date(_calYear,_calMonth,1);
+  let startDay=first.getDay()-1; if(startDay<0)startDay=6;
+  const daysInMonth=new Date(_calYear,_calMonth+1,0).getDate();
+  const daysInPrev=new Date(_calYear,_calMonth,0).getDate();
+
+  let html='<div class="cal-hd"><div class="cal-title">'+CAL_MONTHS[_calMonth]+' '+_calYear+'</div><div class="cal-nav"><button onmousedown="event.preventDefault();event.stopPropagation();calPrev()">\u2039</button><button onmousedown="event.preventDefault();event.stopPropagation();calNext()">\u203a</button></div></div>';
+  html+='<div class="cal-grid">';
+  for(var i=0;i<7;i++) html+='<div class="cal-dow">'+CAL_DAYS[i]+'</div>';
+
+  // Previous month days
+  for(var i=startDay-1;i>=0;i--){
+    html+='<div class="cal-day other">'+(daysInPrev-i)+'</div>';
+  }
+  // Current month days
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(_calYear,_calMonth,d);dt.setHours(0,0,0,0);
+    var iso=_calYear+'-'+String(_calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var cls='cal-day';
+    if(dt<today) cls+=' past';
+    if(dt.getTime()===today.getTime()) cls+=' today';
+    if(iso===selDate) cls+=' selected';
+    html+='<div class="'+cls+'" onmousedown="event.preventDefault();event.stopPropagation();selectCalDay(\''+iso+'\')">'+d+'</div>';
+  }
+  // Next month days
+  var totalCells=startDay+daysInMonth;
+  var remaining=totalCells%7===0?0:7-(totalCells%7);
+  for(var i=1;i<=remaining;i++){
+    html+='<div class="cal-day other">'+i+'</div>';
+  }
+  html+='</div>';
+  html+='<button class="cal-today-btn" onmousedown="event.preventDefault();event.stopPropagation();selectCalToday()">Today</button>';
+  popup.innerHTML=html;
+}
+function calPrev(){_calMonth--;if(_calMonth<0){_calMonth=11;_calYear--;}renderCal();}
+function calNext(){_calMonth++;if(_calMonth>11){_calMonth=0;_calYear++;}renderCal();}
+function selectCalDay(iso) {
+  var inp=document.getElementById(_calField);
+  if(inp) inp.value=iso;
+  var d=new Date(iso+'T12:00:00');
+  var dId=_calField+'-d', mId=_calField+'-m';
+  document.getElementById(dId).textContent=CAL_SHORT_DAYS[(d.getDay()+6)%7]+', '+d.getDate()+' '+CAL_SHORT_MONTHS[d.getMonth()];
+  document.getElementById(mId).textContent=d.getFullYear();
+  closeCal();
+}
+function selectCalToday() {
+  var t=new Date();
+  var iso=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  selectCalDay(iso);
 }
 function togglePaxDD(id,e) {
   e.stopPropagation(); const dd=document.getElementById(id); const was=dd.classList.contains('open');
@@ -995,7 +1095,6 @@ function tfaq(el) {
   document.querySelectorAll('.faq-item').forEach(f=>{f.classList.remove('open');f.querySelector('.faq-ico').textContent='+';});
   if(!open){item.classList.add('open');item.querySelector('.faq-ico').textContent='−';}
 }
-document.addEventListener('click',e=>{if(!e.target.closest('.airport-picker')&&!e.target.closest('.pax-wrap'))closeAll();});
 </script>
 </body>
 </html>
