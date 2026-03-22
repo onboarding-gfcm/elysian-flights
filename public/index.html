@@ -183,6 +183,10 @@ nav {
 .results-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
 .results-title .route-codes { color: var(--gold); font-weight: 800; }
 .results-badge { font-size: 13px; color: var(--mid); background: white; padding: 6px 14px; border-radius: 50px; border: 1px solid var(--border); }
+.sort-btns { display: flex; gap: 4px; }
+.sort-btn { padding: 6px 14px; border-radius: 50px; border: 1px solid var(--border); background: white; font-size: 12px; font-weight: 600; color: var(--mid); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.sort-btn:hover { border-color: var(--gold); color: var(--navy); }
+.sort-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
 .results-steps { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
 .results-step { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--light); }
 .results-step.active { color: var(--navy); font-weight: 600; }
@@ -464,7 +468,13 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
   </div>
   <div class="results-hd">
     <div class="results-title">Flights <span class="route-codes" id="res-title">LHR → MIA</span></div>
-    <span class="results-badge" id="res-badge">0 results</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="results-badge" id="res-badge">0 results</span>
+      <div class="sort-btns" id="sortBtns" style="display:none;">
+        <button class="sort-btn active" id="sort-recommended" onclick="sortFlights('recommended')">Recommended</button>
+        <button class="sort-btn" id="sort-price" onclick="sortFlights('price')">Lowest price</button>
+      </div>
+    </div>
   </div>
   <div id="cards-wrap"></div>
 </div>
@@ -1221,15 +1231,45 @@ async function doSearch(overrideDate) {
       +'</div>'
       +'<div class="fc-classes">'+premCol+bizCol+firstCol+'</div>'
       +'</div>';
-    return {html,price:lowestPrice};
-  }).filter(Boolean).sort((a,b)=>a.price-b.price);
+    return {html,price:lowestPrice,stops:f.stops||0,duration:parseInt(f.duration,10)||9999,direct:!!f.direct};
+  }).filter(Boolean);
 
-  if(cards.length>0){
-    cards[0].html=cards[0].html.replace('class="flight-card"','class="flight-card" style="border-color:rgba(212,168,67,0.3);"');
+  // Store globally for re-sorting
+  window._flightCards=cards;
+  window._currentSort='recommended';
+  sortFlights('recommended');
+}
+
+function sortFlights(mode){
+  const cards=window._flightCards;
+  if(!cards||!cards.length) return;
+  window._currentSort=mode;
+
+  // Update button states
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('sort-'+mode);
+  if(btn) btn.classList.add('active');
+
+  let sorted;
+  if(mode==='price'){
+    sorted=[...cards].sort((a,b)=>a.price-b.price);
+  } else {
+    // Recommended: direct first, then by shortest duration
+    sorted=[...cards].sort((a,b)=>{
+      if(a.direct&&!b.direct) return -1;
+      if(!a.direct&&b.direct) return 1;
+      return a.duration-b.duration;
+    });
   }
 
-  document.getElementById('res-badge').textContent=cards.length+' flight'+(cards.length===1?'':'s')+' found';
-  document.getElementById('cards-wrap').innerHTML=cards.length?cards.map(c=>c.html).join(''):'<div class="no-results-msg"><h3>No flights found</h3><p>No availability for this route. Try a different date or destination.</p></div>';
+  // Highlight best card
+  sorted.forEach((c,i)=>{
+    c._rendered=i===0?c.html.replace('class="flight-card"','class="flight-card" style="border-color:rgba(212,168,67,0.3);"'):c.html;
+  });
+
+  document.getElementById('res-badge').textContent=sorted.length+' flight'+(sorted.length===1?'':'s')+' found';
+  document.getElementById('sortBtns').style.display=sorted.length>1?'flex':'none';
+  document.getElementById('cards-wrap').innerHTML=sorted.map(c=>c._rendered).join('');
 }
 function qs(fc,fcode,tc,tcode) {
   const fa=APS.find(a=>a.code===fcode)||{code:fcode,city:fc,flag:'🌍',apt:''};
