@@ -799,10 +799,6 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
           <div class="fs-detail-value" id="b-aircraft">Boeing 777-300ER</div>
         </div>
         <div class="fs-detail-item">
-          <div class="fs-detail-label">Program</div>
-          <div class="fs-detail-value" id="b-program">Qantas</div>
-        </div>
-        <div class="fs-detail-item">
           <div class="fs-detail-label">Date</div>
           <div class="fs-detail-value" id="b-date">—</div>
         </div>
@@ -1491,7 +1487,7 @@ async function doSearch(overrideDate) {
     const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
     const bookCls=bizPrice?'business':'first';
     const bookPrice=bizPrice||firstPrice;
-    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',program:f.program||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
+    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:formatDuration(f.duration)||f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
 
     const bizCol=hasBiz&&bizPrice
       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">€'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
@@ -1604,11 +1600,13 @@ function openBk(f,tp,pLabel) {
   document.getElementById('b-flight-no').textContent=f.flightNo||'';
   document.getElementById('b-dep').textContent=f.dep||'--:--';
   document.getElementById('b-arr').textContent=f.arr||'--:--';
-  document.getElementById('b-dur').textContent=f.dur||'—';
+  // Format duration if still raw minutes
+  let durText=f.dur||'—';
+  if(/^\d+$/.test(durText)){ const mins=parseInt(durText,10); const h=Math.floor(mins/60); const m=mins%60; durText=h+'h'+(m>0?' '+m+'m':''); }
+  document.getElementById('b-dur').textContent=durText;
   const cabinLabel=f.cls==='first'?'First Class':'Business Class';
   document.getElementById('b-cabin').textContent=cabinLabel;
   document.getElementById('b-aircraft').textContent=getAircraft(f.code,f.to);
-  document.getElementById('b-program').textContent=f.program||'—';
   if(f.direct){
     document.getElementById('b-stops').innerHTML='<span class="fs-direct-badge">Direct</span>';
   } else {
