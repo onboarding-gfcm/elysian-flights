@@ -43,7 +43,27 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'origin and destination required' });
   }
 
-  const API_KEY = process.env.SEATS_AERO_API_KEY || 'pro_2xaxtKyA0PHA0FMViRkybESjNR6';
+  // Multiple API keys for automatic failover on rate limits (429)
+  const API_KEYS = [
+    process.env.SEATS_AERO_API_KEY || 'pro_2xaxtKyA0PHA0FMViRkybESjNR6',
+    process.env.SEATS_AERO_API_KEY_2 || 'pro_3BJEOeNGuFgOqILdybD3Uq8Ph6E'
+  ].filter(k => k.length > 0);
+
+  let activeKeyIndex = 0;
+
+  async function fetchWithFailover(url, keyIndex) {
+    const apiKey = API_KEYS[keyIndex];
+    const resp = await fetch(url, {
+      headers: { 'Partner-Authorization': apiKey, 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(15000)
+    });
+    if (resp.status === 429 && keyIndex + 1 < API_KEYS.length) {
+      console.log(`[Key ${keyIndex + 1}] Rate limited (429), switching to key ${keyIndex + 2}`);
+      activeKeyIndex = keyIndex + 1;
+      return fetchWithFailover(url, keyIndex + 1);
+    }
+    return resp;
+  }
 
   try {
     const programKeys = Object.keys(PROGRAMS);
@@ -68,15 +88,9 @@ module.exports = async function handler(req, res) {
       }
 
       const apiUrl = `https://seats.aero/partnerapi/search?${params.toString()}`;
-      console.log(`[${cfg.label}] Calling: ${apiUrl}`);
+      console.log(`[${cfg.label}] Calling: ${apiUrl} (key ${activeKeyIndex + 1})`);
 
-      return fetch(apiUrl, {
-        headers: {
-          'Partner-Authorization': API_KEY,
-          'Accept': 'application/json'
-        },
-        signal: AbortSignal.timeout(15000)
-      })
+      return fetchWithFailover(apiUrl, activeKeyIndex)
       .then(async resp => {
         if (!resp.ok) {
           const errText = await resp.text().catch(() => '');
@@ -218,6 +232,7 @@ module.exports = async function handler(req, res) {
             duration,
             flightNo,
             airline: airlineCode,
+            connections: connections,
             program: cfg.label,
             programKey: key,
             source: avail.Source || cfg.source,
