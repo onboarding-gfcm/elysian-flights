@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>butler.flights — Premium Business & First Class</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -223,7 +223,7 @@ nav {
 .fc-class-col:hover { background: #e2e6ec; }
 .fc-class-col.unavail { opacity: 0.35; }
 .fc-class-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 6px; }
-.fc-class-price { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
+.fc-class-price { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); letter-spacing: -0.3px; }
 .fc-class-price.na { font-size: 13px; font-weight: 500; color: #b0b8c4; }
 .fc-class-note { font-size: 10px; color: #94a3b8; margin-top: 2px; }
 .badge { padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -1210,10 +1210,10 @@ async function doSearch(overrideDate) {
     const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding']};
 
     const bizCol=hasBiz&&bizPrice
-      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">&euro;'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
+      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">€'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
       :'<div class="fc-class-col unavail"><div class="fc-class-label">Business</div><div class="fc-class-price na">Not available</div></div>';
     const firstCol=hasFirst&&firstPrice
-      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:firstPrice,cls:"first",feat:["Private suite","Premium lounge","Butler service"]}).replace(/'/g,"\\u0027")+','+firstPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">First Class</div><div class="fc-class-price">&euro;'+((firstPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
+      ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:firstPrice,cls:"first",feat:["Private suite","Premium lounge","Butler service"]}).replace(/'/g,"\\u0027")+','+firstPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">First Class</div><div class="fc-class-price">€'+((firstPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
       :'<div class="fc-class-col unavail"><div class="fc-class-label">First Class</div><div class="fc-class-price na">Not available</div></div>';
     const premCol='<div class="fc-class-col unavail"><div class="fc-class-label">Premium Economy</div><div class="fc-class-price na">Not available</div></div>';
 
