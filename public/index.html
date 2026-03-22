@@ -94,11 +94,12 @@ nav {
 .ap-dropdown {
   display: none; position: absolute; top: calc(100% + 5px); left: 0;
   background: white; border: 1.5px solid var(--border); border-radius: 14px;
-  box-shadow: var(--shadow-lg); z-index: 500; overflow: hidden; min-width: 260px;
+  box-shadow: var(--shadow-lg); z-index: 500; min-width: 280px; width: 100%;
 }
+.ap-dropdown * { pointer-events: auto; }
 .ap-dropdown.open { display: block; }
 .ap-search { width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 12px 16px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; background: var(--bg); }
-.ap-opts { max-height: 240px; overflow-y: auto; }
+.ap-opts { max-height: 340px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .ap-opt { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; transition: background 0.1s; }
 .ap-opt:hover { background: var(--bg); }
 .ap-opt .of { font-size: 20px; }
@@ -131,8 +132,7 @@ nav {
 .search-btn { height: 52px; padding: 0 26px; background: var(--navy); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: 0 4px 14px rgba(15,32,68,0.28); align-self: flex-end; }
 .search-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
 .search-btn svg { width: 17px; height: 17px; }
-.dd-overlay { display: none; position: fixed; inset: 0; z-index: 400; }
-.dd-overlay.open { display: block; }
+.dd-overlay { display: none; }
 .results-section { max-width: 1200px; margin: 0 auto; padding: 40px 48px 60px; display: none; }
 .results-section.visible { display: block; }
 .results-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
@@ -710,24 +710,35 @@ function buildOpts(containerId,field,q) {
   list.forEach(a=>{
     const div=document.createElement('div');
     div.className='ap-opt';
-    div.innerHTML=`<span class="of">${a.flag}</span><div><div class="oc">${a.city} (${a.code})</div><div class="od">${a.country} \u00b7 ${a.apt}</div></div>`;
-    div.addEventListener('click',function(e){e.stopPropagation();selAP(field,a.code,a.city,a.flag,a.apt);});
+    div.innerHTML='<span class="of">'+a.flag+'</span><div><div class="oc">'+a.city+' ('+a.code+')</div><div class="od">'+a.country+' \u00b7 '+a.apt+'</div></div>';
+    div.onmousedown=function(e){
+      e.preventDefault();e.stopPropagation();
+      selAP(field,a.code,a.city,a.flag,a.apt);
+    };
     el.appendChild(div);
   });
 }
+let _openDDId=null;
 function openDD(id) {
+  if(_openDDId===id){closeAll();return;}
   closeAll();
   const dd=document.getElementById(id); if(!dd)return;
   dd.classList.add('open');
-  document.getElementById('ddOverlay').classList.add('open');
+  _openDDId=id;
   const field=id.replace('dd-','');
   buildOpts('opts-'+field,field,'');
-  const inp=dd.querySelector('.ap-search'); if(inp){inp.value='';setTimeout(()=>inp.focus(),40);}
+  const inp=dd.querySelector('.ap-search');
+  if(inp){inp.value='';setTimeout(function(){inp.focus();},50);}
 }
 function closeAll() {
-  document.querySelectorAll('.ap-dropdown,.pax-dd').forEach(d=>d.classList.remove('open'));
-  document.getElementById('ddOverlay').classList.remove('open');
+  document.querySelectorAll('.ap-dropdown,.pax-dd').forEach(function(d){d.classList.remove('open');});
+  _openDDId=null;
 }
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.ap-dropdown')&&!e.target.closest('.ap-trigger')&&!e.target.closest('.pax-dd')&&!e.target.closest('.pax-wrap')){
+    closeAll();
+  }
+});
 function filterAP(inp,optsId,field) { buildOpts(optsId,field,inp.value); }
 function selAP(field,code,city,flag,apt) {
   sel[field]={code,city,flag,apt};
@@ -756,7 +767,7 @@ function showDate(inp,dId,mId) {
 }
 function togglePaxDD(id,e) {
   e.stopPropagation(); const dd=document.getElementById(id); const was=dd.classList.contains('open');
-  closeAll(); if(!was){dd.classList.add('open');document.getElementById('ddOverlay').classList.add('open');}
+  closeAll(); if(!was){dd.classList.add('open');}
 }
 function chPax(pfx,d) {
   const k=pfx; pax[k]=Math.max(1,Math.min(9,pax[k]+d));
