@@ -28,8 +28,8 @@ function calcPrice(miles, taxes, taxCur, progKey) {
 const PROGRAMS = {
   qantas:        { source: 'qantas',        carriers: 'EK',       label: 'Qantas',           maxStops: 0,    maxPoints: null   },
   flying_blue:   { source: 'flying_blue',   carriers: 'EY,KL,AF', label: 'Flying Blue',       maxStops: 1,    maxPoints: 85000  },
-  virginatlantic:{ source: 'virginatlantic', carriers: 'KL,AF',    label: 'Virgin Atlantic',   maxStops: 1,    maxPoints: 100000 },
-  american:      { source: 'american',       carriers: 'EY',       label: 'American Airlines', maxStops: null,  maxPoints: 60000  }
+  virginatlantic:{ source: 'virginatlantic', carriers: '',          label: 'Virgin Atlantic',   maxStops: 1,    maxPoints: 100000 },
+  american:      { source: 'american',       carriers: 'EY',       label: 'American Airlines',  maxStops: null, maxPoints: 60000  }
 };
 
 module.exports = async function handler(req, res) {
@@ -50,17 +50,31 @@ module.exports = async function handler(req, res) {
     const apiCalls = programKeys.map(key => {
       const cfg = PROGRAMS[key];
       const params = new URLSearchParams({
-        origin_airport: origin, destination_airport: destination,
-        sources: cfg.source, carriers: cfg.carriers,
-        include_trips: 'true', take: '50'
+        origin_airport: origin,
+        destination_airport: destination,
+        sources: cfg.source,
+        include_trips: 'true',
+        take: '50'
       });
-      if (date) { params.set('start_date', date); params.set('end_date', date); }
+
+      // Only add carriers filter if specified
+      if (cfg.carriers) {
+        params.set('carriers', cfg.carriers);
+      }
+
+      if (date) {
+        params.set('start_date', date);
+        params.set('end_date', date);
+      }
 
       const apiUrl = `https://seats.aero/partnerapi/search?${params.toString()}`;
       console.log(`[${cfg.label}] Calling: ${apiUrl}`);
 
       return fetch(apiUrl, {
-        headers: { 'Partner-Authorization': API_KEY, 'Accept': 'application/json' },
+        headers: {
+          'Partner-Authorization': API_KEY,
+          'Accept': 'application/json'
+        },
         signal: AbortSignal.timeout(15000)
       })
       .then(async resp => {
@@ -99,6 +113,7 @@ module.exports = async function handler(req, res) {
         if (trips.length === 0) {
           const isDirect = (hasJ && avail.JDirect === true) || (hasF && avail.FDirect === true);
           if (cfg.maxStops === 0 && !isDirect) continue;
+
           const mileageCost = avail.JMileageCost || avail.FMileageCost || 0;
           if (cfg.maxPoints && mileageCost > cfg.maxPoints) continue;
 
@@ -111,12 +126,16 @@ module.exports = async function handler(req, res) {
             date: avail.Date || date,
             origin: avail.Route?.OriginAirport || origin,
             destination: avail.Route?.DestinationAirport || destination,
-            depTime: '', arrTime: '', duration: '',
+            depTime: '',
+            arrTime: '',
+            duration: '',
             flightNo: primaryAirline + '---',
             airline: primaryAirline,
-            program: cfg.label, programKey: key,
+            program: cfg.label,
+            programKey: key,
             source: avail.Source || cfg.source,
-            segments: [], stops: isDirect ? 0 : null,
+            segments: [],
+            stops: isDirect ? 0 : null,
             availability: { premiumEconomy: false, business: hasJ, first: hasF },
             prices: {
               premiumEconomy: null,
@@ -153,25 +172,36 @@ module.exports = async function handler(req, res) {
 
           // Build connection segments
           const connRaw = trip.Connections || '';
-          const connections = (typeof connRaw === 'string' && connRaw) ? connRaw.split(',').map(c => c.trim()) : [];
-          const segmentDetails = [];
+          const connections = (typeof connRaw === 'string' && connRaw)
+            ? connRaw.split(',').map(c => c.trim())
+            : [];
 
+          const segmentDetails = [];
           if (connections.length > 0 && !isDirect) {
             const allPoints = [trip.OriginAirport, ...connections, trip.DestinationAirport];
             const flightNos = flightNo.split(',').map(f => f.trim());
             for (let i = 0; i < allPoints.length - 1; i++) {
               segmentDetails.push({
                 flightNo: flightNos[i] || flightNo,
-                origin: allPoints[i] || '', destination: allPoints[i + 1] || '',
-                depTime: i === 0 ? depTime : '', arrTime: i === allPoints.length - 2 ? arrTime : '',
-                duration: '', aircraft: '', fareClass: trip.Cabin || ''
+                origin: allPoints[i] || '',
+                destination: allPoints[i + 1] || '',
+                depTime: i === 0 ? depTime : '',
+                arrTime: i === allPoints.length - 2 ? arrTime : '',
+                duration: '',
+                aircraft: '',
+                fareClass: trip.Cabin || ''
               });
             }
           } else {
             segmentDetails.push({
-              flightNo, origin: trip.OriginAirport || origin,
+              flightNo,
+              origin: trip.OriginAirport || origin,
               destination: trip.DestinationAirport || destination,
-              depTime, arrTime, duration, aircraft: '', fareClass: trip.Cabin || ''
+              depTime,
+              arrTime,
+              duration,
+              aircraft: '',
+              fareClass: trip.Cabin || ''
             });
           }
 
@@ -183,12 +213,21 @@ module.exports = async function handler(req, res) {
             date: avail.Date || date,
             origin: trip.OriginAirport || origin,
             destination: trip.DestinationAirport || destination,
-            depTime, arrTime, duration,
-            flightNo, airline: airlineCode,
-            program: cfg.label, programKey: key,
+            depTime,
+            arrTime,
+            duration,
+            flightNo,
+            airline: airlineCode,
+            program: cfg.label,
+            programKey: key,
             source: avail.Source || cfg.source,
-            segments: segmentDetails, stops,
-            availability: { premiumEconomy: false, business: hasJ && !isFirst, first: hasF && isFirst },
+            segments: segmentDetails,
+            stops,
+            availability: {
+              premiumEconomy: false,
+              business: hasJ && !isFirst,
+              first: hasF && isFirst
+            },
             prices: {
               premiumEconomy: null,
               business: !isFirst ? price : null,
@@ -208,7 +247,8 @@ module.exports = async function handler(req, res) {
     const uniqueFlights = allFlights.filter(f => {
       const k = `${f.programKey}|${f.flightNo}|${f.depTime}|${f.date}`;
       if (seen.has(k)) return false;
-      seen.add(k); return true;
+      seen.add(k);
+      return true;
     });
 
     const programOrder = { qantas: 0, flying_blue: 1, virginatlantic: 2, american: 3 };
@@ -221,7 +261,9 @@ module.exports = async function handler(req, res) {
     });
 
     const perProgram = {};
-    for (const f of uniqueFlights) { perProgram[f.program] = (perProgram[f.program] || 0) + 1; }
+    for (const f of uniqueFlights) {
+      perProgram[f.program] = (perProgram[f.program] || 0) + 1;
+    }
 
     return res.json({
       flights: uniqueFlights.slice(0, 100),
@@ -230,6 +272,7 @@ module.exports = async function handler(req, res) {
       perProgram,
       totalDisplayed: uniqueFlights.length
     });
+
   } catch (e) {
     console.error('seats.aero API error:', e.message);
     return res.json({ flights: [], source: 'error', error: e.message });
@@ -238,7 +281,10 @@ module.exports = async function handler(req, res) {
 
 function formatDateTime(isoStr) {
   if (!isoStr) return '';
-  try { const d = new Date(isoStr); return d.toISOString().substring(11, 16); } catch { return ''; }
+  try {
+    const d = new Date(isoStr);
+    return d.toISOString().substring(11, 16);
+  } catch { return ''; }
 }
 
 function computeDuration(depStr, arrStr) {
