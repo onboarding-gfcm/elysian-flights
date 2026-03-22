@@ -250,6 +250,25 @@ nav {
 .al-card:hover img { transform:scale(1.06); }
 .al-ov { position:absolute; inset:0; background:linear-gradient(to top, rgba(10,24,60,0.75), transparent); }
 .al-name { position:absolute; bottom:0; left:0; right:0; padding:10px 12px; color:white; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; display:flex; justify-content:space-between; align-items:flex-end; }
+
+/* Airline cabin modal */
+.cabin-modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:9999; display:none; align-items:center; justify-content:center; opacity:0; transition:opacity 0.25s; }
+.cabin-modal-bg.open { display:flex; opacity:1; }
+.cabin-modal { background:#111827; border-radius:20px; max-width:860px; width:92%; max-height:88vh; overflow-y:auto; position:relative; border:1px solid rgba(255,255,255,0.1); }
+.cabin-modal-close { position:absolute; top:16px; right:16px; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; transition:background 0.2s; }
+.cabin-modal-close:hover { background:rgba(255,255,255,0.2); }
+.cabin-modal-header { padding:32px 32px 0; }
+.cabin-modal-airline { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:white; letter-spacing:-0.5px; }
+.cabin-modal-sub { font-size:13px; color:rgba(255,255,255,0.45); margin-top:4px; }
+.cabin-modal-grid { display:grid; gap:16px; padding:24px 32px 32px; }
+.cabin-modal-grid.cols-2 { grid-template-columns:1fr 1fr; }
+.cabin-modal-grid.cols-1 { grid-template-columns:1fr; max-width:440px; margin:0 auto; padding-left:32px; padding-right:32px; }
+.cabin-col { border-radius:16px; overflow:hidden; background:#1c2333; border:1px solid rgba(255,255,255,0.08); }
+.cabin-col-img { width:100%; aspect-ratio:16/10; object-fit:cover; display:block; background:#0f172a; }
+.cabin-col-info { padding:18px 20px; }
+.cabin-col-class { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; color:var(--gold-light); margin-bottom:4px; }
+.cabin-col-desc { font-size:12px; color:rgba(255,255,255,0.45); line-height:1.5; }
+@media(max-width:640px){ .cabin-modal-grid.cols-2{grid-template-columns:1fr;} .cabin-modal{width:96%;} }
 .why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
 .why-card { background:white; border-radius:var(--radius); padding:26px 24px; border:1.5px solid var(--border); transition:all 0.2s; }
 .why-card:hover { border-color:var(--navy); box-shadow:var(--shadow); }
@@ -465,12 +484,24 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
 <div class="section">
   <div class="sec-hd"><h2>Our Partner Airlines</h2><p>We work with the world's finest carriers to secure exclusive rates.</p></div>
   <div class="airlines-row">
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1540339832862-474599807836?w=400&q=80" alt="Emirates"><div class="al-ov"></div><div class="al-name">Emirates<span>↗</span></div></div>
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1569012871812-f38ee64cd54c?w=400&q=80" alt="KLM"><div class="al-ov"></div><div class="al-name">KLM<span>↗</span></div></div>
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=400&q=80" alt="Turkish Airlines"><div class="al-ov"></div><div class="al-name">Turkish Airlines<span>↗</span></div></div>
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1542296332-2e4473faf563?w=400&q=80" alt="Qatar Airways"><div class="al-ov"></div><div class="al-name">Qatar Airways<span>↗</span></div></div>
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=400&q=80" alt="Lufthansa"><div class="al-ov"></div><div class="al-name">Lufthansa<span>↗</span></div></div>
-    <div class="al-card"><img src="https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=400&q=80" alt="Air France"><div class="al-ov"></div><div class="al-name">Air France<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('emirates')"><img src="https://images.unsplash.com/photo-1540339832862-474599807836?w=400&q=80" alt="Emirates" id="img-emirates"><div class="al-ov"></div><div class="al-name">Emirates<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('klm')"><img src="https://images.unsplash.com/photo-1569012871812-f38ee64cd54c?w=400&q=80" alt="KLM" id="img-klm"><div class="al-ov"></div><div class="al-name">KLM<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('turkish')"><img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=400&q=80" alt="Turkish Airlines" id="img-turkish"><div class="al-ov"></div><div class="al-name">Turkish Airlines<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('qatar')"><img src="https://images.unsplash.com/photo-1542296332-2e4473faf563?w=400&q=80" alt="Qatar Airways" id="img-qatar"><div class="al-ov"></div><div class="al-name">Qatar Airways<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('lufthansa')"><img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=400&q=80" alt="Lufthansa" id="img-lufthansa"><div class="al-ov"></div><div class="al-name">Lufthansa<span>↗</span></div></div>
+    <div class="al-card" onclick="openCabinModal('airfrance')"><img src="https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=400&q=80" alt="Air France" id="img-airfrance"><div class="al-ov"></div><div class="al-name">Air France<span>↗</span></div></div>
+  </div>
+</div>
+
+<!-- Cabin class modal -->
+<div class="cabin-modal-bg" id="cabinModalBg" onclick="if(event.target===this)closeCabinModal()">
+  <div class="cabin-modal" id="cabinModal">
+    <button class="cabin-modal-close" onclick="closeCabinModal()">✕</button>
+    <div class="cabin-modal-header">
+      <div class="cabin-modal-airline" id="cabinModalName"></div>
+      <div class="cabin-modal-sub" id="cabinModalSub"></div>
+    </div>
+    <div class="cabin-modal-grid" id="cabinModalGrid"></div>
   </div>
 </div>
 
@@ -781,6 +812,88 @@ let curTab = 'oneway';
 let sel = { 'ow-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'ow-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'}, 'rt-from':{code:'AMS',city:'Amsterdam',flag:'🇳🇱',apt:'Schiphol'}, 'rt-to':{code:'DXB',city:'Dubai',flag:'🇦🇪',apt:'International'} };
 let pax = {'ow':1,'rt':1};
 let bkData = {};
+
+/* ── Cabin class modal ── */
+const CABIN_DATA = {
+  emirates: {
+    name: 'Emirates',
+    sub: 'Experience world-class luxury in the sky',
+    classes: [
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1540339832862-474599807836?w=800&q=80', desc: 'Lie-flat seats, onboard lounge, gourmet dining and premium beverages at 40,000 feet.' },
+      { label: 'First Class', img: 'https://images.unsplash.com/photo-1587019158091-1a4f998ecfa3?w=800&q=80', desc: 'Private suites with closing doors, onboard shower spa, and personal minibar.' }
+    ]
+  },
+  klm: {
+    name: 'KLM',
+    sub: 'Dutch quality and comfort on every route',
+    classes: [
+      { label: 'Premium Economy', img: 'https://images.unsplash.com/photo-1569012871812-f38ee64cd54c?w=800&q=80', desc: 'Extra legroom, premium meals, priority boarding and enhanced seat comfort.' },
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1569012871812-f38ee64cd54c?w=800&q=80', desc: 'Full-flat seats, à la carte dining, KLM Crown Lounge access worldwide.' }
+    ]
+  },
+  turkish: {
+    name: 'Turkish Airlines',
+    sub: 'Where East meets West in premium travel',
+    classes: [
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&q=80', desc: 'Lie-flat seats, award-winning Turkish cuisine, CIP Lounge Istanbul with à la carte dining.' }
+    ]
+  },
+  qatar: {
+    name: 'Qatar Airways',
+    sub: 'Award-winning luxury from Doha',
+    classes: [
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1542296332-2e4473faf563?w=800&q=80', desc: 'Qsuite private suites with closing doors, gourmet menus, and Al Mourjan Lounge access.' }
+    ]
+  },
+  lufthansa: {
+    name: 'Lufthansa',
+    sub: 'German precision meets premium comfort',
+    classes: [
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800&q=80', desc: 'Fully flat beds, Lufthansa Senator Lounge, fine European cuisine at altitude.' }
+    ]
+  },
+  airfrance: {
+    name: 'Air France',
+    sub: 'French elegance at every altitude',
+    classes: [
+      { label: 'Business Class', img: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800&q=80', desc: 'Full-flat seats with direct aisle access, Michelin-inspired dining, and La Première lounge.' },
+      { label: 'La Première', img: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800&q=80', desc: 'The ultimate French luxury — private suite, bespoke cuisine by top chefs, dedicated concierge.' }
+    ]
+  }
+};
+
+function openCabinModal(key) {
+  const d = CABIN_DATA[key];
+  if (!d) return;
+  document.getElementById('cabinModalName').textContent = d.name;
+  document.getElementById('cabinModalSub').textContent = d.sub;
+  const grid = document.getElementById('cabinModalGrid');
+  grid.className = 'cabin-modal-grid ' + (d.classes.length > 1 ? 'cols-2' : 'cols-1');
+  grid.innerHTML = d.classes.map(c =>
+    '<div class="cabin-col">' +
+      '<img class="cabin-col-img" src="' + c.img + '" alt="' + c.label + '">' +
+      '<div class="cabin-col-info">' +
+        '<div class="cabin-col-class">' + c.label + '</div>' +
+        '<div class="cabin-col-desc">' + c.desc + '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+  const bg = document.getElementById('cabinModalBg');
+  bg.style.display = 'flex';
+  requestAnimationFrame(() => bg.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCabinModal() {
+  const bg = document.getElementById('cabinModalBg');
+  bg.classList.remove('open');
+  setTimeout(() => { bg.style.display = 'none'; }, 250);
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeCabinModal();
+});
 
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
