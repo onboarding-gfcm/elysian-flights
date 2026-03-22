@@ -340,10 +340,24 @@ nav {
 .back-btn:hover { color:var(--navy); }
 .bk-h1 { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; margin-bottom:5px; }
 .bk-sub { color:var(--mid); font-size:14px; margin-bottom:26px; }
-.flight-sum { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%); border-radius:14px; padding:22px 28px; display:flex; justify-content:space-between; align-items:center; color:white; margin-bottom:22px; flex-wrap:wrap; gap:16px; }
-.fs-route { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.5px; }
-.fs-detail { font-size:12px; color:rgba(255,255,255,0.55); margin-top:4px; }
-.fs-price { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--gold-light); letter-spacing:-0.5px; }
+.flight-sum { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%); border-radius:16px; padding:28px 32px; color:white; margin-bottom:22px; }
+.fs-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; }
+.fs-route { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:-0.5px; }
+.fs-airline-row { display:flex; align-items:center; gap:10px; margin-top:8px; }
+.fs-al-logo { width:32px; height:32px; border-radius:8px; object-fit:contain; background:rgba(255,255,255,0.1); padding:3px; }
+.fs-airline-name { font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); }
+.fs-flight-no { font-size:12px; color:rgba(255,255,255,0.45); margin-left:4px; }
+.fs-price-wrap { text-align:right; }
+.fs-price { font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:var(--gold-light); letter-spacing:-0.5px; }
+.fs-pnote { font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px; }
+.fs-divider { height:1px; background:rgba(255,255,255,0.1); margin:0 0 18px; }
+.fs-details-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; }
+.fs-detail-item { }
+.fs-detail-label { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.4); margin-bottom:4px; }
+.fs-detail-value { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:white; }
+.fs-cabin-badge { display:inline-block; background:var(--gold); color:var(--navy); font-family:'Syne',sans-serif; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; letter-spacing:0.02em; }
+.fs-direct-badge { display:inline-block; font-size:11px; font-weight:600; color:#34d399; }
+.fs-stops-badge { display:inline-block; font-size:11px; font-weight:600; color:var(--gold-light); }
 .fs-pnote { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; text-align:right; }
 .bk-form { background:white; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; }
 .form-sec { padding:22px 28px; border-bottom:1px solid var(--border); }
@@ -523,6 +537,15 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
   /* Transfer cards */
   .transfer-grid{grid-template-columns:1fr; gap:12px;}
   .tf-img-wrap{height:160px;}
+
+  /* Booking flight summary */
+  .flight-sum{padding:20px 18px;}
+  .fs-route{font-size:22px;}
+  .fs-price{font-size:26px;}
+  .fs-details-grid{grid-template-columns:1fr 1fr; gap:14px 16px;}
+  .fs-detail-value{font-size:13px;}
+  .fs-al-logo{width:26px;height:26px;}
+  .fs-airline-name{font-size:12px;}
 
   /* Concierge hero */
   .cs-hero{padding-top:56px; padding-bottom:40px;}
@@ -735,8 +758,55 @@ footer { background:var(--navy); color:white; padding:52px 48px 26px; }
     <div class="bk-h1">Complete Your Booking</div>
     <div class="bk-sub">Fill in your details — we'll confirm via WhatsApp within 15 minutes.</div>
     <div class="flight-sum">
-      <div><div class="fs-route" id="b-route">AMS → DXB</div><div class="fs-detail" id="b-detail">09:45 → 14:20 · Emirates · Business Class</div></div>
-      <div style="text-align:right"><div class="fs-price" id="b-price">€1,500</div><div class="fs-pnote">per person</div></div>
+      <div class="fs-top">
+        <div>
+          <div class="fs-route" id="b-route">AMS → DXB</div>
+          <div class="fs-airline-row">
+            <img class="fs-al-logo" id="b-al-logo" src="" alt="">
+            <span class="fs-airline-name" id="b-airline-name">Emirates</span>
+            <span class="fs-flight-no" id="b-flight-no">EK 148</span>
+          </div>
+        </div>
+        <div class="fs-price-wrap">
+          <div class="fs-price" id="b-price">€1,500</div>
+          <div class="fs-pnote" id="b-pnote">per person</div>
+        </div>
+      </div>
+      <div class="fs-divider"></div>
+      <div class="fs-details-grid">
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Departure</div>
+          <div class="fs-detail-value" id="b-dep">22:00</div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Arrival</div>
+          <div class="fs-detail-value" id="b-arr">06:40</div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Duration</div>
+          <div class="fs-detail-value" id="b-dur">6h 40m</div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Route</div>
+          <div class="fs-detail-value" id="b-stops"><span class="fs-direct-badge">Direct</span></div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Cabin</div>
+          <div class="fs-detail-value"><span class="fs-cabin-badge" id="b-cabin">Business Class</span></div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Aircraft</div>
+          <div class="fs-detail-value" id="b-aircraft">Boeing 777-300ER</div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Program</div>
+          <div class="fs-detail-value" id="b-program">Qantas</div>
+        </div>
+        <div class="fs-detail-item">
+          <div class="fs-detail-label">Date</div>
+          <div class="fs-detail-value" id="b-date">—</div>
+        </div>
+      </div>
     </div>
     <div class="bk-form">
       <div class="form-sec">
@@ -1421,7 +1491,7 @@ async function doSearch(overrideDate) {
     const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
     const bookCls=bizPrice?'business':'first';
     const bookPrice=bizPrice||firstPrice;
-    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding']};
+    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',program:f.program||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
 
     const bizCol=hasBiz&&bizPrice
       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">€'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
@@ -1495,11 +1565,61 @@ function qs(fc,fcode,tc,tcode) {
   doSearch();
 }
 const MERHABA_PRICE=85;
+// Aircraft mapping by airline + route/aircraft type
+const AIRCRAFT_MAP={
+  'EK':{'default':'Boeing 777-300ER','A380':['LHR','CDG','JFK','SYD','BKK','SIN']},
+  'KL':{'default':'Boeing 787-9 Dreamliner','772':['JFK'],'789':['DXB','NRT','KIX','BKK','SIN','JNB']},
+  'AF':{'default':'Airbus A350-900','388':['JFK','MIA','CDG'],'773':['DXB','SIN']},
+  'TK':{'default':'Boeing 787-9 Dreamliner','77W':['JFK','SFO','IAH'],'333':['AMS','CDG','LHR']},
+  'QR':{'default':'Boeing 787-9 Dreamliner','351':['LHR','CDG'],'77W':['JFK','AMS']},
+  'LH':{'default':'Airbus A340-300','748':['JFK','PVG','DEL'],'359':['BOS','YUL']},
+  'SQ':{'default':'Airbus A350-900','388':['LHR','SYD','FRA']},
+  'BA':{'default':'Boeing 787-9 Dreamliner','388':['JFK','LAX','MIA']},
+  'QF':{'default':'Airbus A380-800'},
+  'VS':{'default':'Airbus A350-1000'}
+};
+function getAircraft(alCode,dest){
+  const m=AIRCRAFT_MAP[alCode];
+  if(!m) return '—';
+  // Check if destination matches a specific aircraft
+  for(const[type,dests] of Object.entries(m)){
+    if(type==='default') continue;
+    if(Array.isArray(dests)&&dests.includes(dest)) {
+      if(type==='A380'||type==='388') return 'Airbus A380-800';
+      if(type==='748') return 'Boeing 747-8';
+      if(type==='77W'||type==='772'||type==='773') return 'Boeing 777-300ER';
+      if(type==='789') return 'Boeing 787-9 Dreamliner';
+      if(type==='351'||type==='359') return 'Airbus A350-900';
+      if(type==='333') return 'Airbus A330-300';
+    }
+  }
+  return m['default']||'—';
+}
+
 function openBk(f,tp,pLabel) {
   bkData={f,tp,pLabel,merhaba:false,transfer:null};
   document.getElementById('b-route').textContent=f.from+' → '+f.to;
-  document.getElementById('b-detail').textContent=f.dep+' → '+f.arr+' · '+f.dur+' · '+f.airline+' · '+(f.cls==='first'?'First Class':'Business Class');
+  document.getElementById('b-al-logo').src='https://pics.avs.io/80/80/'+f.code+'.png';
+  document.getElementById('b-airline-name').textContent=f.airline;
+  document.getElementById('b-flight-no').textContent=f.flightNo||'';
+  document.getElementById('b-dep').textContent=f.dep||'--:--';
+  document.getElementById('b-arr').textContent=f.arr||'--:--';
+  document.getElementById('b-dur').textContent=f.dur||'—';
+  const cabinLabel=f.cls==='first'?'First Class':'Business Class';
+  document.getElementById('b-cabin').textContent=cabinLabel;
+  document.getElementById('b-aircraft').textContent=getAircraft(f.code,f.to);
+  document.getElementById('b-program').textContent=f.program||'—';
+  if(f.direct){
+    document.getElementById('b-stops').innerHTML='<span class="fs-direct-badge">Direct</span>';
+  } else {
+    document.getElementById('b-stops').innerHTML='<span class="fs-stops-badge">'+(f.stops||'1 stop')+(f.layover?' · '+f.layover:'')+'</span>';
+  }
+  // Format date
+  if(f.date){
+    try{ const d=new Date(f.date+'T12:00:00'); document.getElementById('b-date').textContent=d.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }catch(e){ document.getElementById('b-date').textContent=f.date; }
+  } else { document.getElementById('b-date').textContent='—'; }
   document.getElementById('b-price').textContent='€'+tp.toLocaleString();
+  document.getElementById('b-pnote').textContent=pLabel||'per person';
   // Show Merhaba upsell for Dubai flights
   const isDxb=(f.from==='DXB'||f.to==='DXB');
   document.getElementById('merhaba-sec').style.display=isDxb?'block':'none';
