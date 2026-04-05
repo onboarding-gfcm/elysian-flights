@@ -26,10 +26,10 @@ function calcPrice(miles, taxes, taxCur, progKey) {
 
 // Program configurations
 const PROGRAMS = {
-  qantas:        { source: 'qantas',        carriers: 'EK',       label: 'Qantas',           maxStops: 0,    maxPoints: null   },
-  flying_blue:   { source: 'flying_blue',   carriers: 'EY,KL,AF', label: 'Flying Blue',       maxStops: 1,    maxPoints: 85000  },
-  virginatlantic:{ source: 'virginatlantic', carriers: '',          label: 'Virgin Atlantic',   maxStops: 1,    maxPoints: 100000 },
-  american:      { source: 'american',       carriers: 'EY',       label: 'American Airlines',  maxStops: null, maxPoints: 60000  }
+  qantas:        { source: 'qantas',        carriers: 'EK',       label: 'Qantas',           maxStops: 0,    maxPoints: null,   allowPremiumEconomy: false },
+  flying_blue:   { source: 'flying_blue',   carriers: 'EY,KL,AF', label: 'Flying Blue',       maxStops: 1,    maxPoints: 90000,  allowPremiumEconomy: true  },
+  virginatlantic:{ source: 'virginatlantic', carriers: '',          label: 'Virgin Atlantic',   maxStops: 1,    maxPoints: 160000, allowPremiumEconomy: true  },
+  american:      { source: 'american',       carriers: 'EY',       label: 'American Airlines',  maxStops: null, maxPoints: 60000,  allowPremiumEconomy: false }
 };
 
 module.exports = async function handler(req, res) {
@@ -115,25 +115,28 @@ module.exports = async function handler(req, res) {
       for (const avail of data) {
         const hasJ = avail.JAvailable === true;
         const hasF = avail.FAvailable === true;
-        if (!hasJ && !hasF) continue;
+        const hasW = cfg.allowPremiumEconomy && avail.WAvailable === true;
+        if (!hasJ && !hasF && !hasW) continue;
 
         // Extract taxes from seats.aero response
         const taxCur = avail.TaxesCurrency || 'USD';
         const jTax = avail.JTotalTaxes || 0;
         const fTax = avail.FTotalTaxes || 0;
+        const wTax = avail.WTotalTaxes || 0;
 
         const trips = avail.AvailabilityTrips || [];
 
         if (trips.length === 0) {
-          const isDirect = (hasJ && avail.JDirect === true) || (hasF && avail.FDirect === true);
+          const isDirect = (hasJ && avail.JDirect === true) || (hasF && avail.FDirect === true) || (hasW && avail.WDirect === true);
           if (cfg.maxStops === 0 && !isDirect) continue;
 
-          const mileageCost = avail.JMileageCost || avail.FMileageCost || 0;
+          const mileageCost = avail.JMileageCost || avail.FMileageCost || avail.WMileageCost || 0;
           if (cfg.maxPoints && mileageCost > cfg.maxPoints) continue;
 
           const jAirlines = avail.JAirlines || '';
           const fAirlines = avail.FAirlines || '';
-          const primaryAirline = (jAirlines || fAirlines || '').split(',')[0].trim() || '';
+          const wAirlines = avail.WAirlines || '';
+          const primaryAirline = (jAirlines || fAirlines || wAirlines || '').split(',')[0].trim() || '';
 
           allFlights.push({
             id: avail.ID,
@@ -150,9 +153,9 @@ module.exports = async function handler(req, res) {
             source: avail.Source || cfg.source,
             segments: [],
             stops: isDirect ? 0 : null,
-            availability: { premiumEconomy: false, business: hasJ, first: hasF },
+            availability: { premiumEconomy: hasW, business: hasJ, first: hasF },
             prices: {
-              premiumEconomy: null,
+              premiumEconomy: hasW ? calcPrice(avail.WMileageCost, wTax, taxCur, key) : null,
               business: hasJ ? calcPrice(avail.JMileageCost, jTax, taxCur, key) : null,
               first: hasF ? calcPrice(avail.FMileageCost, fTax, taxCur, key) : null
             },
@@ -167,16 +170,18 @@ module.exports = async function handler(req, res) {
         // Process individual trips
         for (const trip of trips) {
           const cabin = (trip.Cabin || '').toLowerCase();
-          if (cabin === 'economy' || cabin === 'y' || cabin === 'premium_economy' || cabin === 'w') continue;
+          if (cabin === 'economy' || cabin === 'y') continue;
+          const isPremEcon = cabin === 'premium_economy' || cabin === 'w';
+          if (isPremEcon && !cfg.allowPremiumEconomy) continue;
 
           const stops = trip.Stops || 0;
           const isDirect = stops === 0;
           if (cfg.maxStops !== null && cfg.maxStops !== undefined && stops > cfg.maxStops) continue;
 
-          const mileageCost = trip.MileageCost || avail.JMileageCost || avail.FMileageCost || 0;
+          const mileageCost = trip.MileageCost || avail.JMileageCost || avail.FMileageCost || avail.WMileageCost || 0;
           if (cfg.maxPoints && mileageCost > cfg.maxPoints) continue;
 
-          const tripTax = trip.TotalTaxes || (cabin === 'first' || cabin === 'f' ? fTax : jTax);
+          const tripTax = trip.TotalTaxes || (cabin === 'first' || cabin === 'f' ? fTax : (isPremEcon ? wTax : jTax));
           const depTime = formatDateTime(trip.DepartsAt);
           const arrTime = formatDateTime(trip.ArrivesAt);
           const duration = trip.TotalDuration || computeDuration(trip.DepartsAt, trip.ArrivesAt);
@@ -239,13 +244,13 @@ module.exports = async function handler(req, res) {
             segments: segmentDetails,
             stops,
             availability: {
-              premiumEconomy: false,
-              business: hasJ && !isFirst,
-              first: hasF && isFirst
+              premiumEconomy: isPremEcon,
+              business: !isFirst && !isPremEcon,
+              first: isFirst
             },
             prices: {
-              premiumEconomy: null,
-              business: !isFirst ? price : null,
+              premiumEconomy: isPremEcon ? price : null,
+              business: (!isFirst && !isPremEcon) ? price : null,
               first: isFirst ? price : null
             },
             direct: isDirect,
