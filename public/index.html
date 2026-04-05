@@ -1461,10 +1461,12 @@ async function doSearch(overrideDate) {
   const cards=flights.map((f,i)=>{
     const hasBiz=f.availability&&f.availability.business;
     const hasFirst=f.availability&&f.availability.first;
+    const hasPE=f.availability&&f.availability.premiumEconomy;
     const bizPrice=f.prices&&f.prices.business?Math.round(f.prices.business):null;
     const firstPrice=f.prices&&f.prices.first?Math.round(f.prices.first):null;
-    if(!hasBiz&&!hasFirst) return null;
-    if(!bizPrice&&!firstPrice) return null;
+    const pePrice=f.prices&&f.prices.premiumEconomy?Math.round(f.prices.premiumEconomy):null;
+    if(!hasBiz&&!hasFirst&&!hasPE) return null;
+    if(!bizPrice&&!firstPrice&&!pePrice) return null;
 
     const airlineName=getAirlineName(f.airline);
     const color=getColor(airlineName);
@@ -1483,9 +1485,9 @@ async function doSearch(overrideDate) {
         if(connAirports.length>0) layoverInfo='via '+connAirports.join(', ');
       }
     }
-    const lowestPrice=(bizPrice&&firstPrice)?Math.min(bizPrice,firstPrice)*mult:(bizPrice||firstPrice||0)*mult;
-    const bookCls=bizPrice?'business':'first';
-    const bookPrice=bizPrice||firstPrice;
+    const _aPrices=[bizPrice,firstPrice,pePrice].filter(Boolean);const lowestPrice=(_aPrices.length?Math.min(..._aPrices):0)*mult;
+    const bookCls=bizPrice?'business':(firstPrice?'first':'premiumEconomy');
+    const bookPrice=bizPrice||firstPrice||pePrice;
     const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:formatDuration(f.duration)||f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
 
     const bizCol=hasBiz&&bizPrice
@@ -1494,7 +1496,9 @@ async function doSearch(overrideDate) {
     const firstCol=hasFirst&&firstPrice
       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:firstPrice,cls:"first",feat:["Private suite","Premium lounge","Butler service"]}).replace(/'/g,"\\u0027")+','+firstPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">First Class</div><div class="fc-class-price">€'+((firstPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
       :'<div class="fc-class-col unavail"><div class="fc-class-label">First Class</div><div class="fc-class-price na">Not available</div></div>';
-    const premCol='<div class="fc-class-col unavail"><div class="fc-class-label">Premium Economy</div><div class="fc-class-price na">Not available</div></div>';
+    const premCol=hasPE&&pePrice
+       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:pePrice,cls:"premiumEconomy",feat:["Extra legroom","Premium meals","Priority boarding"]}).replace(/\'/g,"\\u0027")+','+pePrice*mult+',"'+pLabel+'")\'><div class="fc-class-label">Premium Economy</div><div class="fc-class-price">€'+((pePrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
+       :'<div class="fc-class-col unavail"><div class="fc-class-label">Premium Economy</div><div class="fc-class-price na">Not available</div></div>';
 
     const html='<div class="flight-card">'
       +(displayDate?'<div class="fc-date">'+displayDate+'</div>':'')
