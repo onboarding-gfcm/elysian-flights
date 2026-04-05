@@ -171,7 +171,7 @@ module.exports = async function handler(req, res) {
         for (const trip of trips) {
           const cabin = (trip.Cabin || '').toLowerCase();
           if (cabin === 'economy' || cabin === 'y') continue;
-          const isPremEcon = cabin === 'premium_economy' || cabin === 'w';
+          const isPremEcon = cabin === 'premium_economy' || cabin === 'premium' || cabin === 'w';
           if (isPremEcon && !cfg.allowPremiumEconomy) continue;
 
           const stops = trip.Stops || 0;
