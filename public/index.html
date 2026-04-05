@@ -1488,7 +1488,7 @@ async function doSearch(overrideDate) {
     const _aPrices=[bizPrice,firstPrice,pePrice].filter(Boolean);const lowestPrice=(_aPrices.length?Math.min(..._aPrices):0)*mult;
     const bookCls=bizPrice?'business':(firstPrice?'first':'premiumEconomy');
     const bookPrice=bizPrice||firstPrice||pePrice;
-    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:formatDuration(f.duration)||f.duration||'',airline:airlineName,code:code,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
+    const fData={from:f.origin,to:f.destination,dep:f.depTime||'--:--',arr:f.arrTime||'--:--',dur:formatDuration(f.duration)||f.duration||'',airline:airlineName,code:code,alCode:alCode,color:color,stops:stopTxt,price:bookPrice,cls:bookCls,feat:bookCls==='first'?['Private suite','Premium lounge','Butler service']:['Lie-flat seat','Lounge access','Priority boarding'],flightNo:f.flightNo||'',direct:f.direct,date:f.date||'',layover:layoverInfo};
 
     const bizCol=hasBiz&&bizPrice
       ?'<div class="fc-class-col" onclick=\'openBk('+JSON.stringify({...fData,price:bizPrice,cls:"business",feat:["Lie-flat seat","Lounge access","Priority boarding"]}).replace(/'/g,"\\u0027")+','+bizPrice*mult+',"'+pLabel+'")\' ><div class="fc-class-label">Business</div><div class="fc-class-price">€'+((bizPrice*mult).toLocaleString())+'</div><div class="fc-class-note">'+pLabel+'</div></div>'
@@ -1658,7 +1658,7 @@ function getAircraft(alCode,dest){
 function openBk(f,tp,pLabel) {
   bkData={f,tp,pLabel,merhaba:false,transfer:null};
   document.getElementById('b-route').textContent=f.from+' → '+f.to;
-  document.getElementById('b-al-logo').src='https://pics.avs.io/80/80/'+f.code+'.png';
+  document.getElementById('b-al-logo').src='https://pics.avs.io/80/80/'+(f.alCode||f.code)+'.png';
   document.getElementById('b-airline-name').textContent=f.airline;
   document.getElementById('b-flight-no').textContent=f.flightNo||'';
   document.getElementById('b-dep').textContent=f.dep||'--:--';
